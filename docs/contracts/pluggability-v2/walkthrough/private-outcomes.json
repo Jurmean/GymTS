@@ -1,0 +1,14 @@
+{
+  "forecast": {
+    "values": [
+      22.0,
+      24.0
+    ],
+    "unit": "percent"
+  },
+  "trend": {
+    "direction": "increasing"
+  },
+  "available_at": "2026-01-01T00:07:00Z",
+  "purpose": "evaluation"
+}

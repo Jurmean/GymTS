@@ -1,0 +1,107 @@
+{
+  "protocol_version": "gymts.experiment/1",
+  "name": "local-ramp-forecast",
+  "purpose": "development",
+  "scene": {
+    "environment": {
+      "protocol_version": "gymts.environment/1",
+      "adapter": "local-timeseries-replay",
+      "version": "1.0.0",
+      "source": {
+        "kind": "generator",
+        "locator": "builtin://linear-ramp",
+        "revision": "ramp-v1",
+        "connection": {
+          "generator": {
+            "start": "2026-01-01T00:00:00Z",
+            "period": "1min",
+            "length": 12,
+            "start_value": 0,
+            "delta": 1
+          }
+        },
+        "credential_ref": null
+      },
+      "mapping": {
+        "variables": {
+          "value": {
+            "field": "value",
+            "dtype": "float64",
+            "unit": "value"
+          }
+        }
+      },
+      "options": {
+        "availability": "event_time",
+        "entity": "demo"
+      }
+    },
+    "task": {
+      "plugin": "window_forecast",
+      "version": "1.0.0",
+      "params": {
+        "variable": "value",
+        "unit": "value",
+        "entity": "demo",
+        "window_points": 3,
+        "horizon": "1min",
+        "advance_by": "1min",
+        "warmup_duration": null
+      }
+    },
+    "binding": {
+      "variables": {
+        "value": {
+          "source": "value",
+          "unit": "value",
+          "transform": null
+        }
+      },
+      "operations": {}
+    }
+  },
+  "candidate": {
+    "adapter": "last-value",
+    "version": "1.0.0",
+    "artifact": null,
+    "params": {},
+    "inherited_state": []
+  },
+  "execution": {
+    "mode": "stream",
+    "start": {
+      "mode": "reinitialize"
+    },
+    "scope": {
+      "start": "2026-01-01T00:00:00Z",
+      "end": "2026-01-01T00:10:00Z"
+    },
+    "feedback_until": null,
+    "seed": 7,
+    "learning": {
+      "prepare": "load_only",
+      "online": "frozen",
+      "training_view": null,
+      "training_targets": null,
+      "alignment_schema_ref": null,
+      "allowed_feedback_sources": []
+    },
+    "limits": {
+      "max_inputs": null,
+      "max_operations": null,
+      "max_turns_per_case": 32,
+      "max_wall_time_s": 30
+    }
+  },
+  "recording": {
+    "store_ref": "local://records/default",
+    "inputs": "full",
+    "outputs": "full",
+    "artifacts": "reference",
+    "model_calls": "none",
+    "on_capture_failure": "fail_run",
+    "redaction_policy_ref": null,
+    "extra_event_kinds": []
+  },
+  "extensions": {}
+}

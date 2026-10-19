@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "scope": "Candidate files under local .gitignore with a temporary Git index; known credential patterns only",
+  "files": 184,
+  "findings": [],
+  "output_directory_ignored": true,
+  "git_repository_initialized": false,
+  "source_archive": "GymTS-0.3.1-github-source.zip",
+  "license": "not_selected"
+}

@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "version": "0.3.1",
+  "python": "3.9.6",
+  "offline": true,
+  "distributions": {
+    "sdist": {
+      "file": "gymts-0.3.1.tar.gz",
+      "files": 81,
+      "bytes": 164021,
+      "sha256": "dedc18c7a6fc052c7a60b8ef8b7a33c9ca872b52535b1c2c32b0c0f0f48b997a"
+    },
+    "wheel": {
+      "file": "gymts-0.3.1-py3-none-any.whl",
+      "files": 45,
+      "bytes": 115426,
+      "sha256": "cbab075305961679de1ec69447cd5e8f3e0499d4d665031a018d977600e58594"
+    },
+    "wheel_rebuilt_from_sdist": {
+      "file": "gymts-0.3.1-py3-none-any.whl",
+      "files": 45,
+      "bytes": 115426,
+      "sha256": "249b6fae99b7462bbd40f02a55e885a6437f45cc0890b3a47da0d7ef41844ed1"
+    }
+  },
+  "direct_wheel_install": {
+    "isolated_import": true,
+    "console_scripts": 2,
+    "counter_operations": 3
+  },
+  "sdist_wheel_install": {
+    "isolated_import": true,
+    "console_scripts": 2,
+    "counter_operations": 3,
+    "installed_regression_tests": 175
+  },
+  "external_plugin_install": {
+    "metadata_discovery_without_load": true,
+    "explicit_enable": true,
+    "forecast_results": 8,
+    "independent_linear_predictions_exact": true,
+    "chatts_imported": false,
+    "uninstall_preserves_core_run": true,
+    "distribution": "gymts-release-linear-fixture==1.0.0"
+  },
+  "release_decisions": [
+    "Choose an appropriate license before public release"
+  ],
+  "scope": "Distribution contents and isolated installations; not a Git index or full secret audit",
+  "verified_on": "2026-10-19",
+  "repository": "https://github.com/Jurmean/GymTS"
+}

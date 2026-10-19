@@ -1,0 +1,75 @@
+{
+  "protocol_version": "gymts.score/1",
+  "name": "rescore-local-ramp",
+  "purpose": "regression",
+  "runs": [
+    {
+      "unit_id": "ramp-last-value-0",
+      "evaluation_case_id": "ramp",
+      "candidate_id": "last-value",
+      "repetition": 0,
+      "run_id": "REPLACE_WITH_ACTUAL_RUN_ID",
+      "unavailable_reason": null,
+      "unit_spec_ref": null
+    }
+  ],
+  "baseline_id": null,
+  "scoring": {
+    "scorer": {
+      "adapter": "forecast-mae",
+      "version": "1.0.0",
+      "params": {}
+    },
+    "outcomes": {
+      "sources": [],
+      "as_of": null
+    },
+    "alignment": {
+      "schema_ref": "gymts.builtin/forecast-alignment/1",
+      "keys": [
+        "entity",
+        "variable",
+        "issued_at",
+        "target_time"
+      ],
+      "matching": "exact",
+      "params": {},
+      "duplicate_policy": "error"
+    },
+    "metrics": [
+      "mae"
+    ],
+    "evidence_requirements": {
+      "min_scored": 1,
+      "min_coverage": 1,
+      "overrides": {}
+    },
+    "missing_outcome_policy": "report_insufficient"
+  },
+  "comparison": {
+    "group_by": [
+      "evaluation_case_id"
+    ],
+    "repetition_aggregation": "mean",
+    "aggregation": "macro_mean",
+    "baseline_method": "difference",
+    "gates": [
+      {
+        "metric": "mae",
+        "target": "absolute",
+        "candidate_ids": [
+          "last-value"
+        ],
+        "for_metric": null,
+        "operator": "le",
+        "threshold": 1.0,
+        "scope": "aggregate"
+      }
+    ]
+  },
+  "failure_policy": {
+    "partial_results": "include",
+    "invalid_result_policy": "report"
+  },
+  "previous_evaluation_id": null
+}

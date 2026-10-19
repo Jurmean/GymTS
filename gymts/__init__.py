@@ -1,0 +1,70 @@
+"""GymTS: synchronous experiments and independent, versioned evaluation."""
+from .contracts import GymTSError
+from .environment_ts import EnvironmentTS
+from .autobench_ts import AutoBenchTS
+
+__version__ = "0.3.1"
+
+
+class GymTS:
+    def __init__(self, root=".gymts", *, register_builtins=True, integrations=()):
+        from pathlib import Path
+        from .contracts.schema import SchemaRegistry, register_core_schemas
+        from .registries import Registries
+        from .storage import ArtifactStore, LocalExperimentRecords
+        from .environment_ts import EnvironmentTS
+        from .autobench_ts import AutoBenchTS
+        self.root = Path(root)
+        self.schemas = SchemaRegistry()
+        register_core_schemas(self.schemas)
+        self.registries = Registries(self.schemas)
+        if register_builtins:
+            from .plugins import register_builtin_plugins
+            register_builtin_plugins(self.registries, self.schemas)
+        if isinstance(integrations, str):
+            raise GymTSError("invalid_config", "integrations must be a sequence of names, not a string")
+        try:
+            integrations = tuple(integrations)
+        except TypeError as error:
+            raise GymTSError("invalid_config", "integrations must be a sequence of names") from error
+        self.enabled_integrations = ()
+        for integration in integrations:
+            self.enable_integration(integration)
+        self.artifacts = ArtifactStore(self.root / "artifacts")
+        self.records = LocalExperimentRecords(self.root, self.artifacts)
+        self.environment_ts = EnvironmentTS(self.registries, self.schemas, self.records, self.artifacts)
+        self.autobench = AutoBenchTS(self.environment_ts, self.registries.scorers, self.schemas,
+                                     self.records, self.artifacts)
+        self.autobench_ts = self.autobench
+
+    @staticmethod
+    def available_integrations():
+        """Discover optional registration metadata without importing integrations."""
+        from .integrations import available_integrations
+        return available_integrations()
+
+    def enable_integration(self, name):
+        """Register a selected trusted integration; repeated enables are harmless."""
+        if name in self.enabled_integrations:
+            return
+        from .integrations import register_integration
+        register_integration(name, self.registries, self.schemas)
+        self.enabled_integrations += (name,)
+
+    def validate(self, spec):
+        return self.environment_ts.validate(spec)
+
+    def run(self, spec):
+        return self.environment_ts.run(spec)
+
+    def close(self):
+        self.records.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
+
+__all__ = ["GymTS", "EnvironmentTS", "AutoBenchTS", "GymTSError", "__version__"]

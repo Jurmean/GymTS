@@ -1,0 +1,5056 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gymts:pluggability:2-draft.1",
+  "title": "GymTS pluggability contract proposal",
+  "description": "Design-only schemas. Dynamic payload resolution and cross-message invariants are specified in the accompanying document.",
+  "$defs": {
+    "ComponentRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "Selection": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "params_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "params": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "component",
+        "params_schema_ref",
+        "params"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "uri",
+        "sha256",
+        "media_type",
+        "schema_ref",
+        "size_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "Payload": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schema_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "storage": {
+              "const": "inline"
+            },
+            "value": {}
+          },
+          "required": [
+            "schema_ref",
+            "storage",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "storage": {
+              "const": "artifact"
+            },
+            "artifact_ref": {
+              "$ref": "#/$defs/ArtifactRef"
+            }
+          },
+          "required": [
+            "schema_ref",
+            "storage",
+            "artifact_ref"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "TimePoint": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        {
+          "type": "integer",
+          "minimum": 0
+        }
+      ]
+    },
+    "TimeScope": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimePoint"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "Clock": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "enum": [
+            "event_time",
+            "sample_index",
+            "step"
+          ]
+        },
+        "now": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "visible_until": {
+          "$ref": "#/$defs/TimePoint"
+        }
+      },
+      "required": [
+        "domain",
+        "now",
+        "visible_until"
+      ],
+      "additionalProperties": false
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "incompatible",
+            "invalid_config",
+            "invalid_state",
+            "schema_mismatch",
+            "permission_denied",
+            "cursor_mismatch",
+            "transport_error",
+            "timeout",
+            "invalid_output",
+            "unknown_effect",
+            "capture_failed",
+            "cancelled",
+            "internal_error"
+          ]
+        },
+        "stage": {
+          "enum": [
+            "plan",
+            "source",
+            "binding",
+            "task",
+            "method",
+            "runtime",
+            "evaluation",
+            "recording"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retry": {
+          "enum": [
+            "never",
+            "idempotent_only"
+          ]
+        },
+        "effect_state": {
+          "enum": [
+            "none",
+            "unknown",
+            "committed"
+          ]
+        },
+        "details": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "code",
+        "stage",
+        "message",
+        "retry",
+        "effect_state",
+        "details"
+      ],
+      "additionalProperties": false
+    },
+    "Variable": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dtype": {
+          "enum": [
+            "float64",
+            "int64",
+            "bool",
+            "string",
+            "tensor"
+          ]
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shape": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 0
+        },
+        "value_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "dtype",
+        "unit",
+        "shape",
+        "value_schema_ref"
+      ],
+      "additionalProperties": false
+    },
+    "OperationSpec": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receipt_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "changes_state": {
+          "type": "boolean"
+        },
+        "idempotent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "arguments_schema_ref",
+        "receipt_schema_ref",
+        "changes_state",
+        "idempotent"
+      ],
+      "additionalProperties": false
+    },
+    "Series": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TimePoint"
+          },
+          "minItems": 0
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minItems": 0
+        },
+        "valid_mask": {
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          },
+          "minItems": 0
+        },
+        "available_at": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TimePoint"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "entity",
+        "variable",
+        "unit",
+        "timestamps",
+        "values",
+        "valid_mask",
+        "available_at"
+      ],
+      "additionalProperties": false
+    },
+    "SeriesFrame": {
+      "type": "object",
+      "properties": {
+        "series": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Series"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "series"
+      ],
+      "additionalProperties": false
+    },
+    "Window": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timestamps": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+            "format": "date-time"
+          },
+          "minItems": 1
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "valid_mask": {
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "entity",
+        "variable",
+        "unit",
+        "timestamps",
+        "values",
+        "valid_mask"
+      ],
+      "additionalProperties": false
+    },
+    "SourceDescription": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "clock_domain": {
+          "enum": [
+            "event_time",
+            "sample_index",
+            "step"
+          ]
+        },
+        "advance_mode": {
+          "enum": [
+            "on_read",
+            "on_action",
+            "external"
+          ]
+        },
+        "observation_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Variable"
+          },
+          "minItems": 1
+        },
+        "read_modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "next",
+              "query"
+            ]
+          },
+          "minItems": 1
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperationSpec"
+          },
+          "minItems": 0
+        },
+        "start_modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "reinitialize",
+              "attach"
+            ]
+          },
+          "minItems": 1
+        },
+        "supports_seed": {
+          "type": "boolean"
+        },
+        "public_context_schema_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "component",
+        "clock_domain",
+        "advance_mode",
+        "observation_schema_ref",
+        "variables",
+        "read_modes",
+        "operations",
+        "start_modes",
+        "supports_seed",
+        "public_context_schema_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Requirement": {
+      "type": "object",
+      "properties": {
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dtype": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shape": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "variable",
+        "unit",
+        "dtype",
+        "shape"
+      ],
+      "additionalProperties": false
+    },
+    "TaskDescription": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "input_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "answer_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alignment_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_variables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Requirement"
+          },
+          "minItems": 1
+        },
+        "required_read_modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "next",
+              "query"
+            ]
+          },
+          "minItems": 1
+        },
+        "required_operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperationSpec"
+          },
+          "minItems": 0
+        },
+        "clock_domain": {
+          "enum": [
+            "event_time",
+            "sample_index",
+            "step"
+          ]
+        },
+        "minimum_points": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "missing_policy": {
+          "enum": [
+            "reject",
+            "preserve_mask"
+          ]
+        },
+        "max_turns": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "component",
+        "contract_ref",
+        "input_schema_ref",
+        "answer_schema_ref",
+        "alignment_schema_ref",
+        "required_variables",
+        "required_read_modes",
+        "required_operations",
+        "clock_domain",
+        "minimum_points",
+        "missing_policy",
+        "max_turns"
+      ],
+      "additionalProperties": false
+    },
+    "ContractSupport": {
+      "type": "object",
+      "properties": {
+        "contract_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "input_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "answer_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supports_tools": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "contract_ref",
+        "input_schema_ref",
+        "answer_schema_ref",
+        "supports_tools"
+      ],
+      "additionalProperties": false
+    },
+    "MethodDescription": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContractSupport"
+          },
+          "minItems": 1
+        },
+        "accepted_modalities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "accepted_runtime_kinds": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "inprocess",
+              "worker_rpc"
+            ]
+          },
+          "minItems": 1
+        },
+        "supports_fit": {
+          "type": "boolean"
+        },
+        "supports_update": {
+          "type": "boolean"
+        },
+        "supports_cancellation": {
+          "type": "boolean"
+        },
+        "required_capture": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "request",
+              "response"
+            ]
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "component",
+        "contracts",
+        "accepted_modalities",
+        "accepted_runtime_kinds",
+        "supports_fit",
+        "supports_update",
+        "supports_cancellation",
+        "required_capture"
+      ],
+      "additionalProperties": false
+    },
+    "RuntimeDescription": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "kind": {
+          "enum": [
+            "inprocess",
+            "worker_rpc"
+          ]
+        },
+        "persistent_sessions": {
+          "type": "boolean"
+        },
+        "hard_timeout": {
+          "type": "boolean"
+        },
+        "supports_cancellation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "component",
+        "kind",
+        "persistent_sessions",
+        "hard_timeout",
+        "supports_cancellation"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "const": "1.0.0"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "task_variable": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_variable": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "task_unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "transforms": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Selection"
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "task_variable",
+              "source_variable",
+              "source_unit",
+              "task_unit",
+              "transforms"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "task_operation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_operation": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "task_operation",
+              "source_operation"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "variables",
+        "operations"
+      ],
+      "additionalProperties": false
+    },
+    "ResolvedBinding": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "source_description": {
+          "$ref": "#/$defs/SourceDescription"
+        },
+        "task_description": {
+          "$ref": "#/$defs/TaskDescription"
+        }
+      },
+      "required": [
+        "binding",
+        "source_description",
+        "task_description"
+      ],
+      "additionalProperties": false
+    },
+    "ReadSelection": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeScope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "entities",
+        "variables",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "ReadIntent": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "next",
+            "query"
+          ]
+        },
+        "selection": {
+          "$ref": "#/$defs/ReadSelection"
+        },
+        "as_of": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "max_wait_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "case_key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "selection",
+        "as_of",
+        "max_wait_ms",
+        "limit",
+        "case_key"
+      ],
+      "additionalProperties": false
+    },
+    "ServiceHandle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "service": {
+          "enum": [
+            "artifacts",
+            "evidence",
+            "credentials",
+            "tools"
+          ]
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "service",
+        "operations",
+        "resource_refs"
+      ],
+      "additionalProperties": false
+    },
+    "TaskContext": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "read_scope": {
+          "$ref": "#/$defs/TimeScope"
+        },
+        "decision_scope": {
+          "$ref": "#/$defs/TimeScope"
+        },
+        "decision_as_of": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "max_turns": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "run_id",
+        "task_session_id",
+        "read_scope",
+        "decision_scope",
+        "decision_as_of",
+        "max_turns"
+      ],
+      "additionalProperties": false
+    },
+    "SourceContext": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ServiceHandle"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "run_id",
+        "handles"
+      ],
+      "additionalProperties": false
+    },
+    "MethodContext": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ServiceHandle"
+          },
+          "minItems": 0
+        },
+        "learning": {
+          "const": "frozen"
+        },
+        "input_grants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "run_id",
+        "method_session_id",
+        "handles",
+        "learning",
+        "input_grants"
+      ],
+      "additionalProperties": false
+    },
+    "Limits": {
+      "type": "object",
+      "properties": {
+        "max_inputs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_turns_per_case": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_operations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "call_timeout_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "require_hard_timeout": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "max_inputs",
+        "max_turns_per_case",
+        "max_operations",
+        "call_timeout_ms",
+        "require_hard_timeout"
+      ],
+      "additionalProperties": false
+    },
+    "RunSpec": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/Selection"
+        },
+        "task": {
+          "$ref": "#/$defs/Selection"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "method": {
+          "$ref": "#/$defs/Selection"
+        },
+        "runtime": {
+          "$ref": "#/$defs/Selection"
+        },
+        "read_scope": {
+          "$ref": "#/$defs/TimeScope"
+        },
+        "decision_scope": {
+          "$ref": "#/$defs/TimeScope"
+        },
+        "decision_as_of": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limits": {
+          "$ref": "#/$defs/Limits"
+        },
+        "recording": {
+          "const": "strict_io"
+        }
+      },
+      "required": [
+        "source",
+        "task",
+        "binding",
+        "method",
+        "runtime",
+        "read_scope",
+        "decision_scope",
+        "decision_as_of",
+        "seed",
+        "limits",
+        "recording"
+      ],
+      "additionalProperties": false
+    },
+    "LockEntry": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "enum": [
+            "source",
+            "task",
+            "method",
+            "runtime",
+            "codec",
+            "task_contract"
+          ]
+        },
+        "component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "distribution": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementation_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "config_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "role",
+        "component",
+        "distribution",
+        "implementation_sha256",
+        "config_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "Plan": {
+      "type": "object",
+      "properties": {
+        "spec_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LockEntry"
+          },
+          "minItems": 4
+        },
+        "resolved_binding": {
+          "$ref": "#/$defs/ResolvedBinding"
+        },
+        "method_description": {
+          "$ref": "#/$defs/MethodDescription"
+        },
+        "runtime_description": {
+          "$ref": "#/$defs/RuntimeDescription"
+        },
+        "deployment_verified": {
+          "type": "boolean"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Error"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "spec_sha256",
+        "components",
+        "resolved_binding",
+        "method_description",
+        "runtime_description",
+        "deployment_verified",
+        "issues"
+      ],
+      "additionalProperties": false
+    },
+    "SourceOpenBody": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/Selection"
+        },
+        "context": {
+          "$ref": "#/$defs/SourceContext"
+        },
+        "start_mode": {
+          "enum": [
+            "reinitialize",
+            "attach"
+          ]
+        },
+        "read_scope": {
+          "$ref": "#/$defs/TimeScope"
+        },
+        "availability_cutoff": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "allowed_entities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "allowed_variables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "context",
+        "start_mode",
+        "read_scope",
+        "availability_cutoff",
+        "allowed_entities",
+        "allowed_variables",
+        "allowed_operations",
+        "seed"
+      ],
+      "additionalProperties": false
+    },
+    "SourceSessionInfo": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "source_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataset_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actual_read_scope": {
+          "$ref": "#/$defs/TimeScope"
+        },
+        "clock": {
+          "$ref": "#/$defs/Clock"
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ownership": {
+          "enum": [
+            "created",
+            "attached"
+          ]
+        },
+        "public_context": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Payload"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "session_id",
+        "source_component",
+        "source_revision",
+        "dataset_revision",
+        "actual_read_scope",
+        "clock",
+        "cursor",
+        "ownership",
+        "public_context"
+      ],
+      "additionalProperties": false
+    },
+    "SourceReadBody": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "next",
+            "query"
+          ]
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selection": {
+          "$ref": "#/$defs/ReadSelection"
+        },
+        "as_of": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "max_wait_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "session_id",
+        "kind",
+        "cursor",
+        "selection",
+        "as_of",
+        "max_wait_ms",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "SourceEnd": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "enum": [
+            "source_exhausted",
+            "scope_end",
+            "terminated",
+            "truncated"
+          ]
+        },
+        "terminated": {
+          "type": "boolean"
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "reason",
+        "terminated",
+        "truncated"
+      ],
+      "additionalProperties": false
+    },
+    "Feedback": {
+      "type": "object",
+      "properties": {
+        "feedback_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "enum": [
+            "reward",
+            "operation_status",
+            "event"
+          ]
+        },
+        "event_time": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "available_at": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "payload": {
+          "$ref": "#/$defs/Payload"
+        }
+      },
+      "required": [
+        "feedback_id",
+        "operation_id",
+        "kind",
+        "event_time",
+        "available_at",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "ObservationBody": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataset_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "data",
+            "waiting",
+            "end"
+          ]
+        },
+        "cursor_before": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cursor_after": {
+          "type": "string",
+          "minLength": 1
+        },
+        "clock": {
+          "$ref": "#/$defs/Clock"
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeScope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Payload"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feedback": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Feedback"
+          },
+          "minItems": 0
+        },
+        "end": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceEnd"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "session_id",
+        "request_id",
+        "source_revision",
+        "dataset_revision",
+        "status",
+        "cursor_before",
+        "cursor_after",
+        "clock",
+        "coverage",
+        "data",
+        "feedback",
+        "end"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "end"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "end": {
+                "$ref": "#/$defs/SourceEnd"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "end": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "waiting"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "coverage": {
+                "type": "null"
+              },
+              "feedback": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "BoundObservationBody": {
+      "type": "object",
+      "properties": {
+        "task_session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_observation_ref": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "status": {
+          "enum": [
+            "data",
+            "waiting",
+            "end"
+          ]
+        },
+        "clock": {
+          "$ref": "#/$defs/Clock"
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeScope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Payload"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feedback": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Feedback"
+          },
+          "minItems": 0
+        },
+        "end": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceEnd"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "task_session_id",
+        "source_observation_ref",
+        "binding",
+        "status",
+        "clock",
+        "coverage",
+        "data",
+        "feedback",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "TaskBindBody": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/$defs/Selection"
+        },
+        "resolved_binding": {
+          "$ref": "#/$defs/ResolvedBinding"
+        },
+        "context": {
+          "$ref": "#/$defs/TaskContext"
+        }
+      },
+      "required": [
+        "task",
+        "resolved_binding",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "ToolSpec": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_schema_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "changes_state": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "arguments_schema_ref",
+        "result_schema_ref",
+        "changes_state"
+      ],
+      "additionalProperties": false
+    },
+    "InputDraft": {
+      "type": "object",
+      "properties": {
+        "case_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "turn_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "decision_time": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "alignment": {
+          "$ref": "#/$defs/Payload"
+        },
+        "observation_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 1
+        },
+        "input": {
+          "$ref": "#/$defs/Payload"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ToolSpec"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "case_key",
+        "turn_id",
+        "contract_ref",
+        "decision_time",
+        "alignment",
+        "observation_refs",
+        "input",
+        "tools"
+      ],
+      "additionalProperties": false
+    },
+    "CaseClosure": {
+      "type": "object",
+      "properties": {
+        "case_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "incomplete"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "case_key",
+        "status",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "TaskUpdateBody": {
+      "type": "object",
+      "properties": {
+        "task_session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InputDraft"
+          },
+          "minItems": 0
+        },
+        "closed_cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CaseClosure"
+          },
+          "minItems": 0
+        },
+        "stream_done": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "task_session_id",
+        "inputs",
+        "closed_cases",
+        "stream_done"
+      ],
+      "additionalProperties": false
+    },
+    "TaskInputBody": {
+      "type": "object",
+      "properties": {
+        "task_session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "case_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "case_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "turn_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "decision_time": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "alignment": {
+          "$ref": "#/$defs/Payload"
+        },
+        "observation_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 1
+        },
+        "input": {
+          "$ref": "#/$defs/Payload"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ToolSpec"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "task_session_id",
+        "case_id",
+        "case_key",
+        "turn_id",
+        "contract_ref",
+        "decision_time",
+        "alignment",
+        "observation_refs",
+        "input",
+        "tools"
+      ],
+      "additionalProperties": false
+    },
+    "MethodOpenBody": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "$ref": "#/$defs/Selection"
+        },
+        "runtime": {
+          "$ref": "#/$defs/Selection"
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "context": {
+          "$ref": "#/$defs/MethodContext"
+        }
+      },
+      "required": [
+        "method",
+        "runtime",
+        "contract_ref",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "MethodIdentity": {
+      "type": "object",
+      "properties": {
+        "implementation": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "configured_model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reported_model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "weight_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "weights_verified": {
+          "type": "boolean"
+        },
+        "evidence_origin": {
+          "enum": [
+            "live",
+            "synthetic_fixture",
+            "reference_calculation"
+          ]
+        }
+      },
+      "required": [
+        "implementation",
+        "configured_model",
+        "reported_model",
+        "weight_revision",
+        "weights_verified",
+        "evidence_origin"
+      ],
+      "additionalProperties": false
+    },
+    "MethodSessionInfo": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_component": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "identity": {
+          "$ref": "#/$defs/MethodIdentity"
+        },
+        "state": {
+          "const": "ready"
+        }
+      },
+      "required": [
+        "session_id",
+        "runtime_component",
+        "identity",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "ToolCall": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "tool_call"
+        },
+        "call_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "$ref": "#/$defs/Payload"
+        }
+      },
+      "required": [
+        "kind",
+        "call_id",
+        "name",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    "AnswerAction": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "answer"
+        },
+        "answer": {
+          "$ref": "#/$defs/Payload"
+        }
+      },
+      "required": [
+        "kind",
+        "answer"
+      ],
+      "additionalProperties": false
+    },
+    "MethodAction": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ToolCall"
+        },
+        {
+          "$ref": "#/$defs/AnswerAction"
+        }
+      ]
+    },
+    "MethodResponseBody": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "invalid_output",
+            "failed"
+          ]
+        },
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MethodAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "request_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "response_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identity": {
+          "$ref": "#/$defs/MethodIdentity"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "session_id",
+        "input_id",
+        "invocation_id",
+        "contract_ref",
+        "status",
+        "action",
+        "request_ref",
+        "response_ref",
+        "identity",
+        "error"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ok"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "action": {
+                "$ref": "#/$defs/MethodAction"
+              },
+              "request_ref": {
+                "$ref": "#/$defs/ArtifactRef"
+              },
+              "response_ref": {
+                "$ref": "#/$defs/ArtifactRef"
+              },
+              "error": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "invalid_output"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "action": {
+                "type": "null"
+              },
+              "request_ref": {
+                "$ref": "#/$defs/ArtifactRef"
+              },
+              "response_ref": {
+                "$ref": "#/$defs/ArtifactRef"
+              },
+              "error": {
+                "$ref": "#/$defs/Error"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "failed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "action": {
+                "type": "null"
+              },
+              "error": {
+                "$ref": "#/$defs/Error"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "TaskResultBody": {
+      "type": "object",
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "decision_time": {
+          "$ref": "#/$defs/TimePoint"
+        },
+        "alignment": {
+          "$ref": "#/$defs/Payload"
+        },
+        "status": {
+          "enum": [
+            "valid",
+            "invalid"
+          ]
+        },
+        "answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Payload"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "case_id",
+        "input_id",
+        "invocation_id",
+        "contract_ref",
+        "decision_time",
+        "alignment",
+        "status",
+        "answer",
+        "error"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "valid"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "answer": {
+                "$ref": "#/$defs/Payload"
+              },
+              "error": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "invalid"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "answer": {
+                "type": "null"
+              },
+              "error": {
+                "$ref": "#/$defs/Error"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "QueryRequest": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "query"
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "case_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "read": {
+          "$ref": "#/$defs/ReadIntent"
+        }
+      },
+      "required": [
+        "kind",
+        "request_id",
+        "case_key",
+        "input_id",
+        "invocation_id",
+        "read"
+      ],
+      "additionalProperties": false
+    },
+    "CommandRequest": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "command"
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "case_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "$ref": "#/$defs/Payload"
+        }
+      },
+      "required": [
+        "kind",
+        "request_id",
+        "case_key",
+        "input_id",
+        "invocation_id",
+        "operation",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    "TaskRequest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/QueryRequest"
+        },
+        {
+          "$ref": "#/$defs/CommandRequest"
+        }
+      ]
+    },
+    "TaskEffectBody": {
+      "type": "object",
+      "properties": {
+        "task_session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "case_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TaskResultBody"
+          },
+          "minItems": 0
+        },
+        "requests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TaskRequest"
+          },
+          "maxItems": 1
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "task_session_id",
+        "case_key",
+        "results",
+        "requests",
+        "complete"
+      ],
+      "additionalProperties": false
+    },
+    "SourceActBody": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "$ref": "#/$defs/Payload"
+        },
+        "idempotency_key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "session_id",
+        "operation_id",
+        "request_id",
+        "input_id",
+        "invocation_id",
+        "operation",
+        "arguments",
+        "idempotency_key"
+      ],
+      "additionalProperties": false
+    },
+    "ActionReceiptBody": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "completed",
+            "rejected",
+            "unknown"
+          ]
+        },
+        "received_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "payload": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Payload"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feedback": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Feedback"
+          },
+          "minItems": 0
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "session_id",
+        "operation_id",
+        "request_id",
+        "status",
+        "received_at",
+        "payload",
+        "feedback",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "CloseBody": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "enum": [
+            "method",
+            "task",
+            "source"
+          ]
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "enum": [
+            "task_completed",
+            "source_end",
+            "scope_end",
+            "failed",
+            "cancelled"
+          ]
+        }
+      },
+      "required": [
+        "role",
+        "session_id",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "CloseResultBody": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "enum": [
+            "method",
+            "task",
+            "source"
+          ]
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "closed",
+            "detached",
+            "failed"
+          ]
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 0
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "role",
+        "session_id",
+        "status",
+        "artifact_refs",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "RunSummaryBody": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "completion": {
+          "enum": [
+            "task_completed",
+            "source_end",
+            "scope_end",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "result_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 0
+        },
+        "trace_ref": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "cleanup_errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Error"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "status",
+        "completion",
+        "result_refs",
+        "trace_ref",
+        "cleanup_errors"
+      ],
+      "additionalProperties": false
+    },
+    "ForecastParams": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "window_points": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "horizon_points": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sample_period_seconds": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "entity",
+        "variable",
+        "unit",
+        "window_points",
+        "horizon_points",
+        "sample_period_seconds"
+      ],
+      "additionalProperties": false
+    },
+    "TrendParams": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "window_points": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "sample_period_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "slope_threshold": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "entity",
+        "variable",
+        "unit",
+        "window_points",
+        "sample_period_seconds",
+        "slope_threshold"
+      ],
+      "additionalProperties": false
+    },
+    "ForecastInput": {
+      "type": "object",
+      "properties": {
+        "window": {
+          "$ref": "#/$defs/Window"
+        },
+        "target_times": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+            "format": "date-time"
+          },
+          "minItems": 1
+        },
+        "output_unit": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "window",
+        "target_times",
+        "output_unit"
+      ],
+      "additionalProperties": false
+    },
+    "TrendInput": {
+      "type": "object",
+      "properties": {
+        "window": {
+          "$ref": "#/$defs/Window"
+        },
+        "criterion": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "ols_slope"
+            },
+            "time_unit": {
+              "const": "minute"
+            },
+            "threshold": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "type",
+            "time_unit",
+            "threshold"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "window",
+        "criterion"
+      ],
+      "additionalProperties": false
+    },
+    "ForecastAnswer": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "values",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "TrendAnswer": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "enum": [
+            "increasing",
+            "decreasing",
+            "stable"
+          ]
+        }
+      },
+      "required": [
+        "direction"
+      ],
+      "additionalProperties": false
+    },
+    "ForecastAlignment": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issued_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "target_times": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+            "format": "date-time"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "entity",
+        "variable",
+        "issued_at",
+        "target_times"
+      ],
+      "additionalProperties": false
+    },
+    "TrendAlignment": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issued_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "window_start": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "window_end_inclusive": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "entity",
+        "variable",
+        "issued_at",
+        "window_start",
+        "window_end_inclusive"
+      ],
+      "additionalProperties": false
+    },
+    "OutcomeBody": {
+      "type": "object",
+      "properties": {
+        "outcome_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alignment": {
+          "$ref": "#/$defs/Payload"
+        },
+        "available_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "purpose": {
+          "const": "evaluation"
+        },
+        "answer": {
+          "$ref": "#/$defs/Payload"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/ArtifactRef"
+        }
+      },
+      "required": [
+        "outcome_id",
+        "alignment",
+        "available_at",
+        "purpose",
+        "answer",
+        "source_ref"
+      ],
+      "additionalProperties": false
+    },
+    "EvaluationBody": {
+      "type": "object",
+      "properties": {
+        "evaluation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_ref": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "outcome_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "as_of": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "scorer": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "status": {
+          "enum": [
+            "scored",
+            "insufficient_evidence",
+            "invalid_result"
+          ]
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name",
+              "value",
+              "unit"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "evaluation_id",
+        "result_ref",
+        "outcome_ref",
+        "as_of",
+        "scorer",
+        "status",
+        "metrics"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "scored"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "outcome_ref": {
+                "$ref": "#/$defs/ArtifactRef"
+              },
+              "metrics": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "metrics": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "DeploymentRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base_url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "credential_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "configured_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "declared_weight_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dialect": {
+          "enum": [
+            "chatts-timeseries/v1",
+            "chatts-vllm-text-envelope/v1"
+          ]
+        },
+        "processor_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verification": {
+          "enum": [
+            "unverified",
+            "verified"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "base_url",
+        "credential_ref",
+        "configured_model",
+        "declared_weight_revision",
+        "expected_fingerprint",
+        "dialect",
+        "processor_revision",
+        "verification"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceAppendBody": {
+      "type": "object",
+      "properties": {
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stage": {
+          "enum": [
+            "request",
+            "response"
+          ]
+        },
+        "content_base64": {
+          "type": "string"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "invocation_id",
+        "stage",
+        "content_base64",
+        "media_type",
+        "schema_ref"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceSavedBody": {
+      "type": "object",
+      "properties": {
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stage": {
+          "enum": [
+            "request",
+            "response"
+          ]
+        },
+        "artifact_ref": {
+          "$ref": "#/$defs/ArtifactRef"
+        }
+      },
+      "required": [
+        "invocation_id",
+        "stage",
+        "artifact_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ExtensionEventBody": {
+      "type": "object",
+      "properties": {
+        "producer": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "invocation_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload": {
+          "$ref": "#/$defs/Payload"
+        }
+      },
+      "required": [
+        "producer",
+        "invocation_id",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "ScoreRequestBody": {
+      "type": "object",
+      "properties": {
+        "evaluation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_ref": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "outcome_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "as_of": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "scorer": {
+          "$ref": "#/$defs/ComponentRef"
+        }
+      },
+      "required": [
+        "evaluation_id",
+        "result_ref",
+        "outcome_ref",
+        "as_of",
+        "scorer"
+      ],
+      "additionalProperties": false
+    },
+    "InvocationContext": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deadline_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "handles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ServiceHandle"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "run_id",
+        "method_session_id",
+        "invocation_id",
+        "input_id",
+        "deadline_at",
+        "handles"
+      ],
+      "additionalProperties": false
+    },
+    "JsonValue": {},
+    "ScalarFloat64": {
+      "type": "number"
+    },
+    "PrivateOutcomeFixture": {
+      "type": "object",
+      "properties": {
+        "gold": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ForecastAnswer"
+            },
+            {
+              "$ref": "#/$defs/TrendAnswer"
+            }
+          ]
+        },
+        "available_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "purpose": {
+          "const": "evaluation"
+        }
+      },
+      "required": [
+        "gold",
+        "available_at",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
+    "InvokeBody": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deadline_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "task_input": {
+          "$ref": "#/$defs/TaskInput"
+        }
+      },
+      "required": [
+        "session_id",
+        "invocation_id",
+        "deadline_at",
+        "task_input"
+      ],
+      "additionalProperties": false
+    },
+    "RpcFailureBody": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "invocation_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "$ref": "#/$defs/Error"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "session_id",
+        "invocation_id",
+        "error",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "SourceOpen": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "SourceOpen"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/SourceOpenBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "SourceOpened": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "SourceOpened"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/SourceSessionInfo"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "SourceRead": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "SourceRead"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/SourceReadBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "Observation"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/ObservationBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "BoundObservation": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "BoundObservation"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/BoundObservationBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "TaskBind": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "TaskBind"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/TaskBindBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "TaskUpdate": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "TaskUpdate"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/TaskUpdateBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "TaskInput": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "TaskInput"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/TaskInputBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "MethodOpen": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "MethodOpen"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/MethodOpenBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "MethodOpened": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "MethodOpened"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/MethodSessionInfo"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Invoke": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "Invoke"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/InvokeBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "MethodResponse": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "MethodResponse"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/MethodResponseBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "TaskEffect": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "TaskEffect"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/TaskEffectBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "TaskResult": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "TaskResult"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/TaskResultBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "SourceAct": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "SourceAct"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/SourceActBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "ActionReceipt": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "ActionReceipt"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/ActionReceiptBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Close": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "Close"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/CloseBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Closed": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "Closed"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/CloseResultBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "RunSummary": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "RunSummary"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/RunSummaryBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Outcome": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "Outcome"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/OutcomeBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Evaluation": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "Evaluation"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/EvaluationBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "RpcFailure": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "RpcFailure"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/RpcFailureBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceAppend": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "EvidenceAppend"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/EvidenceAppendBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceSaved": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "EvidenceSaved"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/EvidenceSavedBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "ExtensionEvent": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "ExtensionEvent"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/ExtensionEventBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "ScoreRequest": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "gymts.wire/2-draft.1"
+        },
+        "kind": {
+          "const": "ScoreRequest"
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caused_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "format": "date-time"
+        },
+        "body": {
+          "$ref": "#/$defs/ScoreRequestBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "message_id",
+        "sequence",
+        "run_id",
+        "caused_by",
+        "recorded_at",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Message": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/SourceOpen"
+        },
+        {
+          "$ref": "#/$defs/SourceOpened"
+        },
+        {
+          "$ref": "#/$defs/SourceRead"
+        },
+        {
+          "$ref": "#/$defs/Observation"
+        },
+        {
+          "$ref": "#/$defs/BoundObservation"
+        },
+        {
+          "$ref": "#/$defs/TaskBind"
+        },
+        {
+          "$ref": "#/$defs/TaskUpdate"
+        },
+        {
+          "$ref": "#/$defs/TaskInput"
+        },
+        {
+          "$ref": "#/$defs/MethodOpen"
+        },
+        {
+          "$ref": "#/$defs/MethodOpened"
+        },
+        {
+          "$ref": "#/$defs/Invoke"
+        },
+        {
+          "$ref": "#/$defs/MethodResponse"
+        },
+        {
+          "$ref": "#/$defs/TaskEffect"
+        },
+        {
+          "$ref": "#/$defs/TaskResult"
+        },
+        {
+          "$ref": "#/$defs/SourceAct"
+        },
+        {
+          "$ref": "#/$defs/ActionReceipt"
+        },
+        {
+          "$ref": "#/$defs/Close"
+        },
+        {
+          "$ref": "#/$defs/Closed"
+        },
+        {
+          "$ref": "#/$defs/RunSummary"
+        },
+        {
+          "$ref": "#/$defs/Outcome"
+        },
+        {
+          "$ref": "#/$defs/Evaluation"
+        },
+        {
+          "$ref": "#/$defs/RpcFailure"
+        },
+        {
+          "$ref": "#/$defs/EvidenceAppend"
+        },
+        {
+          "$ref": "#/$defs/EvidenceSaved"
+        },
+        {
+          "$ref": "#/$defs/ExtensionEvent"
+        },
+        {
+          "$ref": "#/$defs/ScoreRequest"
+        }
+      ]
+    },
+    "Trace": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Message"
+      },
+      "minItems": 0
+    },
+    "SnapshotParams": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "CsvParams": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "OlsParams": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "InprocessParams": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "ChatTSParams": {
+      "type": "object",
+      "properties": {
+        "codec_ref": {
+          "$ref": "#/$defs/ComponentRef"
+        },
+        "deployment_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dialect": {
+          "enum": [
+            "chatts-timeseries/v1",
+            "chatts-vllm-text-envelope/v1"
+          ]
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "object",
+          "properties": {
+            "temperature": {
+              "type": "number",
+              "minimum": 0
+            },
+            "top_p": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1
+            },
+            "max_tokens": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "temperature",
+            "top_p",
+            "max_tokens"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "codec_ref",
+        "deployment_ref",
+        "dialect",
+        "model",
+        "generation"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/Message"
+}

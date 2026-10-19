@@ -1,0 +1,19 @@
+include README.md pyproject.toml setup.cfg MANIFEST.in
+recursive-include gymts *.py py.typed
+recursive-include examples *.json *.py README.md
+recursive-include tests *.py
+include scripts/check_release.py scripts/audit_chatts_http_experiment.py
+recursive-include .github/workflows *.yml *.yaml
+
+# The source distribution is the runnable framework, examples, and regression
+# tests. Historical presentations and local experiment data stay outside it.
+prune docs
+prune output
+prune outputs
+prune build
+prune dist
+prune .gymts
+global-exclude __pycache__ *.py[cod] .DS_Store
+global-exclude .env .env.* .netrc .pypirc credentials.json service-account*.json
+global-exclude *.pem *.key *.p12 *.pfx *.sqlite *.sqlite3 *.sqlite-wal *.sqlite-shm
+global-exclude *.sqlite3-wal *.sqlite3-shm *.db-wal *.db-shm

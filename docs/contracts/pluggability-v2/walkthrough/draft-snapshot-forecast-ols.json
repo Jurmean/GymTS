@@ -1,0 +1,1482 @@
+{
+  "evidence_level": "design_walkthrough",
+  "source": "snapshot",
+  "task": "forecast",
+  "method": "ols",
+  "spec": {
+    "source": {
+      "component": {
+        "id": "data.snapshot",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.data-snapshot/1",
+      "params": {
+        "path": "source-snapshot.json"
+      }
+    },
+    "task": {
+      "component": {
+        "id": "task.forecast",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.forecast/1",
+      "params": {
+        "entity": "server-7",
+        "variable": "signal",
+        "unit": "percent",
+        "window_points": 6,
+        "sample_period_seconds": 60,
+        "horizon_points": 2
+      }
+    },
+    "binding": {
+      "id": "cpu-field-map",
+      "version": "1.0.0",
+      "variables": [
+        {
+          "task_variable": "signal",
+          "source_variable": "cpu_pct",
+          "source_unit": "percent",
+          "task_unit": "percent",
+          "transforms": []
+        }
+      ],
+      "operations": []
+    },
+    "method": {
+      "component": {
+        "id": "method.ols",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.method-ols/1",
+      "params": {}
+    },
+    "runtime": {
+      "component": {
+        "id": "runtime.inprocess",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.runtime-inprocess/1",
+      "params": {}
+    },
+    "read_scope": {
+      "start": "2026-01-01T00:00:00Z",
+      "end": "2026-01-01T00:06:00Z"
+    },
+    "decision_scope": {
+      "start": "2026-01-01T00:05:00Z",
+      "end": "2026-01-01T00:06:00Z"
+    },
+    "decision_as_of": "2026-01-01T00:05:00Z",
+    "seed": null,
+    "limits": {
+      "max_inputs": 1,
+      "max_turns_per_case": 1,
+      "max_operations": 0,
+      "call_timeout_ms": 1000,
+      "require_hard_timeout": false
+    },
+    "recording": "strict_io"
+  },
+  "plan": {
+    "spec_sha256": "0a106de015327c63b53061f05c233221e34a57a748b4cebffd8f19af32d2580e",
+    "components": [
+      {
+        "role": "source",
+        "component": {
+          "id": "data.snapshot",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-data.snapshot",
+        "implementation_sha256": null,
+        "config_sha256": "cb6744540117ffabfde72c1eaf892ccc8af083868fa10038ddb5b6433793a787"
+      },
+      {
+        "role": "task",
+        "component": {
+          "id": "task.forecast",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-task.forecast",
+        "implementation_sha256": null,
+        "config_sha256": "707de93587c24357b1cfe9cfceeacc01e3aeb62d3db3dc2887fbe71eab1e5e6b"
+      },
+      {
+        "role": "method",
+        "component": {
+          "id": "method.ols",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-method.ols",
+        "implementation_sha256": null,
+        "config_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "role": "runtime",
+        "component": {
+          "id": "runtime.inprocess",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-runtime.inprocess",
+        "implementation_sha256": null,
+        "config_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "role": "task_contract",
+        "component": {
+          "id": "timeseries.forecast",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-timeseries-contracts",
+        "implementation_sha256": null,
+        "config_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      }
+    ],
+    "resolved_binding": {
+      "binding": {
+        "id": "cpu-field-map",
+        "version": "1.0.0",
+        "variables": [
+          {
+            "task_variable": "signal",
+            "source_variable": "cpu_pct",
+            "source_unit": "percent",
+            "task_unit": "percent",
+            "transforms": []
+          }
+        ],
+        "operations": []
+      },
+      "source_description": {
+        "component": {
+          "id": "data.snapshot",
+          "version": "1.0.0"
+        },
+        "clock_domain": "event_time",
+        "advance_mode": "on_read",
+        "observation_schema_ref": "gymts.series-frame/2-draft.1",
+        "variables": [
+          {
+            "name": "cpu_pct",
+            "dtype": "float64",
+            "unit": "percent",
+            "shape": [],
+            "value_schema_ref": "scalar.float64/1"
+          }
+        ],
+        "read_modes": [
+          "next",
+          "query"
+        ],
+        "operations": [],
+        "start_modes": [
+          "reinitialize"
+        ],
+        "supports_seed": false,
+        "public_context_schema_ref": null
+      },
+      "task_description": {
+        "component": {
+          "id": "task.forecast",
+          "version": "1.0.0"
+        },
+        "contract_ref": {
+          "id": "timeseries.forecast",
+          "version": "1.0.0"
+        },
+        "input_schema_ref": "timeseries.forecast.input/1",
+        "answer_schema_ref": "timeseries.forecast.answer/1",
+        "alignment_schema_ref": "timeseries.forecast.alignment/1",
+        "required_variables": [
+          {
+            "variable": "signal",
+            "unit": "percent",
+            "dtype": "float64",
+            "shape": []
+          }
+        ],
+        "required_read_modes": [
+          "next"
+        ],
+        "required_operations": [],
+        "clock_domain": "event_time",
+        "minimum_points": 6,
+        "missing_policy": "reject",
+        "max_turns": 1
+      }
+    },
+    "method_description": {
+      "component": {
+        "id": "method.ols",
+        "version": "1.0.0"
+      },
+      "contracts": [
+        {
+          "contract_ref": {
+            "id": "timeseries.forecast",
+            "version": "1.0.0"
+          },
+          "input_schema_ref": "timeseries.forecast.input/1",
+          "answer_schema_ref": "timeseries.forecast.answer/1",
+          "supports_tools": false
+        },
+        {
+          "contract_ref": {
+            "id": "timeseries.trend",
+            "version": "1.0.0"
+          },
+          "input_schema_ref": "timeseries.trend.input/1",
+          "answer_schema_ref": "timeseries.trend.answer/1",
+          "supports_tools": false
+        }
+      ],
+      "accepted_modalities": [
+        "numeric_series"
+      ],
+      "accepted_runtime_kinds": [
+        "inprocess",
+        "worker_rpc"
+      ],
+      "supports_fit": false,
+      "supports_update": false,
+      "supports_cancellation": false,
+      "required_capture": [
+        "request",
+        "response"
+      ]
+    },
+    "runtime_description": {
+      "component": {
+        "id": "runtime.inprocess",
+        "version": "1.0.0"
+      },
+      "kind": "inprocess",
+      "persistent_sessions": true,
+      "hard_timeout": false,
+      "supports_cancellation": false
+    },
+    "deployment_verified": false,
+    "issues": []
+  },
+  "initial_read_intent": {
+    "kind": "next",
+    "selection": {
+      "entities": [
+        "server-7"
+      ],
+      "variables": [
+        "signal"
+      ],
+      "scope": {
+        "start": "2026-01-01T00:00:00Z",
+        "end": "2026-01-01T00:06:00Z"
+      }
+    },
+    "as_of": "2026-01-01T00:05:00Z",
+    "max_wait_ms": 0,
+    "limit": 6,
+    "case_key": null
+  },
+  "messages": [
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "SourceOpen",
+      "message_id": "draft-snapshot-forecast-ols/01",
+      "sequence": 1,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": null,
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "source": {
+          "component": {
+            "id": "data.snapshot",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.data-snapshot/1",
+          "params": {
+            "path": "source-snapshot.json"
+          }
+        },
+        "context": {
+          "run_id": "draft-snapshot-forecast-ols",
+          "handles": []
+        },
+        "start_mode": "reinitialize",
+        "read_scope": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "availability_cutoff": "2026-01-01T00:05:00Z",
+        "allowed_entities": [
+          "server-7"
+        ],
+        "allowed_variables": [
+          "cpu_pct"
+        ],
+        "allowed_operations": [],
+        "seed": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "SourceOpened",
+      "message_id": "draft-snapshot-forecast-ols/02",
+      "sequence": 2,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/01",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-forecast-ols/source",
+        "source_component": {
+          "id": "data.snapshot",
+          "version": "1.0.0"
+        },
+        "source_revision": "2f46da6698ddc6893a6fc1cfe032f0837fb8550068e2693c579e703c00c1d345",
+        "dataset_revision": "39e79dff75b4a2d5e9c0fd9a2f8a51bd7850ad63f2f72ed97f57197a17749fdf",
+        "actual_read_scope": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "clock": {
+          "domain": "event_time",
+          "now": "2026-01-01T00:05:00Z",
+          "visible_until": "2026-01-01T00:05:00Z"
+        },
+        "cursor": "c0",
+        "ownership": "created",
+        "public_context": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskBind",
+      "message_id": "draft-snapshot-forecast-ols/03",
+      "sequence": 3,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/02",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task": {
+          "component": {
+            "id": "task.forecast",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.forecast/1",
+          "params": {
+            "entity": "server-7",
+            "variable": "signal",
+            "unit": "percent",
+            "window_points": 6,
+            "sample_period_seconds": 60,
+            "horizon_points": 2
+          }
+        },
+        "resolved_binding": {
+          "binding": {
+            "id": "cpu-field-map",
+            "version": "1.0.0",
+            "variables": [
+              {
+                "task_variable": "signal",
+                "source_variable": "cpu_pct",
+                "source_unit": "percent",
+                "task_unit": "percent",
+                "transforms": []
+              }
+            ],
+            "operations": []
+          },
+          "source_description": {
+            "component": {
+              "id": "data.snapshot",
+              "version": "1.0.0"
+            },
+            "clock_domain": "event_time",
+            "advance_mode": "on_read",
+            "observation_schema_ref": "gymts.series-frame/2-draft.1",
+            "variables": [
+              {
+                "name": "cpu_pct",
+                "dtype": "float64",
+                "unit": "percent",
+                "shape": [],
+                "value_schema_ref": "scalar.float64/1"
+              }
+            ],
+            "read_modes": [
+              "next",
+              "query"
+            ],
+            "operations": [],
+            "start_modes": [
+              "reinitialize"
+            ],
+            "supports_seed": false,
+            "public_context_schema_ref": null
+          },
+          "task_description": {
+            "component": {
+              "id": "task.forecast",
+              "version": "1.0.0"
+            },
+            "contract_ref": {
+              "id": "timeseries.forecast",
+              "version": "1.0.0"
+            },
+            "input_schema_ref": "timeseries.forecast.input/1",
+            "answer_schema_ref": "timeseries.forecast.answer/1",
+            "alignment_schema_ref": "timeseries.forecast.alignment/1",
+            "required_variables": [
+              {
+                "variable": "signal",
+                "unit": "percent",
+                "dtype": "float64",
+                "shape": []
+              }
+            ],
+            "required_read_modes": [
+              "next"
+            ],
+            "required_operations": [],
+            "clock_domain": "event_time",
+            "minimum_points": 6,
+            "missing_policy": "reject",
+            "max_turns": 1
+          }
+        },
+        "context": {
+          "run_id": "draft-snapshot-forecast-ols",
+          "task_session_id": "draft-snapshot-forecast-ols/task",
+          "read_scope": {
+            "start": "2026-01-01T00:00:00Z",
+            "end": "2026-01-01T00:06:00Z"
+          },
+          "decision_scope": {
+            "start": "2026-01-01T00:05:00Z",
+            "end": "2026-01-01T00:06:00Z"
+          },
+          "decision_as_of": "2026-01-01T00:05:00Z",
+          "max_turns": 1
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "MethodOpen",
+      "message_id": "draft-snapshot-forecast-ols/04",
+      "sequence": 4,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/03",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "method": {
+          "component": {
+            "id": "method.ols",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.method-ols/1",
+          "params": {}
+        },
+        "runtime": {
+          "component": {
+            "id": "runtime.inprocess",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.runtime-inprocess/1",
+          "params": {}
+        },
+        "contract_ref": {
+          "id": "timeseries.forecast",
+          "version": "1.0.0"
+        },
+        "context": {
+          "run_id": "draft-snapshot-forecast-ols",
+          "method_session_id": "draft-snapshot-forecast-ols/method",
+          "handles": [
+            {
+              "id": "draft-snapshot-forecast-ols/evidence-writer",
+              "service": "evidence",
+              "operations": [
+                "append"
+              ],
+              "resource_refs": []
+            }
+          ],
+          "learning": "frozen",
+          "input_grants": []
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "MethodOpened",
+      "message_id": "draft-snapshot-forecast-ols/05",
+      "sequence": 5,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/04",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-forecast-ols/method",
+        "runtime_component": {
+          "id": "runtime.inprocess",
+          "version": "1.0.0"
+        },
+        "identity": {
+          "implementation": {
+            "id": "method.ols",
+            "version": "1.0.0"
+          },
+          "configured_model": null,
+          "reported_model": null,
+          "weight_revision": null,
+          "weights_verified": false,
+          "evidence_origin": "reference_calculation"
+        },
+        "state": "ready"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "SourceRead",
+      "message_id": "draft-snapshot-forecast-ols/06",
+      "sequence": 6,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/03",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-forecast-ols/source",
+        "kind": "next",
+        "cursor": "c0",
+        "selection": {
+          "entities": [
+            "server-7"
+          ],
+          "variables": [
+            "cpu_pct"
+          ],
+          "scope": {
+            "start": "2026-01-01T00:00:00Z",
+            "end": "2026-01-01T00:06:00Z"
+          }
+        },
+        "as_of": "2026-01-01T00:05:00Z",
+        "max_wait_ms": 0,
+        "limit": 6
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Observation",
+      "message_id": "draft-snapshot-forecast-ols/07",
+      "sequence": 7,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/06",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-forecast-ols/source",
+        "request_id": "draft-snapshot-forecast-ols/06",
+        "source_revision": "2f46da6698ddc6893a6fc1cfe032f0837fb8550068e2693c579e703c00c1d345",
+        "dataset_revision": "39e79dff75b4a2d5e9c0fd9a2f8a51bd7850ad63f2f72ed97f57197a17749fdf",
+        "status": "end",
+        "cursor_before": "c0",
+        "cursor_after": "c1",
+        "clock": {
+          "domain": "event_time",
+          "now": "2026-01-01T00:05:00Z",
+          "visible_until": "2026-01-01T00:05:00Z"
+        },
+        "coverage": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "data": {
+          "schema_ref": "gymts.series-frame/2-draft.1",
+          "storage": "inline",
+          "value": {
+            "series": [
+              {
+                "entity": "server-7",
+                "variable": "cpu_pct",
+                "unit": "percent",
+                "timestamps": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ],
+                "values": [
+                  10.0,
+                  12.0,
+                  14.0,
+                  16.0,
+                  18.0,
+                  20.0
+                ],
+                "valid_mask": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "available_at": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ]
+              }
+            ]
+          }
+        },
+        "feedback": [],
+        "end": {
+          "reason": "scope_end",
+          "terminated": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "BoundObservation",
+      "message_id": "draft-snapshot-forecast-ols/08",
+      "sequence": 8,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/07",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task_session_id": "draft-snapshot-forecast-ols/task",
+        "source_observation_ref": {
+          "uri": "fixture:artifacts/422e6727c49bcc2969e7979916bb00d28da8fed93d45f41fbae2f2211e724350.json",
+          "sha256": "422e6727c49bcc2969e7979916bb00d28da8fed93d45f41fbae2f2211e724350",
+          "media_type": "application/json",
+          "schema_ref": "message.Observation/2-draft.1",
+          "size_bytes": 1368
+        },
+        "binding": {
+          "id": "cpu-field-map",
+          "version": "1.0.0",
+          "variables": [
+            {
+              "task_variable": "signal",
+              "source_variable": "cpu_pct",
+              "source_unit": "percent",
+              "task_unit": "percent",
+              "transforms": []
+            }
+          ],
+          "operations": []
+        },
+        "status": "end",
+        "clock": {
+          "domain": "event_time",
+          "now": "2026-01-01T00:05:00Z",
+          "visible_until": "2026-01-01T00:05:00Z"
+        },
+        "coverage": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "data": {
+          "schema_ref": "gymts.series-frame/2-draft.1",
+          "storage": "inline",
+          "value": {
+            "series": [
+              {
+                "entity": "server-7",
+                "variable": "signal",
+                "unit": "percent",
+                "timestamps": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ],
+                "values": [
+                  10.0,
+                  12.0,
+                  14.0,
+                  16.0,
+                  18.0,
+                  20.0
+                ],
+                "valid_mask": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "available_at": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ]
+              }
+            ]
+          }
+        },
+        "feedback": [],
+        "end": {
+          "reason": "scope_end",
+          "terminated": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskUpdate",
+      "message_id": "draft-snapshot-forecast-ols/09",
+      "sequence": 9,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/08",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task_session_id": "draft-snapshot-forecast-ols/task",
+        "inputs": [
+          {
+            "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+            "turn_id": 0,
+            "contract_ref": {
+              "id": "timeseries.forecast",
+              "version": "1.0.0"
+            },
+            "decision_time": "2026-01-01T00:05:00Z",
+            "alignment": {
+              "schema_ref": "timeseries.forecast.alignment/1",
+              "storage": "inline",
+              "value": {
+                "entity": "server-7",
+                "variable": "signal",
+                "issued_at": "2026-01-01T00:05:00Z",
+                "target_times": [
+                  "2026-01-01T00:06:00Z",
+                  "2026-01-01T00:07:00Z"
+                ]
+              }
+            },
+            "observation_refs": [
+              {
+                "uri": "fixture:artifacts/4cd5d5b20cc9b20de02ca5caa6e692274579f10d5d8fa6186f156279870d01ec.json",
+                "sha256": "4cd5d5b20cc9b20de02ca5caa6e692274579f10d5d8fa6186f156279870d01ec",
+                "media_type": "application/json",
+                "schema_ref": "message.BoundObservation/2-draft.1",
+                "size_bytes": 1609
+              }
+            ],
+            "input": {
+              "schema_ref": "timeseries.forecast.input/1",
+              "storage": "inline",
+              "value": {
+                "window": {
+                  "entity": "server-7",
+                  "variable": "signal",
+                  "unit": "percent",
+                  "timestamps": [
+                    "2026-01-01T00:00:00Z",
+                    "2026-01-01T00:01:00Z",
+                    "2026-01-01T00:02:00Z",
+                    "2026-01-01T00:03:00Z",
+                    "2026-01-01T00:04:00Z",
+                    "2026-01-01T00:05:00Z"
+                  ],
+                  "values": [
+                    10.0,
+                    12.0,
+                    14.0,
+                    16.0,
+                    18.0,
+                    20.0
+                  ],
+                  "valid_mask": [
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true
+                  ]
+                },
+                "target_times": [
+                  "2026-01-01T00:06:00Z",
+                  "2026-01-01T00:07:00Z"
+                ],
+                "output_unit": "percent"
+              }
+            },
+            "tools": []
+          }
+        ],
+        "closed_cases": [],
+        "stream_done": true
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskInput",
+      "message_id": "draft-snapshot-forecast-ols/10",
+      "sequence": 10,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/09",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+        "turn_id": 0,
+        "contract_ref": {
+          "id": "timeseries.forecast",
+          "version": "1.0.0"
+        },
+        "decision_time": "2026-01-01T00:05:00Z",
+        "alignment": {
+          "schema_ref": "timeseries.forecast.alignment/1",
+          "storage": "inline",
+          "value": {
+            "entity": "server-7",
+            "variable": "signal",
+            "issued_at": "2026-01-01T00:05:00Z",
+            "target_times": [
+              "2026-01-01T00:06:00Z",
+              "2026-01-01T00:07:00Z"
+            ]
+          }
+        },
+        "observation_refs": [
+          {
+            "uri": "fixture:artifacts/4cd5d5b20cc9b20de02ca5caa6e692274579f10d5d8fa6186f156279870d01ec.json",
+            "sha256": "4cd5d5b20cc9b20de02ca5caa6e692274579f10d5d8fa6186f156279870d01ec",
+            "media_type": "application/json",
+            "schema_ref": "message.BoundObservation/2-draft.1",
+            "size_bytes": 1609
+          }
+        ],
+        "input": {
+          "schema_ref": "timeseries.forecast.input/1",
+          "storage": "inline",
+          "value": {
+            "window": {
+              "entity": "server-7",
+              "variable": "signal",
+              "unit": "percent",
+              "timestamps": [
+                "2026-01-01T00:00:00Z",
+                "2026-01-01T00:01:00Z",
+                "2026-01-01T00:02:00Z",
+                "2026-01-01T00:03:00Z",
+                "2026-01-01T00:04:00Z",
+                "2026-01-01T00:05:00Z"
+              ],
+              "values": [
+                10.0,
+                12.0,
+                14.0,
+                16.0,
+                18.0,
+                20.0
+              ],
+              "valid_mask": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            "target_times": [
+              "2026-01-01T00:06:00Z",
+              "2026-01-01T00:07:00Z"
+            ],
+            "output_unit": "percent"
+          }
+        },
+        "tools": [],
+        "task_session_id": "draft-snapshot-forecast-ols/task",
+        "case_id": "draft-snapshot-forecast-ols/case-1"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Invoke",
+      "message_id": "draft-snapshot-forecast-ols/11",
+      "sequence": 11,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/10",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-forecast-ols/method",
+        "invocation_id": "draft-snapshot-forecast-ols/call-1",
+        "deadline_at": "2026-01-01T01:00:01Z",
+        "task_input": {
+          "protocol": "gymts.wire/2-draft.1",
+          "kind": "TaskInput",
+          "message_id": "draft-snapshot-forecast-ols/10",
+          "sequence": 10,
+          "run_id": "draft-snapshot-forecast-ols",
+          "caused_by": "draft-snapshot-forecast-ols/09",
+          "recorded_at": "2026-01-01T01:00:00Z",
+          "body": {
+            "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+            "turn_id": 0,
+            "contract_ref": {
+              "id": "timeseries.forecast",
+              "version": "1.0.0"
+            },
+            "decision_time": "2026-01-01T00:05:00Z",
+            "alignment": {
+              "schema_ref": "timeseries.forecast.alignment/1",
+              "storage": "inline",
+              "value": {
+                "entity": "server-7",
+                "variable": "signal",
+                "issued_at": "2026-01-01T00:05:00Z",
+                "target_times": [
+                  "2026-01-01T00:06:00Z",
+                  "2026-01-01T00:07:00Z"
+                ]
+              }
+            },
+            "observation_refs": [
+              {
+                "uri": "fixture:artifacts/4cd5d5b20cc9b20de02ca5caa6e692274579f10d5d8fa6186f156279870d01ec.json",
+                "sha256": "4cd5d5b20cc9b20de02ca5caa6e692274579f10d5d8fa6186f156279870d01ec",
+                "media_type": "application/json",
+                "schema_ref": "message.BoundObservation/2-draft.1",
+                "size_bytes": 1609
+              }
+            ],
+            "input": {
+              "schema_ref": "timeseries.forecast.input/1",
+              "storage": "inline",
+              "value": {
+                "window": {
+                  "entity": "server-7",
+                  "variable": "signal",
+                  "unit": "percent",
+                  "timestamps": [
+                    "2026-01-01T00:00:00Z",
+                    "2026-01-01T00:01:00Z",
+                    "2026-01-01T00:02:00Z",
+                    "2026-01-01T00:03:00Z",
+                    "2026-01-01T00:04:00Z",
+                    "2026-01-01T00:05:00Z"
+                  ],
+                  "values": [
+                    10.0,
+                    12.0,
+                    14.0,
+                    16.0,
+                    18.0,
+                    20.0
+                  ],
+                  "valid_mask": [
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true
+                  ]
+                },
+                "target_times": [
+                  "2026-01-01T00:06:00Z",
+                  "2026-01-01T00:07:00Z"
+                ],
+                "output_unit": "percent"
+              }
+            },
+            "tools": [],
+            "task_session_id": "draft-snapshot-forecast-ols/task",
+            "case_id": "draft-snapshot-forecast-ols/case-1"
+          }
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "EvidenceSaved",
+      "message_id": "draft-snapshot-forecast-ols/12",
+      "sequence": 12,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/11",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "invocation_id": "draft-snapshot-forecast-ols/call-1",
+        "stage": "request",
+        "artifact_ref": {
+          "uri": "fixture:artifacts/67a2be8d97f971eb8a47204092ced39206bb719ff83d6281195ec6341ffc2a83.json",
+          "sha256": "67a2be8d97f971eb8a47204092ced39206bb719ff83d6281195ec6341ffc2a83",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 147
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "EvidenceSaved",
+      "message_id": "draft-snapshot-forecast-ols/13",
+      "sequence": 13,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/12",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "invocation_id": "draft-snapshot-forecast-ols/call-1",
+        "stage": "response",
+        "artifact_ref": {
+          "uri": "fixture:artifacts/136514ab1546bc3f7be55b0c002966e20edc92e736728086933b98b54a729696.json",
+          "sha256": "136514ab1546bc3f7be55b0c002966e20edc92e736728086933b98b54a729696",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 90
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "MethodResponse",
+      "message_id": "draft-snapshot-forecast-ols/14",
+      "sequence": 14,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/13",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-forecast-ols/method",
+        "input_id": "draft-snapshot-forecast-ols/10",
+        "invocation_id": "draft-snapshot-forecast-ols/call-1",
+        "contract_ref": {
+          "id": "timeseries.forecast",
+          "version": "1.0.0"
+        },
+        "status": "ok",
+        "action": {
+          "kind": "answer",
+          "answer": {
+            "schema_ref": "timeseries.forecast.answer/1",
+            "storage": "inline",
+            "value": {
+              "values": [
+                22.0,
+                24.0
+              ],
+              "unit": "percent"
+            }
+          }
+        },
+        "request_ref": {
+          "uri": "fixture:artifacts/67a2be8d97f971eb8a47204092ced39206bb719ff83d6281195ec6341ffc2a83.json",
+          "sha256": "67a2be8d97f971eb8a47204092ced39206bb719ff83d6281195ec6341ffc2a83",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 147
+        },
+        "response_ref": {
+          "uri": "fixture:artifacts/136514ab1546bc3f7be55b0c002966e20edc92e736728086933b98b54a729696.json",
+          "sha256": "136514ab1546bc3f7be55b0c002966e20edc92e736728086933b98b54a729696",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 90
+        },
+        "identity": {
+          "implementation": {
+            "id": "method.ols",
+            "version": "1.0.0"
+          },
+          "configured_model": null,
+          "reported_model": null,
+          "weight_revision": null,
+          "weights_verified": false,
+          "evidence_origin": "reference_calculation"
+        },
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskEffect",
+      "message_id": "draft-snapshot-forecast-ols/15",
+      "sequence": 15,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/14",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task_session_id": "draft-snapshot-forecast-ols/task",
+        "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+        "results": [
+          {
+            "case_id": "draft-snapshot-forecast-ols/case-1",
+            "input_id": "draft-snapshot-forecast-ols/10",
+            "invocation_id": "draft-snapshot-forecast-ols/call-1",
+            "contract_ref": {
+              "id": "timeseries.forecast",
+              "version": "1.0.0"
+            },
+            "decision_time": "2026-01-01T00:05:00Z",
+            "alignment": {
+              "schema_ref": "timeseries.forecast.alignment/1",
+              "storage": "inline",
+              "value": {
+                "entity": "server-7",
+                "variable": "signal",
+                "issued_at": "2026-01-01T00:05:00Z",
+                "target_times": [
+                  "2026-01-01T00:06:00Z",
+                  "2026-01-01T00:07:00Z"
+                ]
+              }
+            },
+            "status": "valid",
+            "answer": {
+              "schema_ref": "timeseries.forecast.answer/1",
+              "storage": "inline",
+              "value": {
+                "values": [
+                  22.0,
+                  24.0
+                ],
+                "unit": "percent"
+              }
+            },
+            "error": null
+          }
+        ],
+        "requests": [],
+        "complete": true
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskResult",
+      "message_id": "draft-snapshot-forecast-ols/16",
+      "sequence": 16,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/15",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "case_id": "draft-snapshot-forecast-ols/case-1",
+        "input_id": "draft-snapshot-forecast-ols/10",
+        "invocation_id": "draft-snapshot-forecast-ols/call-1",
+        "contract_ref": {
+          "id": "timeseries.forecast",
+          "version": "1.0.0"
+        },
+        "decision_time": "2026-01-01T00:05:00Z",
+        "alignment": {
+          "schema_ref": "timeseries.forecast.alignment/1",
+          "storage": "inline",
+          "value": {
+            "entity": "server-7",
+            "variable": "signal",
+            "issued_at": "2026-01-01T00:05:00Z",
+            "target_times": [
+              "2026-01-01T00:06:00Z",
+              "2026-01-01T00:07:00Z"
+            ]
+          }
+        },
+        "status": "valid",
+        "answer": {
+          "schema_ref": "timeseries.forecast.answer/1",
+          "storage": "inline",
+          "value": {
+            "values": [
+              22.0,
+              24.0
+            ],
+            "unit": "percent"
+          }
+        },
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Close",
+      "message_id": "draft-snapshot-forecast-ols/17",
+      "sequence": 17,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/16",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "method",
+        "session_id": "draft-snapshot-forecast-ols/method",
+        "reason": "task_completed"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Closed",
+      "message_id": "draft-snapshot-forecast-ols/18",
+      "sequence": 18,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/17",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "method",
+        "session_id": "draft-snapshot-forecast-ols/method",
+        "status": "closed",
+        "artifact_refs": [],
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Close",
+      "message_id": "draft-snapshot-forecast-ols/19",
+      "sequence": 19,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/16",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "task",
+        "session_id": "draft-snapshot-forecast-ols/task",
+        "reason": "task_completed"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Closed",
+      "message_id": "draft-snapshot-forecast-ols/20",
+      "sequence": 20,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/19",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "task",
+        "session_id": "draft-snapshot-forecast-ols/task",
+        "status": "closed",
+        "artifact_refs": [],
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Close",
+      "message_id": "draft-snapshot-forecast-ols/21",
+      "sequence": 21,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/16",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "source",
+        "session_id": "draft-snapshot-forecast-ols/source",
+        "reason": "task_completed"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Closed",
+      "message_id": "draft-snapshot-forecast-ols/22",
+      "sequence": 22,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/21",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "source",
+        "session_id": "draft-snapshot-forecast-ols/source",
+        "status": "closed",
+        "artifact_refs": [],
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "RunSummary",
+      "message_id": "draft-snapshot-forecast-ols/23",
+      "sequence": 23,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/22",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "status": "succeeded",
+        "completion": "task_completed",
+        "result_refs": [
+          {
+            "uri": "fixture:artifacts/8106fdfa38529c21f633420a6fb351e045e37ba20bde559e242707863de1e3c2.json",
+            "sha256": "8106fdfa38529c21f633420a6fb351e045e37ba20bde559e242707863de1e3c2",
+            "media_type": "application/json",
+            "schema_ref": "message.TaskResult/2-draft.1",
+            "size_bytes": 870
+          }
+        ],
+        "trace_ref": {
+          "uri": "fixture:artifacts/9e89140b674b1580cf4aa699f53fe03861869762988520c0a8989ac37f6513c2.json",
+          "sha256": "9e89140b674b1580cf4aa699f53fe03861869762988520c0a8989ac37f6513c2",
+          "media_type": "application/json",
+          "schema_ref": "gymts.trace/2-draft.1",
+          "size_bytes": 19724
+        },
+        "cleanup_errors": []
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Outcome",
+      "message_id": "draft-snapshot-forecast-ols/24",
+      "sequence": 24,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": null,
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "outcome_id": "draft-snapshot-forecast-ols/gold",
+        "alignment": {
+          "schema_ref": "timeseries.forecast.alignment/1",
+          "storage": "inline",
+          "value": {
+            "entity": "server-7",
+            "variable": "signal",
+            "issued_at": "2026-01-01T00:05:00Z",
+            "target_times": [
+              "2026-01-01T00:06:00Z",
+              "2026-01-01T00:07:00Z"
+            ]
+          }
+        },
+        "available_at": "2026-01-01T00:07:00Z",
+        "purpose": "evaluation",
+        "answer": {
+          "schema_ref": "timeseries.forecast.answer/1",
+          "storage": "inline",
+          "value": {
+            "values": [
+              22.0,
+              24.0
+            ],
+            "unit": "percent"
+          }
+        },
+        "source_ref": {
+          "uri": "fixture:artifacts/96caa12561407ae3acef673cd0a582ea3ccf6a30d11597ffb772610598650e5a.json",
+          "sha256": "96caa12561407ae3acef673cd0a582ea3ccf6a30d11597ffb772610598650e5a",
+          "media_type": "application/json",
+          "schema_ref": "fixture.private-outcome/1",
+          "size_bytes": 109
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "ScoreRequest",
+      "message_id": "draft-snapshot-forecast-ols/25",
+      "sequence": 25,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/24",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "evaluation_id": "draft-snapshot-forecast-ols/evaluation",
+        "result_ref": {
+          "uri": "fixture:artifacts/8106fdfa38529c21f633420a6fb351e045e37ba20bde559e242707863de1e3c2.json",
+          "sha256": "8106fdfa38529c21f633420a6fb351e045e37ba20bde559e242707863de1e3c2",
+          "media_type": "application/json",
+          "schema_ref": "message.TaskResult/2-draft.1",
+          "size_bytes": 870
+        },
+        "outcome_ref": {
+          "uri": "fixture:artifacts/4843fe2cfe0d2a8fc249acab9364e2cbc413c7840bf3c3a823d4b6dc118cc0ab.json",
+          "sha256": "4843fe2cfe0d2a8fc249acab9364e2cbc413c7840bf3c3a823d4b6dc118cc0ab",
+          "media_type": "application/json",
+          "schema_ref": "message.Outcome/2-draft.1",
+          "size_bytes": 950
+        },
+        "as_of": "2026-01-01T01:00:00Z",
+        "scorer": {
+          "id": "score.forecast",
+          "version": "1.0.0"
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Evaluation",
+      "message_id": "draft-snapshot-forecast-ols/26",
+      "sequence": 26,
+      "run_id": "draft-snapshot-forecast-ols",
+      "caused_by": "draft-snapshot-forecast-ols/25",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "evaluation_id": "draft-snapshot-forecast-ols/evaluation",
+        "result_ref": {
+          "uri": "fixture:artifacts/8106fdfa38529c21f633420a6fb351e045e37ba20bde559e242707863de1e3c2.json",
+          "sha256": "8106fdfa38529c21f633420a6fb351e045e37ba20bde559e242707863de1e3c2",
+          "media_type": "application/json",
+          "schema_ref": "message.TaskResult/2-draft.1",
+          "size_bytes": 870
+        },
+        "outcome_ref": {
+          "uri": "fixture:artifacts/4843fe2cfe0d2a8fc249acab9364e2cbc413c7840bf3c3a823d4b6dc118cc0ab.json",
+          "sha256": "4843fe2cfe0d2a8fc249acab9364e2cbc413c7840bf3c3a823d4b6dc118cc0ab",
+          "media_type": "application/json",
+          "schema_ref": "message.Outcome/2-draft.1",
+          "size_bytes": 950
+        },
+        "as_of": "2026-01-01T01:00:00Z",
+        "scorer": {
+          "id": "score.forecast",
+          "version": "1.0.0"
+        },
+        "status": "scored",
+        "metrics": [
+          {
+            "name": "mae",
+            "value": 0.0,
+            "unit": "percent"
+          },
+          {
+            "name": "rmse",
+            "value": 0.0,
+            "unit": "percent"
+          }
+        ]
+      }
+    }
+  ],
+  "native_request": {
+    "function": "reference_ols_forecast",
+    "x_minutes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "y": [
+      10.0,
+      12.0,
+      14.0,
+      16.0,
+      18.0,
+      20.0
+    ],
+    "target_x_minutes": [
+      6,
+      7
+    ],
+    "slope_threshold": null
+  },
+  "native_response": {
+    "intercept": 10.0,
+    "slope_per_minute": 2.0,
+    "answer": {
+      "values": [
+        22.0,
+        24.0
+      ],
+      "unit": "percent"
+    }
+  },
+  "semantic_projection_sha256": "330aad19ae31e84763c2271b8197eb740658a7d3e56fb041d683516c82a19121",
+  "native_request_sha256": "67a2be8d97f971eb8a47204092ced39206bb719ff83d6281195ec6341ffc2a83"
+}

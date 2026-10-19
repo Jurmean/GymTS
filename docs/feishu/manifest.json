@@ -1,0 +1,49 @@
+{
+  "import_date": "2026-10-09",
+  "files": [
+    {
+      "path": "GymTS 设计/GymTS 设计.md",
+      "size": 656,
+      "sha256": "d629a6628b34a4355f6d74defaa04471d5d8cda2852504b61a61b27301958d74"
+    },
+    {
+      "path": "GymTS 设计/图片和附件/image.png",
+      "size": 1149376,
+      "sha256": "6c0fb2d28914d3eb7e2441a203d527f203b17ab3e79ad8c5af7fa32ff928a80a"
+    },
+    {
+      "path": "GymTS 运行机制/GymTS 运行机制.md",
+      "size": 8949,
+      "sha256": "06cad828725123bfd13328416202f9badbf70d80f5530d12757d61a679ea98bc"
+    },
+    {
+      "path": "GymTS 运行机制/图片和附件/image.png",
+      "size": 1006833,
+      "sha256": "4c1cb4f608a6417a2922d989de0609b60dc9f26a4452aa46782f81f4e1a89c73"
+    },
+    {
+      "path": "GymTS总体设计/GymTS总体设计.md",
+      "size": 5611,
+      "sha256": "84559089d377f518adc80c287f2b6eeb2a6246ce1685ff2eb60575801e65deb0"
+    },
+    {
+      "path": "GymTS总体设计/图片和附件/image.png",
+      "size": 1149376,
+      "sha256": "6c0fb2d28914d3eb7e2441a203d527f203b17ab3e79ad8c5af7fa32ff928a80a"
+    },
+    {
+      "path": "GymTS接口规范/GymTS接口规范.md",
+      "size": 83700,
+      "sha256": "42d7e7fb6003e762d0b1e572b50af8a0992330961edbce3bd7d6a95dea3b7600"
+    },
+    {
+      "path": "场景接入/场景接入.md",
+      "size": 7109,
+      "sha256": "13c479e27cab10e8a34a8818ce4d1a24ffb0e48aa8866b6b6fdbe122e22aeb1d"
+    }
+  ],
+  "updated_date": "2026-10-12",
+  "normative_document": "GymTS接口规范/GymTS接口规范.md",
+  "normative_version": "1.0.0",
+  "original_manifest": "../archive/2026-10-12-before-api-v1/feishu/manifest.json"
+}

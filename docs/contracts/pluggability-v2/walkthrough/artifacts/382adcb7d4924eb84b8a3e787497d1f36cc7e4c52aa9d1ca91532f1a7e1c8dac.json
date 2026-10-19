@@ -1,0 +1,1 @@
+{"max_tokens":128,"messages":[{"content":"Forecast the next 2 points at one-minute intervals. Return exactly JSON {\"forecast\":[number,number]}. Values use percent.\nSeries signal: <ts><ts/>","role":"user"}],"model":"chatts","stream":false,"temperature":0,"timeseries":[[10.0,12.0,14.0,16.0,18.0,20.0]],"top_p":1}

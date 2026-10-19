@@ -1,0 +1,13 @@
+[
+  {
+    "id": "fixture-chatts-only",
+    "base_url": "http://127.0.0.1:12345/v1/chat/completions",
+    "credential_ref": null,
+    "configured_model": "chatts",
+    "declared_weight_revision": null,
+    "expected_fingerprint": null,
+    "dialect": "chatts-timeseries/v1",
+    "processor_revision": null,
+    "verification": "unverified"
+  }
+]

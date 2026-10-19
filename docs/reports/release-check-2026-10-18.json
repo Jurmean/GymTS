@@ -1,0 +1,50 @@
+{
+  "status": "passed",
+  "version": "0.3.1",
+  "python": "3.9.6",
+  "offline": true,
+  "distributions": {
+    "sdist": {
+      "file": "gymts-0.3.1.tar.gz",
+      "files": 81,
+      "bytes": 163860,
+      "sha256": "d7811b93b5738e7a55dc9e616a550822b69a2df670f46a2bffad094a3bae4cc9"
+    },
+    "wheel": {
+      "file": "gymts-0.3.1-py3-none-any.whl",
+      "files": 45,
+      "bytes": 115372,
+      "sha256": "cebf6899ef46cec1ba2855c81c3bd8424d1261e8c1bff331452d80bd7f3fd443"
+    },
+    "wheel_rebuilt_from_sdist": {
+      "file": "gymts-0.3.1-py3-none-any.whl",
+      "files": 45,
+      "bytes": 115372,
+      "sha256": "cebf6899ef46cec1ba2855c81c3bd8424d1261e8c1bff331452d80bd7f3fd443"
+    }
+  },
+  "direct_wheel_install": {
+    "isolated_import": true,
+    "console_scripts": 2,
+    "counter_operations": 3
+  },
+  "sdist_wheel_install": {
+    "isolated_import": true,
+    "console_scripts": 2,
+    "counter_operations": 3,
+    "installed_regression_tests": 175
+  },
+  "external_plugin_install": {
+    "metadata_discovery_without_load": true,
+    "explicit_enable": true,
+    "forecast_results": 8,
+    "independent_linear_predictions_exact": true,
+    "chatts_imported": false,
+    "uninstall_preserves_core_run": true,
+    "distribution": "gymts-release-linear-fixture==1.0.0"
+  },
+  "release_decisions": [
+    "Choose an appropriate license before public release"
+  ],
+  "scope": "Distribution contents and isolated installations; not a Git index or full secret audit"
+}

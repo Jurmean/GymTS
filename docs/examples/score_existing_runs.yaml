@@ -1,0 +1,61 @@
+protocol_version: gymts.score/1
+name: server-cpu-detection-score
+purpose: regression
+runs:
+  - unit_id: cpu-detector-repeat-0
+    evaluation_case_id: server-7-cpu
+    candidate_id: window-detector
+    repetition: 0
+    run_id: example-run-001
+    unavailable_reason: null
+baseline_id: null
+scoring:
+  scorer:
+    adapter: point-anomaly-scorer
+    version: '1.0.0'
+    params: {}
+  outcomes:
+    sources:
+      - view_id: server-7-cpu-labels
+        revision: example-labels-v1
+        source_refs:
+          - artifact_id: server-7-cpu-labels
+            revision: example-labels-v1
+            uri: local://labels/server-7-cpu/v1
+            content_hash: null
+            media_type: application/json
+            schema_ref: gymts.example/point-anomaly-outcomes/1
+            size_bytes: null
+        selection:
+          schema_ref: gymts.example/entity-selection/1
+          storage: inline
+          value: {entities: [server-7]}
+        as_of: '2026-09-02T00:00:00Z'
+        purpose: evaluation
+    as_of: '2026-09-02T00:00:00Z'
+  alignment:
+    schema_ref: gymts.example/point-anomaly-alignment/1
+    keys: [entity, variable, target_time]
+    matching: exact
+    params: {}
+    duplicate_policy: error
+  metrics: [roc_auc]
+  evidence_requirements: {min_scored: 60, min_coverage: 0.95}
+  missing_outcome_policy: report_insufficient
+comparison:
+  group_by: [evaluation_case_id]
+  repetition_aggregation: mean
+  aggregation: none
+  baseline_method: difference
+  gates:
+    - metric: roc_auc
+      target: absolute
+      candidate_ids: [window-detector]
+      for_metric: null
+      operator: ge
+      threshold: 0.90
+      scope: all_groups
+failure_policy:
+  partial_results: exclude
+  invalid_result_policy: report
+previous_evaluation_id: null

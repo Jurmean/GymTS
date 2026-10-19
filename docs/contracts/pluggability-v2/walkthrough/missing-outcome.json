@@ -1,0 +1,27 @@
+{
+  "protocol": "gymts.wire/2-draft.1",
+  "kind": "Evaluation",
+  "message_id": "draft-snapshot-forecast-chatts/26",
+  "sequence": 26,
+  "run_id": "draft-snapshot-forecast-chatts",
+  "caused_by": "draft-snapshot-forecast-chatts/25",
+  "recorded_at": "2026-01-01T01:00:00Z",
+  "body": {
+    "evaluation_id": "draft-snapshot-forecast-chatts/evaluation",
+    "result_ref": {
+      "uri": "fixture:artifacts/b27b20162b775303b76a940daebe91b49d3e9c48c42084390bde323d40d91206.json",
+      "sha256": "b27b20162b775303b76a940daebe91b49d3e9c48c42084390bde323d40d91206",
+      "media_type": "application/json",
+      "schema_ref": "message.TaskResult/2-draft.1",
+      "size_bytes": 888
+    },
+    "outcome_ref": null,
+    "as_of": "2026-01-01T00:05:00Z",
+    "scorer": {
+      "id": "score.forecast",
+      "version": "1.0.0"
+    },
+    "status": "insufficient_evidence",
+    "metrics": []
+  }
+}

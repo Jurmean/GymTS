@@ -1,0 +1,158 @@
+{
+  "source_case_count": 2,
+  "task_case_count": 2,
+  "method_case_count": 2,
+  "live_chatts_calls": 0,
+  "new_plugin_implementations": 0,
+  "scope": "schema examples, independently calculated OLS reference, synthetic ChatTS response; not a plugin integration test",
+  "cases": [
+    {
+      "id": "draft-snapshot-forecast-ols",
+      "source": "snapshot",
+      "task": "forecast",
+      "method": "ols",
+      "file": "draft-snapshot-forecast-ols.json",
+      "semantic_projection_sha256": "330aad19ae31e84763c2271b8197eb740658a7d3e56fb041d683516c82a19121",
+      "native_request_sha256": "67a2be8d97f971eb8a47204092ced39206bb719ff83d6281195ec6341ffc2a83",
+      "metrics": [
+        {
+          "name": "mae",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        {
+          "name": "rmse",
+          "value": 0.0,
+          "unit": "percent"
+        }
+      ]
+    },
+    {
+      "id": "draft-snapshot-forecast-chatts",
+      "source": "snapshot",
+      "task": "forecast",
+      "method": "chatts",
+      "file": "draft-snapshot-forecast-chatts.json",
+      "semantic_projection_sha256": "330aad19ae31e84763c2271b8197eb740658a7d3e56fb041d683516c82a19121",
+      "native_request_sha256": "382adcb7d4924eb84b8a3e787497d1f36cc7e4c52aa9d1ca91532f1a7e1c8dac",
+      "metrics": [
+        {
+          "name": "mae",
+          "value": 0.5,
+          "unit": "percent"
+        },
+        {
+          "name": "rmse",
+          "value": 0.5,
+          "unit": "percent"
+        }
+      ]
+    },
+    {
+      "id": "draft-snapshot-trend-ols",
+      "source": "snapshot",
+      "task": "trend",
+      "method": "ols",
+      "file": "draft-snapshot-trend-ols.json",
+      "semantic_projection_sha256": "40ce5042a18ca95ba74d789387b5db848b6e19be5eef22f3a15aa77de1faf107",
+      "native_request_sha256": "5b93aa3c20af3888b444c7a541b22fd7413ed0a72f03cec378bdb13f69652aae",
+      "metrics": [
+        {
+          "name": "accuracy",
+          "value": 1.0,
+          "unit": "ratio"
+        }
+      ]
+    },
+    {
+      "id": "draft-snapshot-trend-chatts",
+      "source": "snapshot",
+      "task": "trend",
+      "method": "chatts",
+      "file": "draft-snapshot-trend-chatts.json",
+      "semantic_projection_sha256": "40ce5042a18ca95ba74d789387b5db848b6e19be5eef22f3a15aa77de1faf107",
+      "native_request_sha256": "bd5dbfa4cfcb5a31d547dd3669ff06ee845bbc59c60d9c0cfad1e505a74291d3",
+      "metrics": [
+        {
+          "name": "accuracy",
+          "value": 1.0,
+          "unit": "ratio"
+        }
+      ]
+    },
+    {
+      "id": "draft-csv-forecast-ols",
+      "source": "csv",
+      "task": "forecast",
+      "method": "ols",
+      "file": "draft-csv-forecast-ols.json",
+      "semantic_projection_sha256": "330aad19ae31e84763c2271b8197eb740658a7d3e56fb041d683516c82a19121",
+      "native_request_sha256": "67a2be8d97f971eb8a47204092ced39206bb719ff83d6281195ec6341ffc2a83",
+      "metrics": [
+        {
+          "name": "mae",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        {
+          "name": "rmse",
+          "value": 0.0,
+          "unit": "percent"
+        }
+      ]
+    },
+    {
+      "id": "draft-csv-forecast-chatts",
+      "source": "csv",
+      "task": "forecast",
+      "method": "chatts",
+      "file": "draft-csv-forecast-chatts.json",
+      "semantic_projection_sha256": "330aad19ae31e84763c2271b8197eb740658a7d3e56fb041d683516c82a19121",
+      "native_request_sha256": "382adcb7d4924eb84b8a3e787497d1f36cc7e4c52aa9d1ca91532f1a7e1c8dac",
+      "metrics": [
+        {
+          "name": "mae",
+          "value": 0.5,
+          "unit": "percent"
+        },
+        {
+          "name": "rmse",
+          "value": 0.5,
+          "unit": "percent"
+        }
+      ]
+    },
+    {
+      "id": "draft-csv-trend-ols",
+      "source": "csv",
+      "task": "trend",
+      "method": "ols",
+      "file": "draft-csv-trend-ols.json",
+      "semantic_projection_sha256": "40ce5042a18ca95ba74d789387b5db848b6e19be5eef22f3a15aa77de1faf107",
+      "native_request_sha256": "5b93aa3c20af3888b444c7a541b22fd7413ed0a72f03cec378bdb13f69652aae",
+      "metrics": [
+        {
+          "name": "accuracy",
+          "value": 1.0,
+          "unit": "ratio"
+        }
+      ]
+    },
+    {
+      "id": "draft-csv-trend-chatts",
+      "source": "csv",
+      "task": "trend",
+      "method": "chatts",
+      "file": "draft-csv-trend-chatts.json",
+      "semantic_projection_sha256": "40ce5042a18ca95ba74d789387b5db848b6e19be5eef22f3a15aa77de1faf107",
+      "native_request_sha256": "bd5dbfa4cfcb5a31d547dd3669ff06ee845bbc59c60d9c0cfad1e505a74291d3",
+      "metrics": [
+        {
+          "name": "accuracy",
+          "value": 1.0,
+          "unit": "ratio"
+        }
+      ]
+    }
+  ]
+}

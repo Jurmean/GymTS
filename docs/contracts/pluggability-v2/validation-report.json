@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "evidence_level": "schema_and_fixture_walkthrough_only",
+  "runtime_code_modified": false,
+  "schema_definitions": 115,
+  "walkthrough_cases": 8,
+  "validated_messages": 208,
+  "negative_rejections": 10,
+  "invalid_output_path": "passed",
+  "missing_outcome_path": "passed",
+  "cross_comparisons": [
+    {
+      "dimension": "source_and_method",
+      "task": "forecast",
+      "cases": 4,
+      "same_semantic_projection": true
+    },
+    {
+      "dimension": "source",
+      "task": "forecast",
+      "method": "ols",
+      "same_native_request": true
+    },
+    {
+      "dimension": "source",
+      "task": "forecast",
+      "method": "chatts",
+      "same_native_request": true
+    },
+    {
+      "dimension": "source_and_method",
+      "task": "trend",
+      "cases": 4,
+      "same_semantic_projection": true
+    },
+    {
+      "dimension": "source",
+      "task": "trend",
+      "method": "ols",
+      "same_native_request": true
+    },
+    {
+      "dimension": "source",
+      "task": "trend",
+      "method": "chatts",
+      "same_native_request": true
+    }
+  ],
+  "live_chatts_calls": 0,
+  "plugin_installation_tests": 0,
+  "worker_execution_tests": 0,
+  "limitations": [
+    "No new plugins implemented or installed",
+    "ChatTS responses are synthetic fixtures, not model inference",
+    "OLS results are independently calculated reference values, not a deployed Method plugin",
+    "No runtime protocol migration or production execution verified"
+  ],
+  "existing_chatts_wire_builder_matches": 4,
+  "legacy_chatts_input_compatible": false,
+  "legacy_rejection_code": "schema_mismatch",
+  "offline_check_scope": "Existing _wire encoding only; no prepare, infer, HTTP requests, model loading or plugin migration"
+}

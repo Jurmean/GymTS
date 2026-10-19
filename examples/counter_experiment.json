@@ -1,0 +1,90 @@
+{
+  "protocol_version": "gymts.experiment/1",
+  "name": "counter-control",
+  "purpose": "development",
+  "scene": {
+    "environment": {
+      "protocol_version": "gymts.environment/1",
+      "adapter": "counter-transition",
+      "version": "1.0.0",
+      "source": {
+        "kind": "simulator",
+        "locator": "builtin://counter",
+        "revision": "counter-v1",
+        "connection": {},
+        "credential_ref": null
+      },
+      "mapping": {},
+      "options": {
+        "max_steps": 3
+      }
+    },
+    "task": {
+      "plugin": "counter_control",
+      "version": "1.0.0",
+      "params": {}
+    },
+    "binding": {
+      "variables": {
+        "counter": {
+          "source": "counter",
+          "unit": "count",
+          "transform": null
+        }
+      },
+      "operations": {
+        "increment": {
+          "source": "increment",
+          "arguments_schema_ref": "gymts.builtin/increment-arguments/1",
+          "transform": null
+        }
+      }
+    }
+  },
+  "candidate": {
+    "adapter": "increment-policy",
+    "version": "1.0.0",
+    "artifact": null,
+    "params": {
+      "amount": 1
+    },
+    "inherited_state": []
+  },
+  "execution": {
+    "mode": "interactive",
+    "start": {
+      "mode": "reinitialize"
+    },
+    "scope": {
+      "start": 0,
+      "end": 10
+    },
+    "feedback_until": null,
+    "seed": 7,
+    "learning": {
+      "prepare": "load_only",
+      "online": "frozen",
+      "training_view": null,
+      "training_targets": null,
+      "alignment_schema_ref": null,
+      "allowed_feedback_sources": []
+    },
+    "limits": {
+      "max_inputs": null,
+      "max_operations": null,
+      "max_turns_per_case": 32,
+      "max_wall_time_s": 30
+    }
+  },
+  "recording": {
+    "store_ref": "local://records/default",
+    "inputs": "full",
+    "outputs": "full",
+    "artifacts": "reference",
+    "model_calls": "none",
+    "on_capture_failure": "fail_run",
+    "redaction_policy_ref": null,
+    "extra_event_kinds": []
+  },
+  "extensions": {}
+}

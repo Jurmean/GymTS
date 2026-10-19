@@ -1,0 +1,99 @@
+{
+  "evidence_level": "synthetic_fixture",
+  "response": {
+    "protocol": "gymts.wire/2-draft.1",
+    "kind": "MethodResponse",
+    "message_id": "draft-snapshot-forecast-chatts/14",
+    "sequence": 14,
+    "run_id": "draft-snapshot-forecast-chatts",
+    "caused_by": "draft-snapshot-forecast-chatts/13",
+    "recorded_at": "2026-01-01T01:00:00Z",
+    "body": {
+      "session_id": "draft-snapshot-forecast-chatts/method",
+      "input_id": "draft-snapshot-forecast-chatts/10",
+      "invocation_id": "draft-snapshot-forecast-chatts/call-1",
+      "contract_ref": {
+        "id": "timeseries.forecast",
+        "version": "1.0.0"
+      },
+      "status": "invalid_output",
+      "action": null,
+      "request_ref": {
+        "uri": "fixture:artifacts/382adcb7d4924eb84b8a3e787497d1f36cc7e4c52aa9d1ca91532f1a7e1c8dac.json",
+        "sha256": "382adcb7d4924eb84b8a3e787497d1f36cc7e4c52aa9d1ca91532f1a7e1c8dac",
+        "media_type": "application/json",
+        "schema_ref": null,
+        "size_bytes": 314
+      },
+      "response_ref": {
+        "uri": "fixture:artifacts/cf859fdf8822947e94a5007cb11836adac5cdee8b807964edd6e00999c2592bb.json",
+        "sha256": "cf859fdf8822947e94a5007cb11836adac5cdee8b807964edd6e00999c2592bb",
+        "media_type": "application/json",
+        "schema_ref": null,
+        "size_bytes": 97
+      },
+      "identity": {
+        "implementation": {
+          "id": "method.chatts",
+          "version": "1.0.0"
+        },
+        "configured_model": "chatts",
+        "reported_model": "chatts-fixture",
+        "weight_revision": null,
+        "weights_verified": false,
+        "evidence_origin": "synthetic_fixture"
+      },
+      "error": {
+        "code": "invalid_output",
+        "stage": "method",
+        "message": "Truncated JSON response fixture",
+        "retry": "never",
+        "effect_state": "none",
+        "details": {}
+      }
+    }
+  },
+  "result": {
+    "protocol": "gymts.wire/2-draft.1",
+    "kind": "TaskResult",
+    "message_id": "draft-snapshot-forecast-chatts/16",
+    "sequence": 16,
+    "run_id": "draft-snapshot-forecast-chatts",
+    "caused_by": "draft-snapshot-forecast-chatts/15",
+    "recorded_at": "2026-01-01T01:00:00Z",
+    "body": {
+      "case_id": "draft-snapshot-forecast-chatts/case-1",
+      "input_id": "draft-snapshot-forecast-chatts/10",
+      "invocation_id": "draft-snapshot-forecast-chatts/call-1",
+      "contract_ref": {
+        "id": "timeseries.forecast",
+        "version": "1.0.0"
+      },
+      "decision_time": "2026-01-01T00:05:00Z",
+      "alignment": {
+        "schema_ref": "timeseries.forecast.alignment/1",
+        "storage": "inline",
+        "value": {
+          "entity": "server-7",
+          "variable": "signal",
+          "issued_at": "2026-01-01T00:05:00Z",
+          "target_times": [
+            "2026-01-01T00:06:00Z",
+            "2026-01-01T00:07:00Z"
+          ]
+        }
+      },
+      "status": "invalid",
+      "answer": null,
+      "error": {
+        "code": "invalid_output",
+        "stage": "method",
+        "message": "Truncated JSON response fixture",
+        "retry": "never",
+        "effect_state": "none",
+        "details": {}
+      }
+    }
+  },
+  "expected": "retain raw response; invalid task result; no model retry"
+}

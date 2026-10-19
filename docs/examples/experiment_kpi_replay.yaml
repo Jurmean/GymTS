@@ -1,0 +1,73 @@
+protocol_version: gymts.experiment/1
+name: server-cpu-detection-example
+purpose: development
+scene:
+  environment:
+    protocol_version: gymts.environment/1
+    adapter: local-kpi-replay
+    version: '1.0.0'
+    source:
+      kind: dataset
+      locator: local://datasets/server-7-cpu
+      revision: example-v1
+      connection: {}
+      credential_ref: null
+    mapping:
+      time: {field: timestamp, timezone: Asia/Shanghai}
+      entity: {field: server_id}
+      variables:
+        cpu_utilization: {field: cpu_pct, dtype: float64, unit: percent}
+    options: {availability: event_time}
+  task:
+    plugin: point_anomaly_detection
+    version: '1.0.0'
+    params:
+      variables: [cpu]
+      sample_period: 1min
+      window_points: 60
+      decision_every: 1min
+      missing: preserve_mask
+      output: point_anomaly_score
+  binding:
+    variables:
+      cpu:
+        source: cpu_utilization
+        unit: ratio
+        transform: {name: divide_by_100, version: '1.0.0', origin_ref: null}
+    operations: {}
+candidate:
+  adapter: library-window-detector
+  version: '1.0.0'
+  artifact: null
+  params: {}
+  inherited_state: []
+execution:
+  mode: stream
+  start: {mode: reinitialize}
+  scope:
+    start: '2026-09-01T08:00:00+08:00'
+    end: '2026-09-01T10:00:00+08:00'
+  feedback_until: null
+  seed: null
+  learning:
+    prepare: load_only
+    online: frozen
+    training_view: null
+    training_targets: null
+    alignment_schema_ref: null
+    allowed_feedback_sources: []
+  limits:
+    max_inputs: null
+    max_operations: null
+    max_turns_per_case: 32
+    max_wall_time_s: 60
+recording:
+  store_ref: local://records/default
+  inputs: reference
+  outputs: full
+  artifacts: reference
+  model_calls: none
+  on_capture_failure: fail_run
+  redaction_policy_ref: null
+  extra_event_kinds: []
+extensions: {}

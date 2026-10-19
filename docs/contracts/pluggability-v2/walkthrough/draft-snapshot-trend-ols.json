@@ -1,0 +1,1442 @@
+{
+  "evidence_level": "design_walkthrough",
+  "source": "snapshot",
+  "task": "trend",
+  "method": "ols",
+  "spec": {
+    "source": {
+      "component": {
+        "id": "data.snapshot",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.data-snapshot/1",
+      "params": {
+        "path": "source-snapshot.json"
+      }
+    },
+    "task": {
+      "component": {
+        "id": "task.trend",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.trend/1",
+      "params": {
+        "entity": "server-7",
+        "variable": "signal",
+        "unit": "percent",
+        "window_points": 6,
+        "sample_period_seconds": 60,
+        "slope_threshold": 0.1
+      }
+    },
+    "binding": {
+      "id": "cpu-field-map",
+      "version": "1.0.0",
+      "variables": [
+        {
+          "task_variable": "signal",
+          "source_variable": "cpu_pct",
+          "source_unit": "percent",
+          "task_unit": "percent",
+          "transforms": []
+        }
+      ],
+      "operations": []
+    },
+    "method": {
+      "component": {
+        "id": "method.ols",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.method-ols/1",
+      "params": {}
+    },
+    "runtime": {
+      "component": {
+        "id": "runtime.inprocess",
+        "version": "1.0.0"
+      },
+      "params_schema_ref": "config.runtime-inprocess/1",
+      "params": {}
+    },
+    "read_scope": {
+      "start": "2026-01-01T00:00:00Z",
+      "end": "2026-01-01T00:06:00Z"
+    },
+    "decision_scope": {
+      "start": "2026-01-01T00:05:00Z",
+      "end": "2026-01-01T00:06:00Z"
+    },
+    "decision_as_of": "2026-01-01T00:05:00Z",
+    "seed": null,
+    "limits": {
+      "max_inputs": 1,
+      "max_turns_per_case": 1,
+      "max_operations": 0,
+      "call_timeout_ms": 1000,
+      "require_hard_timeout": false
+    },
+    "recording": "strict_io"
+  },
+  "plan": {
+    "spec_sha256": "942728754c5499d1a52fe7d0974ac99b8e8018137e5cde34e83f28e8f5fedfc1",
+    "components": [
+      {
+        "role": "source",
+        "component": {
+          "id": "data.snapshot",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-data.snapshot",
+        "implementation_sha256": null,
+        "config_sha256": "cb6744540117ffabfde72c1eaf892ccc8af083868fa10038ddb5b6433793a787"
+      },
+      {
+        "role": "task",
+        "component": {
+          "id": "task.trend",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-task.trend",
+        "implementation_sha256": null,
+        "config_sha256": "bf1d43bc32fa215fe8e46caca265b22a000b981573382dbf83660f4125d6b81e"
+      },
+      {
+        "role": "method",
+        "component": {
+          "id": "method.ols",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-method.ols",
+        "implementation_sha256": null,
+        "config_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "role": "runtime",
+        "component": {
+          "id": "runtime.inprocess",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-runtime.inprocess",
+        "implementation_sha256": null,
+        "config_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "role": "task_contract",
+        "component": {
+          "id": "timeseries.trend",
+          "version": "1.0.0"
+        },
+        "distribution": "proposal-timeseries-contracts",
+        "implementation_sha256": null,
+        "config_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      }
+    ],
+    "resolved_binding": {
+      "binding": {
+        "id": "cpu-field-map",
+        "version": "1.0.0",
+        "variables": [
+          {
+            "task_variable": "signal",
+            "source_variable": "cpu_pct",
+            "source_unit": "percent",
+            "task_unit": "percent",
+            "transforms": []
+          }
+        ],
+        "operations": []
+      },
+      "source_description": {
+        "component": {
+          "id": "data.snapshot",
+          "version": "1.0.0"
+        },
+        "clock_domain": "event_time",
+        "advance_mode": "on_read",
+        "observation_schema_ref": "gymts.series-frame/2-draft.1",
+        "variables": [
+          {
+            "name": "cpu_pct",
+            "dtype": "float64",
+            "unit": "percent",
+            "shape": [],
+            "value_schema_ref": "scalar.float64/1"
+          }
+        ],
+        "read_modes": [
+          "next",
+          "query"
+        ],
+        "operations": [],
+        "start_modes": [
+          "reinitialize"
+        ],
+        "supports_seed": false,
+        "public_context_schema_ref": null
+      },
+      "task_description": {
+        "component": {
+          "id": "task.trend",
+          "version": "1.0.0"
+        },
+        "contract_ref": {
+          "id": "timeseries.trend",
+          "version": "1.0.0"
+        },
+        "input_schema_ref": "timeseries.trend.input/1",
+        "answer_schema_ref": "timeseries.trend.answer/1",
+        "alignment_schema_ref": "timeseries.trend.alignment/1",
+        "required_variables": [
+          {
+            "variable": "signal",
+            "unit": "percent",
+            "dtype": "float64",
+            "shape": []
+          }
+        ],
+        "required_read_modes": [
+          "next"
+        ],
+        "required_operations": [],
+        "clock_domain": "event_time",
+        "minimum_points": 6,
+        "missing_policy": "reject",
+        "max_turns": 1
+      }
+    },
+    "method_description": {
+      "component": {
+        "id": "method.ols",
+        "version": "1.0.0"
+      },
+      "contracts": [
+        {
+          "contract_ref": {
+            "id": "timeseries.forecast",
+            "version": "1.0.0"
+          },
+          "input_schema_ref": "timeseries.forecast.input/1",
+          "answer_schema_ref": "timeseries.forecast.answer/1",
+          "supports_tools": false
+        },
+        {
+          "contract_ref": {
+            "id": "timeseries.trend",
+            "version": "1.0.0"
+          },
+          "input_schema_ref": "timeseries.trend.input/1",
+          "answer_schema_ref": "timeseries.trend.answer/1",
+          "supports_tools": false
+        }
+      ],
+      "accepted_modalities": [
+        "numeric_series"
+      ],
+      "accepted_runtime_kinds": [
+        "inprocess",
+        "worker_rpc"
+      ],
+      "supports_fit": false,
+      "supports_update": false,
+      "supports_cancellation": false,
+      "required_capture": [
+        "request",
+        "response"
+      ]
+    },
+    "runtime_description": {
+      "component": {
+        "id": "runtime.inprocess",
+        "version": "1.0.0"
+      },
+      "kind": "inprocess",
+      "persistent_sessions": true,
+      "hard_timeout": false,
+      "supports_cancellation": false
+    },
+    "deployment_verified": false,
+    "issues": []
+  },
+  "initial_read_intent": {
+    "kind": "next",
+    "selection": {
+      "entities": [
+        "server-7"
+      ],
+      "variables": [
+        "signal"
+      ],
+      "scope": {
+        "start": "2026-01-01T00:00:00Z",
+        "end": "2026-01-01T00:06:00Z"
+      }
+    },
+    "as_of": "2026-01-01T00:05:00Z",
+    "max_wait_ms": 0,
+    "limit": 6,
+    "case_key": null
+  },
+  "messages": [
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "SourceOpen",
+      "message_id": "draft-snapshot-trend-ols/01",
+      "sequence": 1,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": null,
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "source": {
+          "component": {
+            "id": "data.snapshot",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.data-snapshot/1",
+          "params": {
+            "path": "source-snapshot.json"
+          }
+        },
+        "context": {
+          "run_id": "draft-snapshot-trend-ols",
+          "handles": []
+        },
+        "start_mode": "reinitialize",
+        "read_scope": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "availability_cutoff": "2026-01-01T00:05:00Z",
+        "allowed_entities": [
+          "server-7"
+        ],
+        "allowed_variables": [
+          "cpu_pct"
+        ],
+        "allowed_operations": [],
+        "seed": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "SourceOpened",
+      "message_id": "draft-snapshot-trend-ols/02",
+      "sequence": 2,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/01",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-trend-ols/source",
+        "source_component": {
+          "id": "data.snapshot",
+          "version": "1.0.0"
+        },
+        "source_revision": "2f46da6698ddc6893a6fc1cfe032f0837fb8550068e2693c579e703c00c1d345",
+        "dataset_revision": "39e79dff75b4a2d5e9c0fd9a2f8a51bd7850ad63f2f72ed97f57197a17749fdf",
+        "actual_read_scope": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "clock": {
+          "domain": "event_time",
+          "now": "2026-01-01T00:05:00Z",
+          "visible_until": "2026-01-01T00:05:00Z"
+        },
+        "cursor": "c0",
+        "ownership": "created",
+        "public_context": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskBind",
+      "message_id": "draft-snapshot-trend-ols/03",
+      "sequence": 3,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/02",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task": {
+          "component": {
+            "id": "task.trend",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.trend/1",
+          "params": {
+            "entity": "server-7",
+            "variable": "signal",
+            "unit": "percent",
+            "window_points": 6,
+            "sample_period_seconds": 60,
+            "slope_threshold": 0.1
+          }
+        },
+        "resolved_binding": {
+          "binding": {
+            "id": "cpu-field-map",
+            "version": "1.0.0",
+            "variables": [
+              {
+                "task_variable": "signal",
+                "source_variable": "cpu_pct",
+                "source_unit": "percent",
+                "task_unit": "percent",
+                "transforms": []
+              }
+            ],
+            "operations": []
+          },
+          "source_description": {
+            "component": {
+              "id": "data.snapshot",
+              "version": "1.0.0"
+            },
+            "clock_domain": "event_time",
+            "advance_mode": "on_read",
+            "observation_schema_ref": "gymts.series-frame/2-draft.1",
+            "variables": [
+              {
+                "name": "cpu_pct",
+                "dtype": "float64",
+                "unit": "percent",
+                "shape": [],
+                "value_schema_ref": "scalar.float64/1"
+              }
+            ],
+            "read_modes": [
+              "next",
+              "query"
+            ],
+            "operations": [],
+            "start_modes": [
+              "reinitialize"
+            ],
+            "supports_seed": false,
+            "public_context_schema_ref": null
+          },
+          "task_description": {
+            "component": {
+              "id": "task.trend",
+              "version": "1.0.0"
+            },
+            "contract_ref": {
+              "id": "timeseries.trend",
+              "version": "1.0.0"
+            },
+            "input_schema_ref": "timeseries.trend.input/1",
+            "answer_schema_ref": "timeseries.trend.answer/1",
+            "alignment_schema_ref": "timeseries.trend.alignment/1",
+            "required_variables": [
+              {
+                "variable": "signal",
+                "unit": "percent",
+                "dtype": "float64",
+                "shape": []
+              }
+            ],
+            "required_read_modes": [
+              "next"
+            ],
+            "required_operations": [],
+            "clock_domain": "event_time",
+            "minimum_points": 6,
+            "missing_policy": "reject",
+            "max_turns": 1
+          }
+        },
+        "context": {
+          "run_id": "draft-snapshot-trend-ols",
+          "task_session_id": "draft-snapshot-trend-ols/task",
+          "read_scope": {
+            "start": "2026-01-01T00:00:00Z",
+            "end": "2026-01-01T00:06:00Z"
+          },
+          "decision_scope": {
+            "start": "2026-01-01T00:05:00Z",
+            "end": "2026-01-01T00:06:00Z"
+          },
+          "decision_as_of": "2026-01-01T00:05:00Z",
+          "max_turns": 1
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "MethodOpen",
+      "message_id": "draft-snapshot-trend-ols/04",
+      "sequence": 4,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/03",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "method": {
+          "component": {
+            "id": "method.ols",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.method-ols/1",
+          "params": {}
+        },
+        "runtime": {
+          "component": {
+            "id": "runtime.inprocess",
+            "version": "1.0.0"
+          },
+          "params_schema_ref": "config.runtime-inprocess/1",
+          "params": {}
+        },
+        "contract_ref": {
+          "id": "timeseries.trend",
+          "version": "1.0.0"
+        },
+        "context": {
+          "run_id": "draft-snapshot-trend-ols",
+          "method_session_id": "draft-snapshot-trend-ols/method",
+          "handles": [
+            {
+              "id": "draft-snapshot-trend-ols/evidence-writer",
+              "service": "evidence",
+              "operations": [
+                "append"
+              ],
+              "resource_refs": []
+            }
+          ],
+          "learning": "frozen",
+          "input_grants": []
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "MethodOpened",
+      "message_id": "draft-snapshot-trend-ols/05",
+      "sequence": 5,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/04",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-trend-ols/method",
+        "runtime_component": {
+          "id": "runtime.inprocess",
+          "version": "1.0.0"
+        },
+        "identity": {
+          "implementation": {
+            "id": "method.ols",
+            "version": "1.0.0"
+          },
+          "configured_model": null,
+          "reported_model": null,
+          "weight_revision": null,
+          "weights_verified": false,
+          "evidence_origin": "reference_calculation"
+        },
+        "state": "ready"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "SourceRead",
+      "message_id": "draft-snapshot-trend-ols/06",
+      "sequence": 6,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/03",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-trend-ols/source",
+        "kind": "next",
+        "cursor": "c0",
+        "selection": {
+          "entities": [
+            "server-7"
+          ],
+          "variables": [
+            "cpu_pct"
+          ],
+          "scope": {
+            "start": "2026-01-01T00:00:00Z",
+            "end": "2026-01-01T00:06:00Z"
+          }
+        },
+        "as_of": "2026-01-01T00:05:00Z",
+        "max_wait_ms": 0,
+        "limit": 6
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Observation",
+      "message_id": "draft-snapshot-trend-ols/07",
+      "sequence": 7,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/06",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-trend-ols/source",
+        "request_id": "draft-snapshot-trend-ols/06",
+        "source_revision": "2f46da6698ddc6893a6fc1cfe032f0837fb8550068e2693c579e703c00c1d345",
+        "dataset_revision": "39e79dff75b4a2d5e9c0fd9a2f8a51bd7850ad63f2f72ed97f57197a17749fdf",
+        "status": "end",
+        "cursor_before": "c0",
+        "cursor_after": "c1",
+        "clock": {
+          "domain": "event_time",
+          "now": "2026-01-01T00:05:00Z",
+          "visible_until": "2026-01-01T00:05:00Z"
+        },
+        "coverage": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "data": {
+          "schema_ref": "gymts.series-frame/2-draft.1",
+          "storage": "inline",
+          "value": {
+            "series": [
+              {
+                "entity": "server-7",
+                "variable": "cpu_pct",
+                "unit": "percent",
+                "timestamps": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ],
+                "values": [
+                  10.0,
+                  12.0,
+                  14.0,
+                  16.0,
+                  18.0,
+                  20.0
+                ],
+                "valid_mask": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "available_at": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ]
+              }
+            ]
+          }
+        },
+        "feedback": [],
+        "end": {
+          "reason": "scope_end",
+          "terminated": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "BoundObservation",
+      "message_id": "draft-snapshot-trend-ols/08",
+      "sequence": 8,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/07",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task_session_id": "draft-snapshot-trend-ols/task",
+        "source_observation_ref": {
+          "uri": "fixture:artifacts/60d564fad82d964d71f4a01930e4da913cc7ca35bf29bb319e6b1905b2290675.json",
+          "sha256": "60d564fad82d964d71f4a01930e4da913cc7ca35bf29bb319e6b1905b2290675",
+          "media_type": "application/json",
+          "schema_ref": "message.Observation/2-draft.1",
+          "size_bytes": 1353
+        },
+        "binding": {
+          "id": "cpu-field-map",
+          "version": "1.0.0",
+          "variables": [
+            {
+              "task_variable": "signal",
+              "source_variable": "cpu_pct",
+              "source_unit": "percent",
+              "task_unit": "percent",
+              "transforms": []
+            }
+          ],
+          "operations": []
+        },
+        "status": "end",
+        "clock": {
+          "domain": "event_time",
+          "now": "2026-01-01T00:05:00Z",
+          "visible_until": "2026-01-01T00:05:00Z"
+        },
+        "coverage": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-01T00:06:00Z"
+        },
+        "data": {
+          "schema_ref": "gymts.series-frame/2-draft.1",
+          "storage": "inline",
+          "value": {
+            "series": [
+              {
+                "entity": "server-7",
+                "variable": "signal",
+                "unit": "percent",
+                "timestamps": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ],
+                "values": [
+                  10.0,
+                  12.0,
+                  14.0,
+                  16.0,
+                  18.0,
+                  20.0
+                ],
+                "valid_mask": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "available_at": [
+                  "2026-01-01T00:00:00Z",
+                  "2026-01-01T00:01:00Z",
+                  "2026-01-01T00:02:00Z",
+                  "2026-01-01T00:03:00Z",
+                  "2026-01-01T00:04:00Z",
+                  "2026-01-01T00:05:00Z"
+                ]
+              }
+            ]
+          }
+        },
+        "feedback": [],
+        "end": {
+          "reason": "scope_end",
+          "terminated": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskUpdate",
+      "message_id": "draft-snapshot-trend-ols/09",
+      "sequence": 9,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/08",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task_session_id": "draft-snapshot-trend-ols/task",
+        "inputs": [
+          {
+            "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+            "turn_id": 0,
+            "contract_ref": {
+              "id": "timeseries.trend",
+              "version": "1.0.0"
+            },
+            "decision_time": "2026-01-01T00:05:00Z",
+            "alignment": {
+              "schema_ref": "timeseries.trend.alignment/1",
+              "storage": "inline",
+              "value": {
+                "entity": "server-7",
+                "variable": "signal",
+                "issued_at": "2026-01-01T00:05:00Z",
+                "window_start": "2026-01-01T00:00:00Z",
+                "window_end_inclusive": "2026-01-01T00:05:00Z"
+              }
+            },
+            "observation_refs": [
+              {
+                "uri": "fixture:artifacts/45c26ca0eb24722ceda9e062b1558589fea3b803d91cb84aa118915ed18afc43.json",
+                "sha256": "45c26ca0eb24722ceda9e062b1558589fea3b803d91cb84aa118915ed18afc43",
+                "media_type": "application/json",
+                "schema_ref": "message.BoundObservation/2-draft.1",
+                "size_bytes": 1597
+              }
+            ],
+            "input": {
+              "schema_ref": "timeseries.trend.input/1",
+              "storage": "inline",
+              "value": {
+                "window": {
+                  "entity": "server-7",
+                  "variable": "signal",
+                  "unit": "percent",
+                  "timestamps": [
+                    "2026-01-01T00:00:00Z",
+                    "2026-01-01T00:01:00Z",
+                    "2026-01-01T00:02:00Z",
+                    "2026-01-01T00:03:00Z",
+                    "2026-01-01T00:04:00Z",
+                    "2026-01-01T00:05:00Z"
+                  ],
+                  "values": [
+                    10.0,
+                    12.0,
+                    14.0,
+                    16.0,
+                    18.0,
+                    20.0
+                  ],
+                  "valid_mask": [
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true
+                  ]
+                },
+                "criterion": {
+                  "type": "ols_slope",
+                  "time_unit": "minute",
+                  "threshold": 0.1
+                }
+              }
+            },
+            "tools": []
+          }
+        ],
+        "closed_cases": [],
+        "stream_done": true
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskInput",
+      "message_id": "draft-snapshot-trend-ols/10",
+      "sequence": 10,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/09",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+        "turn_id": 0,
+        "contract_ref": {
+          "id": "timeseries.trend",
+          "version": "1.0.0"
+        },
+        "decision_time": "2026-01-01T00:05:00Z",
+        "alignment": {
+          "schema_ref": "timeseries.trend.alignment/1",
+          "storage": "inline",
+          "value": {
+            "entity": "server-7",
+            "variable": "signal",
+            "issued_at": "2026-01-01T00:05:00Z",
+            "window_start": "2026-01-01T00:00:00Z",
+            "window_end_inclusive": "2026-01-01T00:05:00Z"
+          }
+        },
+        "observation_refs": [
+          {
+            "uri": "fixture:artifacts/45c26ca0eb24722ceda9e062b1558589fea3b803d91cb84aa118915ed18afc43.json",
+            "sha256": "45c26ca0eb24722ceda9e062b1558589fea3b803d91cb84aa118915ed18afc43",
+            "media_type": "application/json",
+            "schema_ref": "message.BoundObservation/2-draft.1",
+            "size_bytes": 1597
+          }
+        ],
+        "input": {
+          "schema_ref": "timeseries.trend.input/1",
+          "storage": "inline",
+          "value": {
+            "window": {
+              "entity": "server-7",
+              "variable": "signal",
+              "unit": "percent",
+              "timestamps": [
+                "2026-01-01T00:00:00Z",
+                "2026-01-01T00:01:00Z",
+                "2026-01-01T00:02:00Z",
+                "2026-01-01T00:03:00Z",
+                "2026-01-01T00:04:00Z",
+                "2026-01-01T00:05:00Z"
+              ],
+              "values": [
+                10.0,
+                12.0,
+                14.0,
+                16.0,
+                18.0,
+                20.0
+              ],
+              "valid_mask": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            "criterion": {
+              "type": "ols_slope",
+              "time_unit": "minute",
+              "threshold": 0.1
+            }
+          }
+        },
+        "tools": [],
+        "task_session_id": "draft-snapshot-trend-ols/task",
+        "case_id": "draft-snapshot-trend-ols/case-1"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Invoke",
+      "message_id": "draft-snapshot-trend-ols/11",
+      "sequence": 11,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/10",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-trend-ols/method",
+        "invocation_id": "draft-snapshot-trend-ols/call-1",
+        "deadline_at": "2026-01-01T01:00:01Z",
+        "task_input": {
+          "protocol": "gymts.wire/2-draft.1",
+          "kind": "TaskInput",
+          "message_id": "draft-snapshot-trend-ols/10",
+          "sequence": 10,
+          "run_id": "draft-snapshot-trend-ols",
+          "caused_by": "draft-snapshot-trend-ols/09",
+          "recorded_at": "2026-01-01T01:00:00Z",
+          "body": {
+            "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+            "turn_id": 0,
+            "contract_ref": {
+              "id": "timeseries.trend",
+              "version": "1.0.0"
+            },
+            "decision_time": "2026-01-01T00:05:00Z",
+            "alignment": {
+              "schema_ref": "timeseries.trend.alignment/1",
+              "storage": "inline",
+              "value": {
+                "entity": "server-7",
+                "variable": "signal",
+                "issued_at": "2026-01-01T00:05:00Z",
+                "window_start": "2026-01-01T00:00:00Z",
+                "window_end_inclusive": "2026-01-01T00:05:00Z"
+              }
+            },
+            "observation_refs": [
+              {
+                "uri": "fixture:artifacts/45c26ca0eb24722ceda9e062b1558589fea3b803d91cb84aa118915ed18afc43.json",
+                "sha256": "45c26ca0eb24722ceda9e062b1558589fea3b803d91cb84aa118915ed18afc43",
+                "media_type": "application/json",
+                "schema_ref": "message.BoundObservation/2-draft.1",
+                "size_bytes": 1597
+              }
+            ],
+            "input": {
+              "schema_ref": "timeseries.trend.input/1",
+              "storage": "inline",
+              "value": {
+                "window": {
+                  "entity": "server-7",
+                  "variable": "signal",
+                  "unit": "percent",
+                  "timestamps": [
+                    "2026-01-01T00:00:00Z",
+                    "2026-01-01T00:01:00Z",
+                    "2026-01-01T00:02:00Z",
+                    "2026-01-01T00:03:00Z",
+                    "2026-01-01T00:04:00Z",
+                    "2026-01-01T00:05:00Z"
+                  ],
+                  "values": [
+                    10.0,
+                    12.0,
+                    14.0,
+                    16.0,
+                    18.0,
+                    20.0
+                  ],
+                  "valid_mask": [
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true
+                  ]
+                },
+                "criterion": {
+                  "type": "ols_slope",
+                  "time_unit": "minute",
+                  "threshold": 0.1
+                }
+              }
+            },
+            "tools": [],
+            "task_session_id": "draft-snapshot-trend-ols/task",
+            "case_id": "draft-snapshot-trend-ols/case-1"
+          }
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "EvidenceSaved",
+      "message_id": "draft-snapshot-trend-ols/12",
+      "sequence": 12,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/11",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "invocation_id": "draft-snapshot-trend-ols/call-1",
+        "stage": "request",
+        "artifact_ref": {
+          "uri": "fixture:artifacts/5b93aa3c20af3888b444c7a541b22fd7413ed0a72f03cec378bdb13f69652aae.json",
+          "sha256": "5b93aa3c20af3888b444c7a541b22fd7413ed0a72f03cec378bdb13f69652aae",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 140
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "EvidenceSaved",
+      "message_id": "draft-snapshot-trend-ols/13",
+      "sequence": 13,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/12",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "invocation_id": "draft-snapshot-trend-ols/call-1",
+        "stage": "response",
+        "artifact_ref": {
+          "uri": "fixture:artifacts/926fecb45ab97a5621f5975ea60dc178a81ebfbe4a4f0995f8f632b4e474b68d.json",
+          "sha256": "926fecb45ab97a5621f5975ea60dc178a81ebfbe4a4f0995f8f632b4e474b68d",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 77
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "MethodResponse",
+      "message_id": "draft-snapshot-trend-ols/14",
+      "sequence": 14,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/13",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "session_id": "draft-snapshot-trend-ols/method",
+        "input_id": "draft-snapshot-trend-ols/10",
+        "invocation_id": "draft-snapshot-trend-ols/call-1",
+        "contract_ref": {
+          "id": "timeseries.trend",
+          "version": "1.0.0"
+        },
+        "status": "ok",
+        "action": {
+          "kind": "answer",
+          "answer": {
+            "schema_ref": "timeseries.trend.answer/1",
+            "storage": "inline",
+            "value": {
+              "direction": "increasing"
+            }
+          }
+        },
+        "request_ref": {
+          "uri": "fixture:artifacts/5b93aa3c20af3888b444c7a541b22fd7413ed0a72f03cec378bdb13f69652aae.json",
+          "sha256": "5b93aa3c20af3888b444c7a541b22fd7413ed0a72f03cec378bdb13f69652aae",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 140
+        },
+        "response_ref": {
+          "uri": "fixture:artifacts/926fecb45ab97a5621f5975ea60dc178a81ebfbe4a4f0995f8f632b4e474b68d.json",
+          "sha256": "926fecb45ab97a5621f5975ea60dc178a81ebfbe4a4f0995f8f632b4e474b68d",
+          "media_type": "application/json",
+          "schema_ref": null,
+          "size_bytes": 77
+        },
+        "identity": {
+          "implementation": {
+            "id": "method.ols",
+            "version": "1.0.0"
+          },
+          "configured_model": null,
+          "reported_model": null,
+          "weight_revision": null,
+          "weights_verified": false,
+          "evidence_origin": "reference_calculation"
+        },
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskEffect",
+      "message_id": "draft-snapshot-trend-ols/15",
+      "sequence": 15,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/14",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "task_session_id": "draft-snapshot-trend-ols/task",
+        "case_key": "server-7/signal/2026-01-01T00:05:00Z",
+        "results": [
+          {
+            "case_id": "draft-snapshot-trend-ols/case-1",
+            "input_id": "draft-snapshot-trend-ols/10",
+            "invocation_id": "draft-snapshot-trend-ols/call-1",
+            "contract_ref": {
+              "id": "timeseries.trend",
+              "version": "1.0.0"
+            },
+            "decision_time": "2026-01-01T00:05:00Z",
+            "alignment": {
+              "schema_ref": "timeseries.trend.alignment/1",
+              "storage": "inline",
+              "value": {
+                "entity": "server-7",
+                "variable": "signal",
+                "issued_at": "2026-01-01T00:05:00Z",
+                "window_start": "2026-01-01T00:00:00Z",
+                "window_end_inclusive": "2026-01-01T00:05:00Z"
+              }
+            },
+            "status": "valid",
+            "answer": {
+              "schema_ref": "timeseries.trend.answer/1",
+              "storage": "inline",
+              "value": {
+                "direction": "increasing"
+              }
+            },
+            "error": null
+          }
+        ],
+        "requests": [],
+        "complete": true
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "TaskResult",
+      "message_id": "draft-snapshot-trend-ols/16",
+      "sequence": 16,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/15",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "case_id": "draft-snapshot-trend-ols/case-1",
+        "input_id": "draft-snapshot-trend-ols/10",
+        "invocation_id": "draft-snapshot-trend-ols/call-1",
+        "contract_ref": {
+          "id": "timeseries.trend",
+          "version": "1.0.0"
+        },
+        "decision_time": "2026-01-01T00:05:00Z",
+        "alignment": {
+          "schema_ref": "timeseries.trend.alignment/1",
+          "storage": "inline",
+          "value": {
+            "entity": "server-7",
+            "variable": "signal",
+            "issued_at": "2026-01-01T00:05:00Z",
+            "window_start": "2026-01-01T00:00:00Z",
+            "window_end_inclusive": "2026-01-01T00:05:00Z"
+          }
+        },
+        "status": "valid",
+        "answer": {
+          "schema_ref": "timeseries.trend.answer/1",
+          "storage": "inline",
+          "value": {
+            "direction": "increasing"
+          }
+        },
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Close",
+      "message_id": "draft-snapshot-trend-ols/17",
+      "sequence": 17,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/16",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "method",
+        "session_id": "draft-snapshot-trend-ols/method",
+        "reason": "task_completed"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Closed",
+      "message_id": "draft-snapshot-trend-ols/18",
+      "sequence": 18,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/17",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "method",
+        "session_id": "draft-snapshot-trend-ols/method",
+        "status": "closed",
+        "artifact_refs": [],
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Close",
+      "message_id": "draft-snapshot-trend-ols/19",
+      "sequence": 19,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/16",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "task",
+        "session_id": "draft-snapshot-trend-ols/task",
+        "reason": "task_completed"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Closed",
+      "message_id": "draft-snapshot-trend-ols/20",
+      "sequence": 20,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/19",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "task",
+        "session_id": "draft-snapshot-trend-ols/task",
+        "status": "closed",
+        "artifact_refs": [],
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Close",
+      "message_id": "draft-snapshot-trend-ols/21",
+      "sequence": 21,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/16",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "source",
+        "session_id": "draft-snapshot-trend-ols/source",
+        "reason": "task_completed"
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Closed",
+      "message_id": "draft-snapshot-trend-ols/22",
+      "sequence": 22,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/21",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "role": "source",
+        "session_id": "draft-snapshot-trend-ols/source",
+        "status": "closed",
+        "artifact_refs": [],
+        "error": null
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "RunSummary",
+      "message_id": "draft-snapshot-trend-ols/23",
+      "sequence": 23,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/22",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "status": "succeeded",
+        "completion": "task_completed",
+        "result_refs": [
+          {
+            "uri": "fixture:artifacts/a1e872100fbbb3ecbe53299bb75f360431a4f28acfdd71512a22002379cb22cf.json",
+            "sha256": "a1e872100fbbb3ecbe53299bb75f360431a4f28acfdd71512a22002379cb22cf",
+            "media_type": "application/json",
+            "schema_ref": "message.TaskResult/2-draft.1",
+            "size_bytes": 851
+          }
+        ],
+        "trace_ref": {
+          "uri": "fixture:artifacts/7d325a43ba0c5eb823da41c80d3ae42456a751c0069a9e5e1a509b40814077ed.json",
+          "sha256": "7d325a43ba0c5eb823da41c80d3ae42456a751c0069a9e5e1a509b40814077ed",
+          "media_type": "application/json",
+          "schema_ref": "gymts.trace/2-draft.1",
+          "size_bytes": 19352
+        },
+        "cleanup_errors": []
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Outcome",
+      "message_id": "draft-snapshot-trend-ols/24",
+      "sequence": 24,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": null,
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "outcome_id": "draft-snapshot-trend-ols/gold",
+        "alignment": {
+          "schema_ref": "timeseries.trend.alignment/1",
+          "storage": "inline",
+          "value": {
+            "entity": "server-7",
+            "variable": "signal",
+            "issued_at": "2026-01-01T00:05:00Z",
+            "window_start": "2026-01-01T00:00:00Z",
+            "window_end_inclusive": "2026-01-01T00:05:00Z"
+          }
+        },
+        "available_at": "2026-01-01T00:07:00Z",
+        "purpose": "evaluation",
+        "answer": {
+          "schema_ref": "timeseries.trend.answer/1",
+          "storage": "inline",
+          "value": {
+            "direction": "increasing"
+          }
+        },
+        "source_ref": {
+          "uri": "fixture:artifacts/d673926b482ed68467597bbb9658838f35eb04eff50506831e18951439baf3bd.json",
+          "sha256": "d673926b482ed68467597bbb9658838f35eb04eff50506831e18951439baf3bd",
+          "media_type": "application/json",
+          "schema_ref": "fixture.private-outcome/1",
+          "size_bytes": 96
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "ScoreRequest",
+      "message_id": "draft-snapshot-trend-ols/25",
+      "sequence": 25,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/24",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "evaluation_id": "draft-snapshot-trend-ols/evaluation",
+        "result_ref": {
+          "uri": "fixture:artifacts/a1e872100fbbb3ecbe53299bb75f360431a4f28acfdd71512a22002379cb22cf.json",
+          "sha256": "a1e872100fbbb3ecbe53299bb75f360431a4f28acfdd71512a22002379cb22cf",
+          "media_type": "application/json",
+          "schema_ref": "message.TaskResult/2-draft.1",
+          "size_bytes": 851
+        },
+        "outcome_ref": {
+          "uri": "fixture:artifacts/c0c27a5484b9c0ca7deb9952eee8b56e8b7b493b06bffa8a7e4f227638db6f11.json",
+          "sha256": "c0c27a5484b9c0ca7deb9952eee8b56e8b7b493b06bffa8a7e4f227638db6f11",
+          "media_type": "application/json",
+          "schema_ref": "message.Outcome/2-draft.1",
+          "size_bytes": 942
+        },
+        "as_of": "2026-01-01T01:00:00Z",
+        "scorer": {
+          "id": "score.trend",
+          "version": "1.0.0"
+        }
+      }
+    },
+    {
+      "protocol": "gymts.wire/2-draft.1",
+      "kind": "Evaluation",
+      "message_id": "draft-snapshot-trend-ols/26",
+      "sequence": 26,
+      "run_id": "draft-snapshot-trend-ols",
+      "caused_by": "draft-snapshot-trend-ols/25",
+      "recorded_at": "2026-01-01T01:00:00Z",
+      "body": {
+        "evaluation_id": "draft-snapshot-trend-ols/evaluation",
+        "result_ref": {
+          "uri": "fixture:artifacts/a1e872100fbbb3ecbe53299bb75f360431a4f28acfdd71512a22002379cb22cf.json",
+          "sha256": "a1e872100fbbb3ecbe53299bb75f360431a4f28acfdd71512a22002379cb22cf",
+          "media_type": "application/json",
+          "schema_ref": "message.TaskResult/2-draft.1",
+          "size_bytes": 851
+        },
+        "outcome_ref": {
+          "uri": "fixture:artifacts/c0c27a5484b9c0ca7deb9952eee8b56e8b7b493b06bffa8a7e4f227638db6f11.json",
+          "sha256": "c0c27a5484b9c0ca7deb9952eee8b56e8b7b493b06bffa8a7e4f227638db6f11",
+          "media_type": "application/json",
+          "schema_ref": "message.Outcome/2-draft.1",
+          "size_bytes": 942
+        },
+        "as_of": "2026-01-01T01:00:00Z",
+        "scorer": {
+          "id": "score.trend",
+          "version": "1.0.0"
+        },
+        "status": "scored",
+        "metrics": [
+          {
+            "name": "accuracy",
+            "value": 1.0,
+            "unit": "ratio"
+          }
+        ]
+      }
+    }
+  ],
+  "native_request": {
+    "function": "reference_ols_trend",
+    "x_minutes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "y": [
+      10.0,
+      12.0,
+      14.0,
+      16.0,
+      18.0,
+      20.0
+    ],
+    "target_x_minutes": [],
+    "slope_threshold": 0.1
+  },
+  "native_response": {
+    "intercept": 10.0,
+    "slope_per_minute": 2.0,
+    "answer": {
+      "direction": "increasing"
+    }
+  },
+  "semantic_projection_sha256": "40ce5042a18ca95ba74d789387b5db848b6e19be5eef22f3a15aa77de1faf107",
+  "native_request_sha256": "5b93aa3c20af3888b444c7a541b22fd7413ed0a72f03cec378bdb13f69652aae"
+}

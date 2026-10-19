@@ -1,0 +1,1 @@
+{"choices":[{"finish_reason":"stop","message":{"content":"{\"direction\":\"increasing\"}","role":"assistant"}}],"fixture":true,"model":"chatts-fixture"}
