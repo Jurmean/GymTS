@@ -44,7 +44,7 @@ AutoBenchTS 评价两个稳定职责组织。设计草案和历史实验记录�
 - [适配开发教程](adapter-development.md)：一个可独立安装的最小 Candidate，以及 Source、Task、Scorer、资源和训练扩展入口。
 - [贡献指南](../CONTRIBUTING.md)：开发环境、测试、Issue / PR、核心变更理由和冻结兼容验证。
 - [维护者指南](maintainer-guide.md)：版本、发布准备、分发检查、数据/凭证与兼容性；不自动发布。
-- [本地文档构建](documentation.md)：源码为唯一文本来源，检查链接并构建可导航的文档站。
+- [双语文档构建与发布](documentation.md)：源码为唯一文本来源，检查链接并构建可导航的文档站。
 - [支持](../SUPPORT.md)、[安全](../SECURITY.md)、[行为准则](../CODE_OF_CONDUCT.md)。
 - [变更记录](../CHANGELOG.md)、[路线图](roadmap.md)、[引用](citing.md)、[MIT 许可说明](licensing.md)、[许可原文](../LICENSE)、[第三方来源](../THIRD_PARTY.md)。
 

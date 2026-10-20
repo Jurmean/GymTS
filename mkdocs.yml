@@ -1,5 +1,5 @@
 site_name: GymTS
-site_description: 时序实验执行、证据与独立评价框架
+site_description: Time-series experiments, evidence, and independent evaluation
 repo_url: https://github.com/Jurmean/GymTS
 repo_name: GitHub
 # Paths and navigation are overridden by scripts/docs.py from the explicit
@@ -10,11 +10,11 @@ edit_uri: ""
 use_directory_urls: true
 strict: true
 theme:
-  name: mkdocs
-  highlightjs: false
-  navigation_depth: 3
-plugins:
-  - search
+  name: null
+  custom_dir: docs/theme
+  static_templates:
+    - 404.html
+plugins: []
 markdown_extensions:
   - fenced_code
   - tables

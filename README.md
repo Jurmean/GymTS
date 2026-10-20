@@ -1,5 +1,7 @@
 # GymTS
 
+[中文文档](https://gymts-docs.zrr9392.chatgpt.site/zh/) · [English docs](https://gymts-docs.zrr9392.chatgpt.site/en/)
+
 **时序实验、环境执行与独立评价框架。**
 
 中文 · [English](README.en.md) · [完整使用手册](docs/user-guide.md) · [API / CLI](docs/reference.md) · [适配开发](docs/adapter-development.md)

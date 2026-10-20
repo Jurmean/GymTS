@@ -1,96 +1,105 @@
-# 文档检查与本地网站
+# 双语文档站：构建与发布
 
-GymTS 的文档以仓库内 Markdown 为唯一文本来源。README、使用/接口/适配开发指南、架构说明、
-社区文件和各独立适配包 README 可直接在仓库阅读；本地网站从这些源文件生成，不另维护一份改写稿。
-工具只构建本地静态文件，不发布网站、不创建 Git 分支、不上传实验数据。
+公开网站：[GymTS Documentation](https://gymts-docs.zrr9392.chatgpt.site/)，可直接访问
+[中文](https://gymts-docs.zrr9392.chatgpt.site/zh/)与
+[English](https://gymts-docs.zrr9392.chatgpt.site/en/)。网站提供对应页面的语言切换、浏览器内搜索、
+侧栏导航、页内目录、代码复制、深浅色模式和移动端导航。
 
-## 无依赖检查
+## 1. 源码与发布边界
 
-从仓库根目录执行：
+[site-pages.json](site-pages.json) 是显式发布清单。42 个页面分别提供中文与英文，共 84 个内容页面。
+中文从仓库原文读取；英文由 `docs/i18n/en/<原仓库路径>` 提供完整翻译，首页分别位于
+`docs/site/zh/index.md` 和 `docs/site/en/index.md`。译文保留原代码、API 标识、版本和评价边界；
+正式合同的中文原文是规范来源，英文是对应翻译。
+
+译文中的相对链接按清单的原源文件目录解析，而非翻译文件所在目录。这样可以指向同一份代码和示例，
+无需复制数据或运行产物。站点生成器将已选页面映射到当前语言，其他公开源码指向 GitHub。
+英文标题在构建时保留中文原章节 ID，因此跨语言和历史章节链接可继续定位。
+
+只发布清单中的内容、两份明确列出的文本资产及 `docs/theme/` 的本站主题资源。
+历史草案、私有附件审计、题目和答案、数据、权重、SQLite/CAS、原始日志及 `output/` 不进入网站。
+站点不加载远程脚本、统计服务、字体或样式；搜索索引由公开页面生成，查询词在浏览器内处理。
+
+## 2. 无依赖源码检查
 
 ```bash
 python3 -B scripts/docs.py check
 ```
 
-该命令只使用 Python 标准库，读取 [site-pages.json](site-pages.json) 中的显式清单，检查来源、目标路径、
-代码围栏及源 Markdown/HTML 链接的本地目标。它不会请求外网，也不会把 URL 可达性、供应商文档或当前分支
-是否已推送到 GitHub 当作已验证事实。站点渲染和最终页面锚点由下面的严格构建继续检查。
+`check` 只依赖 Python 标准库，检查双语清单、翻译是否齐全、代码围栏及源链接本地目标。
+它不请求网络，不把外部 URL 可达性或远端部署成功当作检查事实。
+`prepare/build` 继续核对译文标题结构并生成稳定锚点；最终 HTML 的链接与锚点也会逐项检查。
 
-只检查清单中的当前公开文档，不遍历全部历史设计；报告和草案的链接可指向仓库源文件，但不因此自动进入站点。
-相对链接越出仓库、指向本机绝对路径或缺少目标时检查失败。链接到 `output/`、`.git/` 等本地材料也会被拒绝。
+## 3. 构建与本地预览
 
-## 安装独立文档工具
-
-核心运行不依赖 MkDocs。推荐给文档另建环境：
+文档依赖独立于核心运行环境：
 
 ```bash
 python3 -m venv /tmp/gymts-docs-venv
 /tmp/gymts-docs-venv/bin/python -m pip install -r requirements-docs.txt
-```
-
-当前固定 MkDocs 1.6.1，传递依赖由 pip 解析。离线机器须提前准备全部文档依赖的 wheelhouse，再用
-`pip install --no-index --find-links /path/to/wheelhouse -r requirements-docs.txt` 安装；
-成功安装之后的 prepare/build 不需要访问网络。
-
-## 构建和预览
-
-```bash
 /tmp/gymts-docs-venv/bin/python -B scripts/docs.py build \
   --work /tmp/gymts-docs-build --site-dir /tmp/gymts-docs-site
-
 python3 -m http.server 8000 --bind 127.0.0.1 --directory /tmp/gymts-docs-site
 ```
 
-在浏览器访问 `http://127.0.0.1:8000/`。停止预览服务使用 Ctrl-C。
-工作目录和站点目录用专门的新目录，不要指定源码、数据、模型目录或 `/tmp` 本身。
-脚本只接受它自己建立或带自身标记的 staging 目录，不递归删除未知目录。
-站点输出必须为空或尚不存在；重新构建用新的空目录，避免误清理用户文件和旧页面残留。
+浏览 `http://127.0.0.1:8000/zh/` 或 `/en/`，按 Ctrl-C 停止预览。网站根入口按浏览器语言或上次
+选择进入对应语言；不运行 JavaScript 时仍提供两个语言入口。默认公开 canonical URL 来自本站部署；
+本地 HTTP 地址仅用于预览。
 
-`build` 先执行同样的源检查，再准备临时输入、调用 `mkdocs build --strict`，并核对最终 HTML 中
-本地链接/锚点和资源。构建若发现警告、缺失链接或需要 CDN 才能运行的脚本/样式会失败。
-默认目录是 `/tmp/gymts-docs-build` 和其中的 `site`，可用上述选项覆盖。
-终端打印 JSON 摘要，不运行模型、单元测试或框架发行检查。
+安装完依赖后，构建不请求网络。离线安装可先准备 wheelhouse，再使用
+`pip install --no-index --find-links /path/to/wheelhouse -r requirements-docs.txt`。
+工具不会运行实验、训练模型、创建 Git 分支或部署服务。
 
-如只希望查看重写后的站点输入和配置，不渲染 HTML：
+输出目录必须是独立目录，不能放在源码检出内部；不要指定 `/tmp`、源码、数据或模型目录本身。
+脚本只清理带自身标记的 staging 文件，拒绝递归删除未知目录。站点输出必须为空或尚不存在，重建可选择新目录。
+
+## 4. 准备输入与更换托管平台
+
+仅准备两种语言的输入和配置：
 
 ```bash
-python3 -B scripts/docs.py prepare --work /tmp/gymts-docs-prepare
-# 安装文档依赖后，可手动严格构建该准备结果。
-/tmp/gymts-docs-venv/bin/python -m mkdocs build --strict \
-  --config-file /tmp/gymts-docs-prepare/mkdocs.generated.yml
+/tmp/gymts-docs-venv/bin/python -B scripts/docs.py prepare --work /tmp/gymts-docs-input
 ```
 
-不要将 MkDocs 的 `docs_dir` 改为整个仓库，也不要直接把全部 `docs/` 交给网站发布。
-根 [mkdocs.yml](../mkdocs.yml) 提供渲染配置，脚本生成的配置补充 staging 路径和清单导航。
+结果包含 `mkdocs.zh.yml`、`mkdocs.en.yml` 和 `source/zh/`、`source/en/`。
+正式构建使用 `build`，它还会生成语言入口、两份本地搜索索引、404、sitemap 和 robots.txt。
 
-## 链接与发布范围
+更换域名或部署到 GitHub Pages 子目录时指定完整站点前缀：
 
-清单逐项指定源文件、站点路径、导航分组和标题，目前包括中文/英文 README、完整项目说明、用户与 API 指南、
-正式合同、核心架构、环境和数据目录、开发/维护/协作流程、11 个独立适配包 README、项目工作流、
-状态/路线图/变更/许可/引用与第三方来源。`CITATION.cff` 与 MIT `LICENSE` 原文作为
-明确列出的下载资产复制，许可链接在本地站点中直接指向该文本。
+```bash
+/tmp/gymts-docs-venv/bin/python -B scripts/docs.py build \
+  --work /tmp/gymts-docs-rehost --site-dir /tmp/gymts-docs-rehost-site \
+  --site-url https://example.org/GymTS/
+```
 
-生成时按原 Markdown 的所在目录解析相对路径：
+页面、资源和语言切换均使用相对链接；`--site-url` 用于 canonical、alternate、sitemap 和 404 返回入口。
+将完整输出目录交给静态 HTTP 托管即可，部署不需要 GymTS 运行库、模型服务或私有数据。
 
-- 目标也在清单中：转换为站点内相对链接，保留查询与章节锚点。
-- 目标是其他仓库文件：转换为 `https://github.com/Jurmean/GymTS/blob/main/...`。
-- 目标是其他仓库目录：转换为对应的 `tree/main/...`。
-- 已有外部 HTTPS 等链接：保持不变，不抓取或复制外部媒体。
+## 5. 更新翻译与主题
 
-未选中的历史 PDF、设计草案、验收日志、源码、私有数据和本地输出不复制进站点。
-GitHub 回退链接以清单声明的分支为准，当前工作树尚未推送的文件在云端可能不存在；本地检查不会假装已上线。
-站点使用 MkDocs 内置本地资源，关闭默认 CDN 代码高亮，不加载统计脚本；Mermaid 围栏作为可读源码呈现，
-不从 CDN 引入绘图库。构建后的 HTML 可离线阅读，本地搜索和导航建议通过上述 HTTP 预览访问。
+修改中文原文后，同步相应英文镜像。保持标题级别、顺序、章节内容、API 和可执行代码一致；
+不要以英文概览代替完整指南，也不要在缺少译文时静默回退到中文。
+清单中的 `translated_source_sha256` 固定本轮翻译依据；同步翻译后用 `sha256sum 原源文件` 更新该值。
+源文发生变化而未同步时，检查会失败。新页面须同时登记两种语言的标题、分组和来源。
 
-## 维护清单和 CI
+[主题](theme/main.html)使用 MkDocs 模板与本地 CSS / JavaScript；发布前检查桌面和手机布局，
+尤其是菜单键盘焦点、搜索、深浅色、同页语言切换与代码复制。新增脚本或样式必须本地提供并保留许可。
+框架核心与项目适配包不依赖文档主题或部署平台。
 
-新增页面先编辑源 Markdown，再在 `docs/site-pages.json` 选择是否纳入当前站点；不能为消除链接错误而
-把整个目录、实验数据或历史文件自动加入。修改目标路径时由清单映射重写互链，不需要修改仓库阅读路径。
-`scripts/docs.py` 当前支持常用行内链接、引用式定义和 HTML `href/src`；复杂自定义 Markdown/插件应扩展检查并实际构建验证。
+## 6. CI 与线上发布
 
-[文档工作流](../.github/workflows/docs.yml) 对 push/PR 检查、构建并保存预览 artifact，只有仓库内容读取权限，
-没有 Pages 部署、仓库写入或模型/服务调用步骤。工作流文件的存在不证明某次远端运行已成功。
-文档修改不需要训练、重新采集 benchmark 或运行重型原生实验。
+[文档工作流](../.github/workflows/docs.yml)在 push/PR 上检查并严格构建双语站点，提供可下载 artifact。
+该工作流只有仓库读取权限；它不自动调用 Sites，也不声称已经启用 GitHub Pages。
 
-构建配置参考 [MkDocs 官方说明](https://www.mkdocs.org/user-guide/configuration/)，
-Unicode 章节使用 [Python-Markdown 的 TOC 扩展](https://python-markdown.github.io/extensions/toc/)。
+当前公开网站由 Sites 托管，站点身份在 [.openai/hosting.json](../.openai/hosting.json) 中登记。
+更新时复用该项目 ID，重新构建，在独立发布工作区同步经过检查的静态目录，再保存并部署对应版本。
+短期发布凭证只通过工具会话传入，不写入仓库或构建输出；不要把主仓库 remote 改成托管平台的源码地址。
+
+网站发布源码与构建制品须对应同一份已经推送的内容，发布后核对实际部署状态及公开 URL。
+主仓库保留文档原文、译文、主题与构建工具，生成的 HTML 和部署归档不提交到主仓库。
+
+## 7. 参考
+
+- [Gymnasium 文档](https://gymnasium.farama.org/)：本次参考其文档分组、侧栏和阅读布局，不复制其品牌和资源。
+- [MkDocs 配置](https://www.mkdocs.org/user-guide/configuration/)：可选文档构建器。
+- [Python-Markdown TOC](https://python-markdown.github.io/extensions/toc/)：章节与稳定锚点。

@@ -1,6 +1,6 @@
 # gymts-chatts
 
-独立发布的 ChatTS-Bench 来源与 ChatTS 原生模型/文本模型适配包；它不是 ChatTS 产品界面。核心 `gymts` 不包含本包。本包依赖 `gymts>=0.4.1,<0.5` 和共享领域包 `gymts-timeseries>=0.1,<0.2`，不依赖 TimeSigma、LibraryTS 或 RL 适配器。
+独立发布的 ChatTS-Bench 来源与 ChatTS 原生模型/文本模型适配包；它不是 ChatTS 产品界面。核心 `gymts` 不包含本包。本包依赖 `gymts>=0.5,<0.6` 和共享领域包 `gymts-timeseries>=0.2,<0.3`，不依赖 TimeSigma、LibraryTS 或 RL 适配器。
 
 在主仓库根目录安装核心与适配包：
 

@@ -1,53 +1,754 @@
 {
-  "version": 1,
+  "version": 2,
   "repository": "https://github.com/Jurmean/GymTS",
   "branch": "main",
+  "languages": {
+    "zh": {
+      "name": "中文",
+      "description": "GymTS 文档：时序实验、环境执行、可追溯证据与独立评价。",
+      "labels": {
+        "skip": "跳转到正文",
+        "menu": "打开导航",
+        "close_menu": "关闭导航",
+        "search": "搜索文档",
+        "navigation": "文档导航",
+        "home": "文档首页",
+        "documentation": "文档",
+        "framework": "时序实验与评价框架",
+        "other_language": "English",
+        "theme": "切换深浅色",
+        "local_first": "本地构建 · 开放接口",
+        "edit": "查看源文件",
+        "pagination": "相邻文档",
+        "previous": "上一页",
+        "next": "下一页",
+        "toc": "本页目录",
+        "top": "回到顶部",
+        "close": "关闭搜索",
+        "search_placeholder": "搜索 API、适配器、运行与重评…",
+        "search_hint": "搜索当前语言的全部文档。",
+        "search_local": "本地索引 · 不发送搜索词",
+        "not_found": "页面不存在",
+        "not_found_help": "页面可能已移动。请从文档首页或搜索继续。"
+      }
+    },
+    "en": {
+      "name": "English",
+      "description": "GymTS documentation: time-series experiments, environments, traceable evidence, and independent evaluation.",
+      "labels": {
+        "skip": "Skip to content",
+        "menu": "Open navigation",
+        "close_menu": "Close navigation",
+        "search": "Search documentation",
+        "navigation": "Documentation navigation",
+        "home": "Documentation home",
+        "documentation": "Documentation",
+        "framework": "Time-series experiments and evaluation",
+        "other_language": "中文",
+        "theme": "Toggle light and dark mode",
+        "local_first": "Local builds · Open interfaces",
+        "edit": "View source",
+        "pagination": "Adjacent documentation",
+        "previous": "Previous",
+        "next": "Next",
+        "toc": "On this page",
+        "top": "Back to top",
+        "close": "Close search",
+        "search_placeholder": "Search APIs, adapters, runs, and rescoring…",
+        "search_hint": "Search all documentation in this language.",
+        "search_local": "Local index · Queries stay in your browser",
+        "not_found": "Page not found",
+        "not_found_help": "This page may have moved. Continue from the documentation home or search."
+      }
+    }
+  },
   "pages": [
-    {"source": "README.md", "destination": "index.md", "section": "开始", "title": "GymTS（中文）"},
-    {"source": "README.en.md", "destination": "en.md", "section": "开始", "title": "English overview"},
-    {"source": "docs/overview.md", "destination": "guide/overview.md", "section": "开始", "title": "完整项目说明"},
-    {"source": "docs/README.md", "destination": "guide/index.md", "section": "开始", "title": "文档导航"},
-    {"source": "docs/user-guide.md", "destination": "guide/user-guide.md", "section": "开始", "title": "使用手册"},
-    {"source": "docs/faq.md", "destination": "guide/faq.md", "section": "开始", "title": "常见问题"},
-    {"source": "examples/README.md", "destination": "guide/examples.md", "section": "开始", "title": "可运行示例"},
-    {"source": "docs/reference.md", "destination": "reference/index.md", "section": "架构与接口", "title": "API 与 CLI"},
-    {"source": "docs/framework.md", "destination": "reference/framework.md", "section": "架构与接口", "title": "框架指南"},
-    {"source": "docs/feishu/GymTS接口规范/GymTS接口规范.md", "destination": "reference/contract.md", "section": "架构与接口", "title": "正式合同 1.2.0"},
-    {"source": "docs/environment-adapters.md", "destination": "reference/environment-adapters.md", "section": "架构与接口", "title": "EnvironmentTS 来源接入"},
-    {"source": "docs/agent-toolsets.md", "destination": "reference/agent-toolsets.md", "section": "架构与接口", "title": "Agent 与工具集"},
-    {"source": "docs/dataset-benchmark-catalog-design.md", "destination": "reference/datasets-benchmarks.md", "section": "架构与接口", "title": "数据与 benchmark 目录"},
-    {"source": "docs/adapter-development.md", "destination": "development/adapters.md", "section": "开发", "title": "适配开发"},
-    {"source": "examples/adapters/minimal_demo/README.md", "destination": "development/minimal-adapter.md", "section": "开发", "title": "最小教学适配包"},
-    {"source": "CONTRIBUTING.md", "destination": "development/contributing.md", "section": "开发", "title": "贡献指南"},
-    {"source": "docs/maintainer-guide.md", "destination": "development/maintainer-guide.md", "section": "开发", "title": "维护与发布准备"},
-    {"source": "docs/documentation.md", "destination": "development/documentation.md", "section": "开发", "title": "文档检查与构建"},
-    {"source": "adapters/README.md", "destination": "adapters/index.md", "section": "独立适配包", "title": "安装与启用"},
-    {"source": "adapters/timeseries/README.md", "destination": "adapters/timeseries.md", "section": "独立适配包", "title": "时序领域合同"},
-    {"source": "adapters/libraryts/README.md", "destination": "adapters/libraryts.md", "section": "独立适配包", "title": "LibraryTS"},
-    {"source": "adapters/chatts/README.md", "destination": "adapters/chatts.md", "section": "独立适配包", "title": "ChatTS"},
-    {"source": "adapters/timesigma/README.md", "destination": "adapters/timesigma.md", "section": "独立适配包", "title": "TimeSigma"},
-    {"source": "adapters/rl/README.md", "destination": "adapters/rl.md", "section": "独立适配包", "title": "RL rollout 与 TRL"},
-    {"source": "adapters/bench_tsqa/README.md", "destination": "adapters/bench-tsqa.md", "section": "独立适配包", "title": "TSQA 测评资源"},
-    {"source": "adapters/hf_datasets/README.md", "destination": "adapters/hf-datasets.md", "section": "独立适配包", "title": "HF 静态数值数据"},
-    {"source": "adapters/interaction/README.md", "destination": "adapters/interaction.md", "section": "独立适配包", "title": "中立控制领域合同"},
-    {"source": "adapters/gymnasium/README.md", "destination": "adapters/gymnasium.md", "section": "独立适配包", "title": "Gymnasium"},
-    {"source": "adapters/openenv/README.md", "destination": "adapters/openenv.md", "section": "独立适配包", "title": "OpenEnv"},
-    {"source": "adapters/prometheus/README.md", "destination": "adapters/prometheus.md", "section": "独立适配包", "title": "Prometheus"},
-    {"source": "docs/chatts-integration.md", "destination": "projects/chatts.md", "section": "项目工作流", "title": "ChatTS 实验流程"},
-    {"source": "docs/timesigma-integration.md", "destination": "projects/timesigma.md", "section": "项目工作流", "title": "TimeSigma 实验流程"},
-    {"source": "docs/rl-integration.md", "destination": "projects/rl.md", "section": "项目工作流", "title": "RL 数据、训练与检查点"},
-    {"source": "docs/project-status.md", "destination": "project/status.md", "section": "项目", "title": "当前状态与验收"},
-    {"source": "docs/roadmap.md", "destination": "project/roadmap.md", "section": "项目", "title": "路线图"},
-    {"source": "CHANGELOG.md", "destination": "project/changelog.md", "section": "项目", "title": "变更记录"},
-    {"source": "SUPPORT.md", "destination": "project/support.md", "section": "项目", "title": "支持"},
-    {"source": "SECURITY.md", "destination": "project/security.md", "section": "项目", "title": "安全"},
-    {"source": "CODE_OF_CONDUCT.md", "destination": "project/conduct.md", "section": "项目", "title": "行为准则"},
-    {"source": "docs/citing.md", "destination": "project/citing.md", "section": "项目", "title": "引用"},
-    {"source": "docs/licensing.md", "destination": "project/licensing.md", "section": "项目", "title": "MIT 许可"},
-    {"source": "THIRD_PARTY.md", "destination": "project/third-party.md", "section": "项目", "title": "第三方来源"}
+    {
+      "source": "docs/site/zh/index.md",
+      "destination": "index.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "GymTS 文档",
+        "en": "GymTS documentation"
+      },
+      "home": true,
+      "aliases": [
+        "README.md",
+        "README.en.md"
+      ],
+      "translations": {
+        "en": "docs/site/en/index.md"
+      },
+      "translated_source_sha256": "5de2d4f0a85544b62d8b1708343a1f2b30a997c90545ab6c33324667584df110"
+    },
+    {
+      "source": "docs/quickstart.md",
+      "destination": "guide/quickstart.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "五分钟开始",
+        "en": "Quickstart"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/quickstart.md"
+      },
+      "translated_source_sha256": "b411780c1ea861a5a4d9a70fec19ce1f6b313cce7e9bb9821798b93bb797677e"
+    },
+    {
+      "source": "docs/overview.md",
+      "destination": "guide/overview.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "完整项目说明",
+        "en": "Project overview"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/overview.md"
+      },
+      "translated_source_sha256": "f0299d98f4db25f01ea30f1c668b1969b6af4c7aa9bea365b9396bb8f9adee29"
+    },
+    {
+      "source": "docs/README.md",
+      "destination": "guide/index.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "文档导航",
+        "en": "Documentation map"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/README.md"
+      },
+      "translated_source_sha256": "7e3cd6d7e025e17df20dc6ea8e57cf6dbd10373471cd712530fa7279aba54b50"
+    },
+    {
+      "source": "docs/user-guide.md",
+      "destination": "guide/user-guide.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "使用手册",
+        "en": "User guide"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/user-guide.md"
+      },
+      "translated_source_sha256": "9973cd88fb5964b7bd9f012b1dba8f6221e7a7de2a0276fcde4d69adc34c8776"
+    },
+    {
+      "source": "docs/faq.md",
+      "destination": "guide/faq.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "常见问题",
+        "en": "FAQ"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/faq.md"
+      },
+      "translated_source_sha256": "3c4a120e9004224bca6bc7d5893302ac4453d22d90f68824abd381be64daf008"
+    },
+    {
+      "source": "examples/README.md",
+      "destination": "guide/examples.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "可运行示例",
+        "en": "Runnable examples"
+      },
+      "translations": {
+        "en": "docs/i18n/en/examples/README.md"
+      },
+      "translated_source_sha256": "badd1e768ed2e8a94c355c9dd49ebc1a738cbdcf073d6de87163039200ec6d9d"
+    },
+    {
+      "source": "docs/reference.md",
+      "destination": "reference/index.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "API 与 CLI",
+        "en": "API and CLI"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/reference.md"
+      },
+      "translated_source_sha256": "24e214b45ddf26bf6c3bb1fe1dec61e01e55d6ee9a9240dadb09ae13bf99bb16"
+    },
+    {
+      "source": "docs/framework.md",
+      "destination": "reference/framework.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "框架指南",
+        "en": "Architecture"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/framework.md"
+      },
+      "translated_source_sha256": "11de44863b71ca561c686f6afcea66bfbba290bd1281b18afc9a9e916b207671"
+    },
+    {
+      "source": "docs/feishu/GymTS接口规范/GymTS接口规范.md",
+      "destination": "reference/contract.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "正式合同 1.2.0",
+        "en": "Public contract 1.2.0"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/feishu/GymTS接口规范/GymTS接口规范.md"
+      },
+      "translated_source_sha256": "27dc3219760ebc8261b8fc31a65d4cd338e91fcc61946a17f7a76fe14ce1c316"
+    },
+    {
+      "source": "docs/environment-adapters.md",
+      "destination": "reference/environment-adapters.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "EnvironmentTS 来源接入",
+        "en": "Environment adapters"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/environment-adapters.md"
+      },
+      "translated_source_sha256": "8664a50c2324b72de8e84eb561efa2bd633fef14d54d64c7248dcfe0a7d27bf6"
+    },
+    {
+      "source": "docs/agent-toolsets.md",
+      "destination": "reference/agent-toolsets.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "Agent 与工具集",
+        "en": "Agents and toolsets"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/agent-toolsets.md"
+      },
+      "translated_source_sha256": "78985e32a8b1bf6d6e05a2c4241cbe86d844cbc7f31cdc37717336b3670e3c66"
+    },
+    {
+      "source": "docs/dataset-benchmark-catalog-design.md",
+      "destination": "reference/datasets-benchmarks.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "数据与 benchmark 目录",
+        "en": "Datasets and benchmarks"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/dataset-benchmark-catalog-design.md"
+      },
+      "translated_source_sha256": "381d333e8d4e977d07bc41ddb4e5c539cf2ea8479daf643ed2a683d7bb1c2f57"
+    },
+    {
+      "source": "docs/adapter-development.md",
+      "destination": "development/adapters.md",
+      "section": {
+        "zh": "开发",
+        "en": "Development"
+      },
+      "title": {
+        "zh": "适配开发",
+        "en": "Build an adapter"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/adapter-development.md"
+      },
+      "translated_source_sha256": "58d0ea35c85434b26ef6f466e29d0304a09e69293bb5f455fb1eda32562c1229"
+    },
+    {
+      "source": "examples/adapters/minimal_demo/README.md",
+      "destination": "development/minimal-adapter.md",
+      "section": {
+        "zh": "开发",
+        "en": "Development"
+      },
+      "title": {
+        "zh": "最小教学适配包",
+        "en": "Minimal teaching adapter"
+      },
+      "translations": {
+        "en": "docs/i18n/en/examples/adapters/minimal_demo/README.md"
+      },
+      "translated_source_sha256": "9a52f0bcb245fd9562c8fd84c223701f7d2919a77f555453dbeb12dbef54824e"
+    },
+    {
+      "source": "CONTRIBUTING.md",
+      "destination": "development/contributing.md",
+      "section": {
+        "zh": "开发",
+        "en": "Development"
+      },
+      "title": {
+        "zh": "贡献指南",
+        "en": "Contributing"
+      },
+      "translations": {
+        "en": "docs/i18n/en/CONTRIBUTING.md"
+      },
+      "translated_source_sha256": "cd17620129f417e31607e3f892f650bb2946b8917b59aaf0622df9dd6004a4a8"
+    },
+    {
+      "source": "docs/maintainer-guide.md",
+      "destination": "development/maintainer-guide.md",
+      "section": {
+        "zh": "开发",
+        "en": "Development"
+      },
+      "title": {
+        "zh": "维护与发布准备",
+        "en": "Maintainer guide"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/maintainer-guide.md"
+      },
+      "translated_source_sha256": "30233e982fa5cbac18bb96415bc7d6e64509f2a858b3660d59c701f679b41417"
+    },
+    {
+      "source": "docs/documentation.md",
+      "destination": "development/documentation.md",
+      "section": {
+        "zh": "开发",
+        "en": "Development"
+      },
+      "title": {
+        "zh": "文档检查与构建",
+        "en": "Build and publish the docs"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/documentation.md"
+      },
+      "translated_source_sha256": "04bfe21bafe6d5228b539d3697cd78f06b474771d6a1de6e7dacd60d8924b65a"
+    },
+    {
+      "source": "adapters/README.md",
+      "destination": "adapters/index.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "安装与启用",
+        "en": "Installation and activation"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/README.md"
+      },
+      "translated_source_sha256": "32e583df255803195d26d0087624ba325744ce442c7f2cf374a99957222d3361"
+    },
+    {
+      "source": "adapters/timeseries/README.md",
+      "destination": "adapters/timeseries.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "时序领域合同",
+        "en": "Time-series contracts"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/timeseries/README.md"
+      },
+      "translated_source_sha256": "0716c2fce7fa9e15169d1252619fc9d8d708143bff51b2efd4b3c98a5127b7c9"
+    },
+    {
+      "source": "adapters/libraryts/README.md",
+      "destination": "adapters/libraryts.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "LibraryTS",
+        "en": "LibraryTS"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/libraryts/README.md"
+      },
+      "translated_source_sha256": "95531de255227926eb50cf07d5518a43bfc1d2ab5d04c7b50c0d34b3edbb3ad9"
+    },
+    {
+      "source": "adapters/chatts/README.md",
+      "destination": "adapters/chatts.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "ChatTS",
+        "en": "ChatTS"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/chatts/README.md"
+      },
+      "translated_source_sha256": "775fe7c468cc9697c22861fd6a4ae68a7b6a3c3d314c26a4dfee9b74e63bc028"
+    },
+    {
+      "source": "adapters/timesigma/README.md",
+      "destination": "adapters/timesigma.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "TimeSigma",
+        "en": "TimeSigma"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/timesigma/README.md"
+      },
+      "translated_source_sha256": "ae2c61377336fcdc8bd4b8bc54d01cc816bcc398191592ebacbf90ba68203388"
+    },
+    {
+      "source": "adapters/rl/README.md",
+      "destination": "adapters/rl.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "RL rollout 与 TRL",
+        "en": "RL rollouts and TRL"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/rl/README.md"
+      },
+      "translated_source_sha256": "a255e816361981181bb62df63e22fdb041744d7e0b9f73e2150052ecd2af5736"
+    },
+    {
+      "source": "adapters/bench_tsqa/README.md",
+      "destination": "adapters/bench-tsqa.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "TSQA 测评资源",
+        "en": "TSQA benchmarks"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/bench_tsqa/README.md"
+      },
+      "translated_source_sha256": "7b1dbd39f16597ef77265c95860d170a8b8a1834e88625a4a9d962248850f253"
+    },
+    {
+      "source": "adapters/hf_datasets/README.md",
+      "destination": "adapters/hf-datasets.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "HF 静态数值数据",
+        "en": "HF Datasets"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/hf_datasets/README.md"
+      },
+      "translated_source_sha256": "2872bafd37d05de63f25ac3174d449d564f7cc9978c71c781c545708af67acbf"
+    },
+    {
+      "source": "adapters/interaction/README.md",
+      "destination": "adapters/interaction.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "中立控制领域合同",
+        "en": "Interaction contracts"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/interaction/README.md"
+      },
+      "translated_source_sha256": "7b6db9aca4e5698de4bac229cf33f7227f668573100a118d401696304a0e4db6"
+    },
+    {
+      "source": "adapters/gymnasium/README.md",
+      "destination": "adapters/gymnasium.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "Gymnasium",
+        "en": "Gymnasium"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/gymnasium/README.md"
+      },
+      "translated_source_sha256": "fd3dba0084e364f0c166f697f9754d3739045704fb82448d6692ea6d47268cac"
+    },
+    {
+      "source": "adapters/openenv/README.md",
+      "destination": "adapters/openenv.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "OpenEnv",
+        "en": "OpenEnv"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/openenv/README.md"
+      },
+      "translated_source_sha256": "eee0a6716e87c45cb38187fd21494363aeb397534c81f3e9bca0856e0012012d"
+    },
+    {
+      "source": "adapters/prometheus/README.md",
+      "destination": "adapters/prometheus.md",
+      "section": {
+        "zh": "独立适配包",
+        "en": "Adapters"
+      },
+      "title": {
+        "zh": "Prometheus",
+        "en": "Prometheus"
+      },
+      "translations": {
+        "en": "docs/i18n/en/adapters/prometheus/README.md"
+      },
+      "translated_source_sha256": "be06506cd65f3b648426896fed4d3f06323e629280df9593d0b4c58df0127721"
+    },
+    {
+      "source": "docs/chatts-integration.md",
+      "destination": "projects/chatts.md",
+      "section": {
+        "zh": "项目工作流",
+        "en": "Workflows"
+      },
+      "title": {
+        "zh": "ChatTS 实验流程",
+        "en": "ChatTS experiments"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/chatts-integration.md"
+      },
+      "translated_source_sha256": "d545ab5fd2983458390efdb7cbb34c8012b3077150c581e85531f8f559124fcc"
+    },
+    {
+      "source": "docs/timesigma-integration.md",
+      "destination": "projects/timesigma.md",
+      "section": {
+        "zh": "项目工作流",
+        "en": "Workflows"
+      },
+      "title": {
+        "zh": "TimeSigma 实验流程",
+        "en": "TimeSigma experiments"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/timesigma-integration.md"
+      },
+      "translated_source_sha256": "d88d7c7fa02f5e8b8530b544383525567bc711ad641d74ab7bd04f3c03226e90"
+    },
+    {
+      "source": "docs/rl-integration.md",
+      "destination": "projects/rl.md",
+      "section": {
+        "zh": "项目工作流",
+        "en": "Workflows"
+      },
+      "title": {
+        "zh": "RL 数据、训练与检查点",
+        "en": "RL data and checkpoints"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/rl-integration.md"
+      },
+      "translated_source_sha256": "5de660d868317dec3ff0338a0740b60e6a72c14d285cd27f77e6c3d5f2b29ecd"
+    },
+    {
+      "source": "docs/project-status.md",
+      "destination": "project/status.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "当前状态与验收",
+        "en": "Status and validation"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/project-status.md"
+      },
+      "translated_source_sha256": "66793b39f111faf6bf8f5e5564a50cd2304e5355f80092bdf0a0bedbc57c4911"
+    },
+    {
+      "source": "docs/roadmap.md",
+      "destination": "project/roadmap.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "路线图",
+        "en": "Roadmap"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/roadmap.md"
+      },
+      "translated_source_sha256": "3f1533324bbc8655d72b65bc00d88e092a960563ba1be91daa8e807afcf360da"
+    },
+    {
+      "source": "CHANGELOG.md",
+      "destination": "project/changelog.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "变更记录",
+        "en": "Changelog"
+      },
+      "translations": {
+        "en": "docs/i18n/en/CHANGELOG.md"
+      },
+      "translated_source_sha256": "4689e49feb7ffea4c4cb4dacfc2329d877d5aa1c1f33bbfb7338a59747b273bc"
+    },
+    {
+      "source": "SUPPORT.md",
+      "destination": "project/support.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "支持",
+        "en": "Support"
+      },
+      "translations": {
+        "en": "docs/i18n/en/SUPPORT.md"
+      },
+      "translated_source_sha256": "d598d14bba75a5a7d0cce23ae34d2456d080f6b88bc578e08697f433a42f6b3f"
+    },
+    {
+      "source": "SECURITY.md",
+      "destination": "project/security.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "安全",
+        "en": "Security"
+      },
+      "translations": {
+        "en": "docs/i18n/en/SECURITY.md"
+      },
+      "translated_source_sha256": "dcceeb7e8fb2620caa13d84de5a0ef30de7c985d74884cdfc0b4dd7556e407a0"
+    },
+    {
+      "source": "CODE_OF_CONDUCT.md",
+      "destination": "project/conduct.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "行为准则",
+        "en": "Code of conduct"
+      },
+      "translations": {
+        "en": "docs/i18n/en/CODE_OF_CONDUCT.md"
+      },
+      "translated_source_sha256": "eb6a5fda45cc932d2d7be8854c13e788b9c16340ce24a836c3bf477f3f67e836"
+    },
+    {
+      "source": "docs/citing.md",
+      "destination": "project/citing.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "引用",
+        "en": "Citing GymTS"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/citing.md"
+      },
+      "translated_source_sha256": "ea9a3b6c8f9a9a2d1106446d4ee78febb1ba16ee084e9a2ca46e11c4252616a8"
+    },
+    {
+      "source": "docs/licensing.md",
+      "destination": "project/licensing.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "MIT 许可",
+        "en": "MIT license"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/licensing.md"
+      },
+      "translated_source_sha256": "76d4b54a21e2160cc96b230dac7c8dd4c281828eceb8358d0a0e96415bc47039"
+    },
+    {
+      "source": "THIRD_PARTY.md",
+      "destination": "project/third-party.md",
+      "section": {
+        "zh": "项目",
+        "en": "Project"
+      },
+      "title": {
+        "zh": "第三方来源",
+        "en": "Third-party sources"
+      },
+      "translations": {
+        "en": "docs/i18n/en/THIRD_PARTY.md"
+      },
+      "translated_source_sha256": "70aeed47c45bbb3c90f5ebd01195836ee7e64b097a1080c38472ee875c76cc37"
+    }
   ],
   "assets": [
-    {"source": "CITATION.cff", "destination": "CITATION.cff"},
-    {"source": "LICENSE", "destination": "LICENSE"}
+    {
+      "source": "CITATION.cff",
+      "destination": "CITATION.cff"
+    },
+    {
+      "source": "LICENSE",
+      "destination": "LICENSE"
+    }
   ]
 }

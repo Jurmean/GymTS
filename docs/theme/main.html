@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="{{ config.extra.locale }}" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ config.site_description }}">
+  <meta name="color-scheme" content="light dark">
+  <title>{{ page.title }} · GymTS</title>
+  {% if page.canonical_url %}<link rel="canonical" href="{{ page.canonical_url }}">{% endif %}
+  <link rel="alternate" hreflang="{{ config.extra.other_locale }}" href="{{ page.meta.alternate_absolute }}">
+  <link rel="icon" href="{{ 'assets/favicon.svg' | url }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ 'assets/site.css' | url }}">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('gymts-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}</script>
+  <script src="{{ 'assets/site.js' | url }}" defer></script>
+</head>
+<body data-locale="{{ config.extra.locale }}" data-root="{{ '.' | url }}">
+  <a class="skip-link" href="#main-content">{{ config.extra.labels.skip }}</a>
+  <header class="mobile-header">
+    <button class="icon-button menu-toggle" aria-label="{{ config.extra.labels.menu }}" aria-expanded="false" aria-controls="site-sidebar">☰</button>
+    <a class="mobile-brand" href="{{ nav.homepage.url | url }}">GymTS <span>docs</span></a>
+    <button class="icon-button search-open" aria-label="{{ config.extra.labels.search }}">⌕</button>
+  </header>
+  <button class="nav-backdrop" aria-label="{{ config.extra.labels.close_menu }}" tabindex="-1"></button>
+  <aside class="sidebar" id="site-sidebar" aria-label="{{ config.extra.labels.navigation }}">
+    <div class="sidebar-top">
+      <button class="sidebar-close icon-button" aria-label="{{ config.extra.labels.close_menu }}">×</button>
+      <a class="brand" href="{{ nav.homepage.url | url }}" aria-label="GymTS {{ config.extra.labels.home }}">
+        <svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true"><rect x="1" y="1" width="34" height="34" rx="9" fill="currentColor"/><path d="M7 20h5l3-9 5 16 3-10h6" fill="none" stroke="var(--brand-mark)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span>GymTS<span class="brand-subtitle">{{ config.extra.labels.documentation }}</span></span>
+      </a>
+      <div class="version-line"><span class="version">v0.5.0</span><span>{{ config.extra.labels.framework }}</span></div>
+      <button class="search-button search-open"><span class="search-icon" aria-hidden="true">⌕</span><span>{{ config.extra.labels.search }}</span><kbd>/</kbd></button>
+      <div class="sidebar-controls">
+        <a class="language-switch" data-language-switch="{{ config.extra.other_locale }}" href="{{ page.meta.alternate_url }}" lang="{{ config.extra.other_locale }}" hreflang="{{ config.extra.other_locale }}"><span aria-hidden="true">文 A</span> {{ config.extra.labels.other_language }}</a>
+        <button class="theme-toggle icon-button" aria-label="{{ config.extra.labels.theme }}" title="{{ config.extra.labels.theme }}">◐</button>
+        <a class="github-link" href="{{ config.repo_url }}" aria-label="GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.08c-3.12.68-3.78-1.33-3.78-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 1.72 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.49-.28-5.1-1.25-5.1-5.55 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.1-2.98 0 0 .94-.3 3.08 1.15A10.7 10.7 0 0 1 12 6.16c.95 0 1.9.13 2.79.38 2.14-1.45 3.08-1.15 3.08-1.15.6 1.55.22 2.7.1 2.98.72.79 1.16 1.8 1.16 3.02 0 4.31-2.62 5.27-5.12 5.55.4.35.76 1.03.76 2.08v3.07c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8Z"/></svg></a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+    {% for section in nav %}
+      <div class="nav-section"><div class="nav-section-title">{{ section.title }}</div><ul>
+      {% for item in section.children %}
+        <li><a href="{{ item.url | url }}" {% if item.active %}aria-current="page" class="active"{% endif %}>{{ item.title }}</a></li>
+      {% endfor %}
+      </ul></div>
+    {% endfor %}
+    </nav>
+    <div class="sidebar-bottom"><span class="status-dot" aria-hidden="true"></span> {{ config.extra.labels.local_first }} <a href="{{ config.extra.license_url | url }}">MIT</a></div>
+  </aside>
+  <div class="document-shell">
+    <main id="main-content" class="main-content {% if page.meta.home %}home-page{% endif %}" tabindex="-1">
+      <div class="page-toolbar"><span>{{ page.parent.title }}</span><a href="{{ page.meta.source_url }}">{{ config.extra.labels.edit }} <span aria-hidden="true">↗</span></a></div>
+      {% if page.meta.normative_translation and config.extra.locale == 'en' %}<p class="note-line">English translation of public contract 1.2.0. The <a href="{{ page.meta.alternate_url }}">Chinese source</a> is the normative specification.</p>{% endif %}
+      <article class="document">{{ page.content }}</article>
+      <nav class="page-pagination" aria-label="{{ config.extra.labels.pagination }}">
+        {% if page.previous_page %}<a class="previous" href="{{ page.previous_page.url | url }}"><span>← {{ config.extra.labels.previous }}</span><strong>{{ page.previous_page.title }}</strong></a>{% else %}<span></span>{% endif %}
+        {% if page.next_page %}<a class="next" href="{{ page.next_page.url | url }}"><span>{{ config.extra.labels.next }} →</span><strong>{{ page.next_page.title }}</strong></a>{% endif %}
+      </nav>
+      <footer class="page-footer"><span>© GymTS contributors · <a href="{{ config.extra.license_url | url }}">MIT License</a></span><a href="{{ config.repo_url }}">GitHub ↗</a></footer>
+    </main>
+    <aside class="page-toc" aria-label="{{ config.extra.labels.toc }}">
+      <div class="toc-title">{{ config.extra.labels.toc }}</div>
+      {% macro toc_list(items, depth=0) %}<ul>{% for item in items %}<li><a href="{{ item.url }}">{{ item.title }}</a>{% if item.children and depth < 2 %}{{ toc_list(item.children, depth + 1) }}{% endif %}</li>{% endfor %}</ul>{% endmacro %}
+      {% for heading in page.toc %}{% if heading.level == 1 %}{{ toc_list(heading.children) }}{% else %}{{ toc_list([heading]) }}{% endif %}{% endfor %}
+      <a class="back-to-top" href="#main-content">↑ {{ config.extra.labels.top }}</a>
+    </aside>
+  </div>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-dialog-header"><label id="search-title" for="search-input">{{ config.extra.labels.search }}</label><form method="dialog"><button class="icon-button" aria-label="{{ config.extra.labels.close }}">×</button></form></div>
+    <input id="search-input" type="search" autocomplete="off" placeholder="{{ config.extra.labels.search_placeholder }}" aria-controls="search-results">
+    <p id="search-status" class="search-status" role="status" aria-live="polite">{{ config.extra.labels.search_hint }}</p>
+    <ol id="search-results"></ol>
+    <div class="search-dialog-footer"><span>{{ config.extra.labels.search_local }}</span><kbd>Esc</kbd></div>
+  </dialog>
+</body>
+</html>

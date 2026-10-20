@@ -1,6 +1,6 @@
 # gymts-timeseries
 
-独立的时序领域合同与实现包，依赖 `gymts>=0.4.1,<0.5`。它提供通用数值来源、七类 QA Task 和独立 Scorer，**不包含模型，不依赖 ChatTS、LibraryTS 或 RL 适配器**。LibraryTS 与模型适配器可以依赖这些公共合同。
+独立的时序领域合同与实现包，依赖 `gymts>=0.5,<0.6`。它提供通用数值来源、七类 QA Task 和独立 Scorer，**不包含模型，不依赖 ChatTS、LibraryTS 或 RL 适配器**。LibraryTS 与模型适配器可以依赖这些公共合同。
 
 在主仓库根目录安装 `python -m pip install . ./adapters/timeseries`，显式启用 `GymTS(root, integrations=('timeseries',))`。独立 wheel/sdist 安装同样支持，无需源码路径或 `PYTHONPATH`。
 

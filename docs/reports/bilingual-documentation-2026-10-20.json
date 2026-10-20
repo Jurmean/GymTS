@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "date": "2026-10-20",
+  "scope": "Bilingual documentation website only; core and adapter implementations unchanged. Two adapter README dependency ranges corrected to installed metadata.",
+  "content_pages": 84,
+  "pages_per_language": 42,
+  "languages": [
+    "zh",
+    "en"
+  ],
+  "rendered_html_pages": 88,
+  "local_html_links_and_anchors_checked": 6340,
+  "runtime_external_script_or_stylesheet_requests": 0,
+  "browser_checks": [
+    "English full-text search and modal focus",
+    "Code copied to clipboard",
+    "Dark mode persisted",
+    "Corresponding-page language switch preserves original section hash",
+    "Chinese full-text search",
+    "Subpath hosting assets, search, and language switch",
+    "390px layout, hidden-nav tab exclusion, drawer trap, Escape and modal focus",
+    "Search index failure followed by successful retry"
+  ],
+  "browser_page_errors": [],
+  "known_secret_findings": [],
+  "generated_html_screenshots_archives_in_main_git": false,
+  "public_site": "https://gymts-docs.zrr9392.chatgpt.site/",
+  "deployment_evidence": "Recorded separately by the hosting provider after publication; this report covers local acceptance, not an assertion that the site is already live."
+}

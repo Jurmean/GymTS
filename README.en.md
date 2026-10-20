@@ -1,5 +1,7 @@
 # GymTS
 
+[中文文档](https://gymts-docs.zrr9392.chatgpt.site/zh/) · [English docs](https://gymts-docs.zrr9392.chatgpt.site/en/)
+
 **A framework for time-series experiments, environment execution, and independent evaluation.**
 
 [中文](README.md) · English · [User guide (Chinese)](docs/user-guide.md) · [API / CLI](docs/reference.md)
