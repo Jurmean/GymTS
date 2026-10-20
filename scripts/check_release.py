@@ -55,7 +55,7 @@ SECRET_PATTERNS = (
 )
 
 # This fixture is deliberately packaged separately and uses only the public
-# GymTS plugin API. It has its own algorithm and never imports ChatTS.
+# GymTS plugin API. Its algorithm does not depend on any project adapter.
 EXTERNAL_PLUGIN_SOURCE = '''
 from datetime import datetime
 from gymts.contracts import GymTSError, utc_now
@@ -180,10 +180,12 @@ def inspect_archive(path, expected_modules):
         members = {name[len(prefix):]: data for name, data in members.items()}
         module_names = {name for name in members if name.startswith("gymts/") and name.endswith(".py")}
         required = {"README.md", "setup.cfg", "pyproject.toml", "MANIFEST.in",
-                    "scripts/check_release.py", "scripts/audit_chatts_http_experiment.py",
-                    "examples/forecast_experiment.json", "tests/test_runner.py", "gymts/py.typed"}
+                    "scripts/check_release.py", "examples/forecast_experiment.json",
+                    "tests/test_runner.py", "gymts/py.typed"}
         if not required.issubset(members):
             raise ReleaseError("Source archive is missing runnable source, tests, or examples")
+    if any("adapters" in PurePosixPath(name).parts for name in members):
+        raise ReleaseError("Core distribution must not include project adapter packages")
     if module_names != expected_modules:
         raise ReleaseError("Distribution Python modules differ from the source package")
     return {"file": path.name, "files": len(members), "bytes": path.stat().st_size,
@@ -210,7 +212,7 @@ def snapshot_ignore(directory, names):
     ignored = []
     for name in names:
         if (name in FORBIDDEN_PARTS or name in {"build", "dist"}
-                or name.endswith(".egg-info") or name.startswith((".gymts-", ".chart-data-"))
+                or name == "adapters" or name.endswith(".egg-info") or name.startswith((".gymts-", ".chart-data-"))
                 or name.endswith((".pyc", ".pyo"))):
             ignored.append(name)
     return ignored
@@ -246,7 +248,6 @@ def install_and_test(wheel, source, work, full_tests):
     command([sys.executable, "-B", "-m", "venv", str(environment)], work)
     python = environment / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
     console = environment / ("Scripts/gymts.exe" if sys.platform == "win32" else "bin/gymts")
-    chatts_console = environment / ("Scripts/gymts-chatts.exe" if sys.platform == "win32" else "bin/gymts-chatts")
     command([python, "-I", "-B", "-m", "pip", "--isolated", "--disable-pip-version-check",
              "install", "--no-index", "--no-deps",
              "--no-compile", wheel], work)
@@ -255,13 +256,17 @@ def install_and_test(wheel, source, work, full_tests):
              "assert 'site-packages' in Path(gymts.__file__).parts; "
              "assert gymts.__version__ == importlib.metadata.version('gymts')"], work)
     command([console, "--help"], work)
-    command([chatts_console, "--help"], work)
+    command([python, "-I", "-B", "-c",
+             "from gymts import GymTS; from importlib.metadata import distribution; "
+             "assert GymTS.available_integrations() == []; "
+             "assert {entry.name for entry in distribution('gymts').entry_points "
+             "if entry.group == 'console_scripts'} == {'gymts'}"], work)
     example = source / "examples" / "counter_experiment.json"
     result = json.loads(command([python, "-I", "-B", "-m", "gymts", "--store", work / "store",
                                  "run", example], work))
     if result.get("status") != "succeeded" or result["summary"]["counts"]["operations"] != 3:
         raise ReleaseError("Installed counter example did not complete three operations")
-    details = {"isolated_import": True, "console_scripts": 2, "counter_operations": 3}
+    details = {"isolated_import": True, "console_scripts": 1, "counter_operations": 3, "project_plugins_bundled": False}
     if full_tests:
         # Copy tests and their fixtures, without the source package, to prevent a
         # successful import from the checkout from masking broken wheel contents.
@@ -275,6 +280,10 @@ def install_and_test(wheel, source, work, full_tests):
         if not match:
             raise ReleaseError("Installed regression run did not report its test count")
         details["installed_regression_tests"] = int(match.group(1))
+        skipped = re.search(r"OK \(skipped=(\d+)\)", output)
+        details["installed_regression_skipped"] = int(skipped.group(1)) if skipped else 0
+        details["installed_regression_passed"] = (details["installed_regression_tests"]
+                                                   - details["installed_regression_skipped"])
         details["external_plugin_install"] = test_external_plugin(python, source, work)
     return details
 
@@ -331,10 +340,9 @@ with GymTS(sys.argv[2]) as gym:
         target = datetime.fromisoformat(record["alignment_key"]["target_time"].replace("Z", "+00:00"))
         expected = (target - start).total_seconds() / 60
         assert record["payload"]["value"]["prediction"] == expected
-    assert not any(name.startswith("gymts.integrations.chatts") for name in sys.modules)
     print(json.dumps({"metadata_discovery_without_load": True, "explicit_enable": True,
                       "forecast_results": len(records), "independent_linear_predictions_exact": True,
-                      "chatts_imported": False}))
+                      "public_sdk_only": True}))
 '''
     details = json.loads(command([python, "-I", "-B", "-c", code,
                                   source / "examples" / "forecast_experiment.json",
@@ -351,7 +359,6 @@ assert importlib.util.find_spec("gymts_release_linear") is None
 with GymTS(sys.argv[2]) as gym:
     assert not any(item["name"] == "release-linear" for item in gym.available_integrations())
     assert gym.run(json.loads(Path(sys.argv[1]).read_text()))["status"] == "succeeded"
-    assert not any(name.startswith("gymts.integrations.chatts") for name in sys.modules)
 '''
     command([python, "-I", "-B", "-c", code, source / "examples" / "forecast_experiment.json",
              work / "after-plugin-removal"], work)

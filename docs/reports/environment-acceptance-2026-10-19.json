@@ -1,0 +1,166 @@
+{
+  "status": "passed",
+  "report_date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "objective": "Four source kinds through optional independent adapters, actual invocation, sealed evidence, native AutoBenchTS evaluation and same-Run rescoring",
+  "core": {
+    "version": "0.5.0",
+    "contract_version": "1.2.0",
+    "freeze_scope": "gymts/**/*.py and setup.cfg",
+    "code_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+    "wheel_sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226",
+    "frozen_files_checked": 39,
+    "changes_this_round": [],
+    "reason": "All real source differences fit existing provider interfaces, source lifecycle, clocks, opaque native payloads, scoped artifacts and fixed evaluation snapshots."
+  },
+  "source_kinds": [
+    "generator",
+    "dataset",
+    "simulator",
+    "live"
+  ],
+  "new_optional_distributions": [
+    "gymts-hf-datasets",
+    "gymts-interaction",
+    "gymts-gymnasium",
+    "gymts-openenv",
+    "gymts-prometheus"
+  ],
+  "package_validation": {
+    "status": "passed",
+    "independent_distributions": 11,
+    "test_cases_run": 319,
+    "passed": 265,
+    "conditional_skips_in_minimal_environments": 54,
+    "all_enabled_simultaneously": true,
+    "uninstall_and_core_rescore": true,
+    "discovery_does_not_import_project_runtimes": true,
+    "report": "docs/reports/environment-adapter-package-check-2026-10-19.json",
+    "sha256": "ef6f2edb5766499bca86eee16dc5d72c1f3b61cfbe99cfda63d2126ec7332d1e"
+  },
+  "new_adapter_native_tests": {
+    "hf_datasets": {
+      "passed": 8,
+      "skipped": 0
+    },
+    "interaction": {
+      "passed": 14,
+      "skipped": 0
+    },
+    "gymnasium": {
+      "passed": 16,
+      "skipped": 0
+    },
+    "openenv": {
+      "passed": 8,
+      "skipped": 0
+    },
+    "prometheus": {
+      "passed": 12,
+      "skipped": 0
+    },
+    "total_passed": 58
+  },
+  "actual_native_sources": {
+    "generator": "Existing frozen-core quickstart; forecast/counter plus late-outcome same-Run rescore",
+    "dataset": "Official Monash tourism_monthly fixed Hub commit, 3 selected series; local_files and save_to_disk freeze also executed offline",
+    "simulator": "Real Gymnasium FrozenLake/CartPole, native termination and scope boundary, final state/reward retained, 6 successful Runs and same-Run rescore",
+    "live_openenv": "Real official Echo and Connect4 servers with official persistent WS SDK, actual rewards/done retained; rescore without installed SDK or live server",
+    "live_prometheus": "Real Prometheus 3.15.0 scraping local exporter, 11 decisions, independent explicit fixture reference, same-Run rescore with no HTTP"
+  },
+  "failure_evidence": [
+    "HF missing snapshot sealed failed Run",
+    "Real OpenEnv SDK timeout unknown/possible; no resend or reconnect",
+    "Real Prometheus HTTP 400 raw rejection preserved in failed Run; attached server left alive"
+  ],
+  "adapter_decisions": [
+    "Format/projection/private-reference handling stays in HF adapter",
+    "Native act once and observe cached state; neutral interaction domain stays external",
+    "Missing reward is null and missing cause remains unknown; scope_limited separate from native flags",
+    "OpenEnv official persistent WS sessions; close own session and leave attached host",
+    "Prometheus inclusive range end filtered to half-open windows; receipt availability and wall clock recorded separately",
+    "History cache coverage tracked per variable; oversized-response prefix and truncation retained"
+  ],
+  "backwards_compatibility": "Existing six adapters remain independently installable/enableable, all eleven coexist; no frozen core source changes",
+  "python39_adapter_source_parse": {
+    "hf_datasets": 7,
+    "interaction": 8,
+    "gymnasium": 3,
+    "openenv": 5,
+    "prometheus": 4
+  },
+  "reports": [
+    {
+      "source": "synthetic",
+      "path": "docs/reports/synthetic-environment-2026-10-19.json",
+      "sha256": "3d599c559f749819b853fc803338e84c004085f66c3a530bf7e96bd92124d75b"
+    },
+    {
+      "source": "hf",
+      "path": "docs/reports/hf-environment-2026-10-19.json",
+      "sha256": "d8a41a96fd145567f1ce6d2b47e84f72d2bed85987c644dd54aafc841126b388"
+    },
+    {
+      "source": "gymnasium",
+      "path": "docs/reports/gymnasium-environment-2026-10-19.json",
+      "sha256": "ab5479df2385e068384161ceedfe3d74000aefedcb8e28d07ed8997dfcae5070"
+    },
+    {
+      "source": "openenv",
+      "path": "docs/reports/openenv-environment-2026-10-19.json",
+      "sha256": "f1a5176b52b5790c1600655b541321e199dad3c955946b616d555a3cab4e1e17"
+    },
+    {
+      "source": "prometheus",
+      "path": "docs/reports/prometheus-environment-2026-10-19.json",
+      "sha256": "340e9b440a7e463280ffa5f55755ff6865369fcba8fe59306905124631b3d6c2"
+    }
+  ],
+  "evidence_archives": [
+    {
+      "source": "synthetic",
+      "path": "output/environment-adapters-2026-10-19/synthetic/evidence.tar.gz",
+      "sha256": "2f2a0aec3129055a8c27b64afa6aaf52fe6299afb30b8dac6cce9b3ddd95bc8f",
+      "size_bytes": 344585
+    },
+    {
+      "source": "hf",
+      "path": "output/hf-environment-2026-10-19/hf-environment-2026-10-19-evidence.tar.gz",
+      "sha256": "d5f7dce6f8ddd1a75fd6cd75d06063da80e873be1fdcabf1def866d565277365",
+      "size_bytes": 1330251
+    },
+    {
+      "source": "gymnasium",
+      "path": "output/environment-adapters-2026-10-19/gymnasium/evidence.tar.gz",
+      "sha256": "6e46418bb1066c76ed05ecc005cdd5292bc50b5c36bbf6cae838438cf538a94b",
+      "size_bytes": 636770
+    },
+    {
+      "source": "openenv",
+      "path": "output/openenv-environment-2026-10-19/evidence-final3.tar.gz",
+      "sha256": "ed3a10ab6f85600d753131115db954f14c3a7acdbd0fb52e43186f5e569edc61",
+      "size_bytes": 3139003
+    },
+    {
+      "source": "prometheus",
+      "path": "output/environment-adapters-2026-10-19/prometheus/evidence.tar.gz",
+      "sha256": "22ff650f831b616a5ff63345fea1585e51ee1bce6e976b6577cc86b8ebdf8718",
+      "size_bytes": 1518148
+    }
+  ],
+  "guide": "docs/environment-adapters.md",
+  "limitations": [
+    "HF supports materialized finite one-dimensional numeric forecasting views, not every HF modality or streaming dataset",
+    "Monash view is an explicit 3-row local evaluation projection, not a complete official benchmark result",
+    "Gymnasium validation uses fixed actions and one episode per Run, not vector/autoreset or new RL backend training",
+    "OpenEnv/Prometheus acceptance is against real localhost services; production endpoints and authentication are not configured",
+    "Prometheus fixture reference and sample-time forecast Task establish integration only, not causal online forecast quality",
+    "Agent autonomous tool-selection loop and full remote/isolation/recovery Runtime require separate acceptance",
+    "New native packages use optional runtime dependencies; skipped minimal-environment tests are reported separately from their native suites"
+  ],
+  "git": {
+    "head_unchanged": "cffa38f223e64a75874936ad58ce53d9391e63a9",
+    "staged_changes": [],
+    "commit_or_push_performed": false
+  }
+}

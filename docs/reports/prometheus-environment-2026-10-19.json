@@ -1,0 +1,146 @@
+{
+  "status": "passed",
+  "report_date": "2026-10-19",
+  "scope": "Real localhost Prometheus scraping an exporter; independent provider on frozen core",
+  "core": {
+    "version": "0.5.0",
+    "code_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+    "wheel_sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226",
+    "repo_and_installed_core_match": true,
+    "changes": []
+  },
+  "adapter": {
+    "version": "0.1.0",
+    "wheel_sha256": "b457425d44937367dafc802c629008fcef2e00bf6e34ab57dc6221ae672cde58",
+    "sdist_sha256": "ba48ea8f1bfa2a8d3cd222ece4e1e9f77d37113b14e093beb09ba0de8bd08900",
+    "source_and_installed_match_wheel": true
+  },
+  "native_binary": {
+    "version": "3.15.0",
+    "release_url": "https://github.com/prometheus/prometheus/releases/download/v3.15.0/prometheus-3.15.0.linux-amd64.tar.gz",
+    "sha256": "2a542df32eac02ee17b9d844fb2aa1de00dafa5476579ba8a3ba862e9d572ea0",
+    "binary_sha256": "dac83d1d1007961de3b9ba624942c9af0c192ee3df262ac47ef390bcade71c65"
+  },
+  "run_ids": [
+    "run_485b3ae3b71b4a48941ab07880243f21"
+  ],
+  "task_decisions": 11,
+  "event_count": 312,
+  "run_status": "succeeded",
+  "initial_verdict": "fail",
+  "score_verdict": "pass",
+  "rescore_verdict": "pass",
+  "independent_reference_value": 42,
+  "sealed_result_and_event_hashes_unchanged": true,
+  "run_hashes": {
+    "result": "sha256:ccc8ad8d532e2058db52e86f4e9abea0a2987ed79f25e9dfaf6fcadc4d1b7ded",
+    "events": "sha256:b5950f7f3056037829ce83d76bcb496d8f519a1c854ffce7fdb1f3bd7bac8b07"
+  },
+  "rescore_http_requests": 0,
+  "server_alive_after_gym_close": true,
+  "environment_summary": {
+    "actual_scope": {
+      "end": "2026-10-19T14:41:07.673746Z",
+      "start": "2026-10-19T14:41:04.673746Z"
+    },
+    "backend_disposition": "detached",
+    "counts": {
+      "batches": 12,
+      "dropped_points": 0,
+      "late_points": 0,
+      "operations": 0,
+      "points": 12
+    },
+    "end": {
+      "detail": null,
+      "reason": "read_scope_end",
+      "terminated": false,
+      "truncated": false
+    },
+    "final_clock": {
+      "domain": "wall_time",
+      "now": "2026-10-19T14:41:07.696392Z",
+      "visible_until": "2026-10-19T14:41:07.696392Z"
+    },
+    "last_cursor": "cursor_cdb2c234c123463bb335edad40c2e313",
+    "pending_operations": [],
+    "session_id": "session_36a4a6e832f14ce3ae09672cb9ef5b49"
+  },
+  "telemetry_summary": {
+    "coverage_frontier": "2026-10-19T14:41:07.673746Z",
+    "history": "delivered immutable snapshots",
+    "http_calls": 13,
+    "ownership": "attached",
+    "provider": "prometheus",
+    "server_stopped": false,
+    "warnings": []
+  },
+  "native_failure_evidence": {
+    "status": "passed",
+    "intentionally_failed_run_id": "run_fd2c804228564442b8fcf8173f4b152b",
+    "run_status": "failed",
+    "failure": {
+      "call_id": "prometheus-http_fea7adbafb9f46f4a7598e2fcf853ce4",
+      "ended_at": "2026-10-19T14:46:24.895700Z",
+      "error": "http_error",
+      "phase": "failed",
+      "request_ref": {
+        "artifact_id": "ec2b92ce4cb1bfcfd8008d712e85b0283fb3c47aa9aad401c0b447be4cc116c1",
+        "content_hash": "34639ea3d404f050385ea8ccfbebe24e578c1afd8b57a2b7f77f6c35f25b4c33",
+        "media_type": "application/json",
+        "revision": "34639ea3d404f050385ea8ccfbebe24e578c1afd8b57a2b7f77f6c35f25b4c33",
+        "schema_ref": "gymts.prometheus/http-evidence/1",
+        "size_bytes": 280,
+        "uri": "gymts-artifact://ec2b92ce4cb1bfcfd8008d712e85b0283fb3c47aa9aad401c0b447be4cc116c1/34639ea3d404f050385ea8ccfbebe24e578c1afd8b57a2b7f77f6c35f25b4c33"
+      },
+      "response_ref": {
+        "artifact_id": "635f796102818ee035a7fa058201056f5a1e4990e6246c765d734b0e6887db36",
+        "content_hash": "2c5f4f979ca8dfa6637232098af7199bf9639981774b0a5a089660ff6157c88d",
+        "media_type": "application/octet-stream",
+        "revision": "2c5f4f979ca8dfa6637232098af7199bf9639981774b0a5a089660ff6157c88d",
+        "schema_ref": null,
+        "size_bytes": 124,
+        "uri": "gymts-artifact://635f796102818ee035a7fa058201056f5a1e4990e6246c765d734b0e6887db36/2c5f4f979ca8dfa6637232098af7199bf9639981774b0a5a089660ff6157c88d"
+      },
+      "response_truncated": false,
+      "retried": false,
+      "status_code": 400
+    },
+    "native_response": {
+      "status": "error",
+      "errorType": "bad_data",
+      "error": "invalid parameter \"query\": 1:2: parse error: unclosed left parenthesis"
+    },
+    "sealed_result_sha256": "sha256:04b52025958e6f2b723f09c984190b9eb5ba51ea77ccad61b320793e5cd22411",
+    "sealed_events_sha256": "sha256:2860e22e14799f061d24acbea76cd0395ec48f062e71a9ead32f5e9fa57390bc",
+    "server_alive_after_gym_close": true
+  },
+  "tests": {
+    "passed": 12,
+    "skipped": 0,
+    "installed_from_sdist_rebuilt_wheel": true
+  },
+  "review_fixes": [
+    "Full normative EnvironmentSummary with attached disposition",
+    "History coverage tracked per captured variable and interval",
+    "Wall clock now is actual receipt/open time, separate from read frontier",
+    "Oversized response captured prefix retained with explicit truncation"
+  ],
+  "limitations": [
+    "Local fixture only; no production testbed configured",
+    "Read-only numeric matrix metrics; no control operations or native histogram projection",
+    "The reference forecasting Task timestamps decisions at sample time; no causal online prediction or model-quality claim",
+    "Initial evaluation has no private outcome and reports insufficient evidence; explicit known fixture reference supplies independent score",
+    "Live deployment identity cannot identify immutable future data; sealed observations are replayable evidence"
+  ],
+  "earlier_attempts_retained": [
+    "proof-1: no task decisions before metric scrape became ready; readiness polling fixed in owning harness",
+    "proof-2: completed capture/scoring followed by invalid snapshot query in demo; demo query corrected",
+    "native-proof-final: pre-review success; superseded by final-proof"
+  ],
+  "evidence_archive": {
+    "path": "output/environment-adapters-2026-10-19/prometheus/evidence.tar.gz",
+    "sha256": "22ff650f831b616a5ff63345fea1585e51ee1bce6e976b6577cc86b8ebdf8718",
+    "size_bytes": 1518148
+  }
+}

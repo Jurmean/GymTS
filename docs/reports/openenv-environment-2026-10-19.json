@@ -1,0 +1,197 @@
+{
+  "protocol_version": "gymts.openenv-environment-validation/1",
+  "status": "passed",
+  "core_changed": false,
+  "core_code_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+  "frozen_core_wheel_sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226",
+  "adapter_wheel_sha256": "a9b78bef5d8a81130b16cbe48dd88dac60b4a6adaf525b5632f8ec96b79d90ad",
+  "interaction_wheel_sha256": "db1d5f466055159f1ffd5a5d36550d7ff6259295d7bef10d22f55ba3f07e8e35",
+  "upstream_commit": "f2b00027b63242df33fbbf3af693bbc7cbfa9955",
+  "upstream_tracked_files_changed": false,
+  "installed_files_match_upstream_and_frozen_core": true,
+  "matched_python_files": {
+    "sdk": 169,
+    "echo": 5,
+    "connect4": 6,
+    "adapter": 5,
+    "interaction": 8
+  },
+  "sdk_version": "0.9.1.dev0",
+  "python": "3.11.8",
+  "contract_tests": {
+    "passed": 8,
+    "skipped": 0,
+    "installed_minimal_without_sdk_passed": 8
+  },
+  "dependency_check": "No broken requirements found.",
+  "native": {
+    "echo": {
+      "run_ids": [
+        "run_b7ab6db68a674354aac809f6438516bd"
+      ],
+      "evaluation_id": "evaluation_280908dff7e44790a17bfd82225b63e0",
+      "rescore_evaluation_id": "evaluation_f6d5d7bbe0d34506a4f67b89a4ee5017",
+      "offline_rescore_evaluation_id": "evaluation_70745f5fb8da4087a82c9c2d7d4dc083",
+      "offline_without_sdk_or_server": "pass",
+      "evaluation_verdict": "pass",
+      "rescore_verdict": "pass",
+      "coverage": {
+        "expected_units": 1,
+        "succeeded_runs": 1,
+        "failed_runs": 0,
+        "cancelled_runs": 0,
+        "not_started_units": 0
+      },
+      "metrics": {
+        "episode_length": {
+          "value": 3.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        },
+        "scope_limited": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "native_request_types": [
+        "reset",
+        "state",
+        "step",
+        "step",
+        "step"
+      ],
+      "sealed_runs_unchanged": true,
+      "host_survived_adapter_finish": true,
+      "unknown_cause_metrics": [],
+      "result_in_archive": "final3/echo/result.json"
+    },
+    "connect4": {
+      "run_ids": [
+        "run_514a0b0afdf542a69a337134f609c69b"
+      ],
+      "evaluation_id": "evaluation_136e324fd0664c359f2edaa07da344ac",
+      "rescore_evaluation_id": "evaluation_327665cef73a498280ace533797e07b1",
+      "offline_rescore_evaluation_id": "evaluation_43aff636f15f47498f877df27bf03242",
+      "offline_without_sdk_or_server": "pass",
+      "evaluation_verdict": "pass",
+      "rescore_verdict": "pass",
+      "coverage": {
+        "expected_units": 1,
+        "succeeded_runs": 1,
+        "failed_runs": 0,
+        "cancelled_runs": 0,
+        "not_started_units": 0
+      },
+      "metrics": {
+        "episode_return": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        },
+        "episode_length": {
+          "value": 7.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "native_request_types": [
+        "reset",
+        "state",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ],
+      "sealed_runs_unchanged": true,
+      "host_survived_adapter_finish": true,
+      "unknown_cause_metrics": [
+        {
+          "metric": "terminated",
+          "value": null,
+          "status": "insufficient_evidence",
+          "counts": {
+            "eligible": 1,
+            "scored": 0,
+            "missing": 1,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": "termination_cause_unavailable"
+        },
+        {
+          "metric": "truncated",
+          "value": null,
+          "status": "insufficient_evidence",
+          "counts": {
+            "eligible": 1,
+            "scored": 0,
+            "missing": 1,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": "termination_cause_unavailable"
+        }
+      ],
+      "result_in_archive": "final3/connect4/result.json"
+    }
+  },
+  "faults": {
+    "timeout_run_id": "run_196e5f907f7d4028b141dab26d644aef",
+    "expected_run_status": "failed",
+    "receipt": "unknown",
+    "side_effect": "possible",
+    "native_step_requests": 1,
+    "automatic_resend": false,
+    "lost_session_does_not_reconnect": true,
+    "attached_host_survived": true
+  },
+  "adapter_semantic_changes": [
+    "Uses official GenericEnvClient simulation WebSocket instead of stateless HTTP or production MCP Echo client",
+    "Native null reward does not become zero; only reward-dependent metric is insufficient",
+    "Native done with unknown cause closes episode, preserving missing termination-cause metrics",
+    "Scope limitation is a separate external metric; native terminated/truncated flags are preserved",
+    "Owns new WS session; external host remains attached and untouched",
+    "Timeout and session loss forbid replay/reconnection"
+  ],
+  "evidence_archive": "output/openenv-environment-2026-10-19/evidence-final3.tar.gz",
+  "evidence_archive_sha256": "ed3a10ab6f85600d753131115db954f14c3a7acdbd0fb52e43186f5e569edc61",
+  "limitations": [
+    "Local real upstream servers verified; no user production endpoint verified",
+    "Deployment identity is caller-declared, not remotely attested",
+    "Generic native seed enforcement, existing-session attach/resume and credential provider unsupported",
+    "Terminal initial reset unsupported; explicitly rejected",
+    "Candidates are explicit action sequences for integration acceptance, not autonomous LLM agent proof"
+  ]
+}

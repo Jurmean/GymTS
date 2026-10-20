@@ -57,16 +57,23 @@ class TimeSeriesReplay:
                                            if item["field"] in p["values"]}})
         self.points.sort(key=lambda p: (p["available"], p["index"]))
 
-    def describe(self):
+    @staticmethod
+    def describe_spec(spec):
+        connection = spec["source"]["connection"]
+        if ("points" in connection) == ("generator" in connection):
+            fail("invalid_config", "Source connection needs exactly one of points or generator")
         return {"environment_id": "local-timeseries-replay", "adapter_ref": component("local-timeseries-replay"),
                 "clock_domain": "event_time", "observation_granularity": "time_window",
                 "advance_mode": "on_observe",
                 "variables": {name: {"dtype": item["dtype"], "shape": [], "unit": item["unit"],
                                        "time_semantics": "instant", "schema_ref": "gymts.builtin/scalar/1"}
-                              for name, item in self.variables.items()},
+                              for name, item in spec["mapping"]["variables"].items()},
                 "operations": {}, "capabilities": {"range": True, "query": True, "history": True,
                 "reinitialize": True, "attach": False, "seed": True, "operation_idempotency": False},
                 "context_schema_ref": PUBLIC, "native_schema_ref": None, "default_command": None}
+
+    def describe(self):
+        return self.describe_spec(self.spec)
 
     def start(self, spec):
         if self.state != "created":

@@ -84,6 +84,38 @@ class AutoBenchTS:
         self.environment_ts, self.scorers, self.schemas = environment_ts, scorers, schemas
         self.records, self.artifacts = records, artifacts
 
+    def _benchmark_catalog(self):
+        from .catalog import BenchmarkCatalog
+        if not hasattr(self.environment_ts, "datasets"):
+            raise _error("Configure EnvironmentTS dataset resources before resolving a benchmark", "unsupported_capability")
+        return BenchmarkCatalog(self.environment_ts.datasets, self.environment_ts.registries.benchmarks,
+                                self.artifacts, self.schemas)
+
+    def register_benchmark(self, definition, *, aliases=()):
+        return self._benchmark_catalog().register_benchmark(definition, aliases=aliases)
+
+    def list_benchmarks(self):
+        return self._benchmark_catalog().list_benchmarks()
+
+    def load_benchmark(self, benchmark_id, *, revision):
+        return self._benchmark_catalog().load_benchmark(benchmark_id, revision=revision)
+
+    def resolve_benchmark(self, benchmark_id, *, revision, candidates, purpose="regression", repetitions=None):
+        spec = self._benchmark_catalog().resolve_benchmark(benchmark_id, revision=revision,
+            candidates=candidates, purpose=purpose, repetitions=repetitions)
+        _, _, scorer = self._common(spec, "evaluate")
+        # Validate compatibility without creating sessions or generating a
+        # second expected-unit plan. evaluate owns unit IDs and execution.
+        for case in spec["cases"]:
+            for candidate in spec["candidates"]:
+                experiment = {"protocol_version": "gymts.experiment/1", "name": spec["name"],
+                    "purpose": purpose, "scene": deepcopy(case["scene"]), "candidate": deepcopy(candidate["spec"]),
+                    "execution": deepcopy(case["execution"]), "recording": deepcopy(case["recording"]),
+                    "extensions": {}, "provenance": deepcopy(spec["provenance"])}
+                self.environment_ts.plan(experiment)
+                self._task(experiment, scorer)
+        return spec
+
     def _save(self, value: Any, schema: str, evaluation_id: str, evidence: list) -> dict:
         try:
             ref = self.artifacts.save_json(value, schema)
@@ -96,7 +128,9 @@ class AutoBenchTS:
     def _common(self, spec: dict, mode: str) -> tuple:
         common = {"protocol_version", "name", "purpose", "baseline_id", "scoring", "comparison", "failure_policy"}
         fields = {"cases", "candidates", "repetitions"} if mode == "evaluate" else {"runs", "previous_evaluation_id"}
-        _object(spec, common | fields)
+        _object(spec, common | fields, {"provenance"})
+        if "provenance" in spec:
+            self.schemas.validate("gymts.resource-provenance/1", spec["provenance"])
         try:
             canonical_json(spec)
         except (TypeError, ValueError) as exc:
@@ -276,13 +310,19 @@ class AutoBenchTS:
                     experiment = {"protocol_version": "gymts.experiment/1", "name": spec["name"], "purpose": spec["purpose"],
                                   "scene": deepcopy(case["scene"]), "candidate": deepcopy(candidate["spec"]),
                                   "execution": deepcopy(case["execution"]), "recording": deepcopy(case["recording"]), "extensions": {}}
+                    if "provenance" in spec:
+                        experiment["provenance"] = deepcopy(spec["provenance"])
                     if seed is not None:
                         experiment["execution"]["seed"] = seed
                     validation = self.environment_ts.validate(experiment)
                     if not validation["valid"]:
                         raise _error("Evaluation experiment failed validation", issues=validation["issues"])
-                    resolved_ref = validation["resolved_spec_ref"]
-                    experiment = self.artifacts.read_json(resolved_ref)
+                    if validation.get("resolved_spec") is not None:
+                        experiment = validation["resolved_spec"]
+                        resolved_ref = self.artifacts.save_json(experiment, "gymts.experiment/1")
+                    else:
+                        resolved_ref = validation["resolved_spec_ref"]
+                        experiment = self.artifacts.read_json(resolved_ref)
                     task = self._task(experiment, scorer)
                     unit = self._unit(experiment, resolved_ref, task, unit_id=new_id("unit"),
                                       evaluation_case_id=case["evaluation_case_id"], candidate_id=candidate["candidate_id"],
@@ -492,6 +532,14 @@ class AutoBenchTS:
 
     def _execute(self, spec: dict, units: list, experiments: dict, scorer_manifest: dict, selected: dict) -> dict:
         evaluation_id, created_at, evidence = new_id("evaluation"), utc_now(), []
+        for experiment in experiments.values():
+            provenance = experiment.get("provenance", {})
+            for reference in provenance.get("source_refs", []) + [
+                    provenance.get("usage_policy_ref"), provenance.get("benchmark_definition_ref")]:
+                if reference is not None:
+                    self.artifacts.resolve(reference)
+                    if reference not in evidence:
+                        evidence.append(deepcopy(reference))
         spec_ref = self._save(spec, spec["protocol_version"], evaluation_id, evidence)
         component_refs = [scorer_manifest["component_ref"]]
         for experiment in experiments.values():

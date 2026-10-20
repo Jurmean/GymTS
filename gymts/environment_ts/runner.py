@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import random
 import time
 from collections import deque
 
@@ -9,10 +10,11 @@ from gymts.contracts import (GymTSError, canonical_json, in_scope, inline,
                              intersect_scope, new_id, parse_time, shift_time,
                              time_compare, utc_now, duration_seconds)
 from .services import RestrictedServices
-from .validation import check_compatibility, ensure, resolved_defaults
+from .capture import RunTraceCollector
+from .validation import check_compatibility, check_execution_resources, ensure, resolved_defaults
 
 
-PRODUCER = {"name": "gymts.runner", "version": "0.3.1", "origin_ref": None}
+PRODUCER = {"name": "gymts.runner", "version": "0.5.0", "origin_ref": None}
 
 
 def keys(value, required, optional=(), label="message"):
@@ -34,7 +36,7 @@ class EnvironmentTS:
         self.store_refs = set(store_refs)
 
     def _assemble(self, spec):
-        resolved = resolved_defaults(spec, self.artifacts)
+        resolved = resolved_defaults(spec)
         self.schemas.validate("gymts.experiment/1", resolved)
         scene = resolved["scene"]
         em = self.registries.environments.resolve(scene["environment"]["adapter"], scene["environment"]["version"])
@@ -54,30 +56,43 @@ class EnvironmentTS:
         ensure(isinstance(source_refs, list), "Source artifact_refs must be a list", "schema_mismatch")
         for ref in source_refs:
             self.schemas.validate("gymts.artifact/1", ref)
-            self.artifacts.resolve(ref)
-        environment = self.registries.environments.create(
-            scene["environment"], RestrictedServices(self.artifacts, refs=source_refs, schemas=self.schemas))
-        task = self.tasks.create(scene["task"])
-        description, task_description = environment.describe(), task.describe()
+        description = self.registries.environments.describe(scene["environment"])
+        task_description = self.tasks.describe(scene["task"])
         variables, operations, read_scope = check_compatibility(
             resolved, description, task_description, (em, tm, cm), self.schemas, self.artifacts, self.store_refs)
-        return resolved, environment, task, description, task_description, cm, variables, operations, read_scope
+        context = {"experiment": resolved, "environment": description, "task": task_description,
+                   "manifests": {"environment": em, "task": tm, "candidate": cm}}
+        for registry, selection in ((self.registries.environments, scene["environment"]),
+                                    (self.tasks, scene["task"]), (self.candidates, resolved["candidate"])):
+            registry.check_compatibility(selection, context)
+        return resolved, None, None, description, task_description, cm, variables, operations, read_scope
+
+    def plan(self, spec):
+        """Compile declarations only: no plugin instance, data read or CAS write."""
+        resolved, _, _, env, task, cm, variables, operations, read_scope = self._assemble(spec)
+        scene = resolved["scene"]
+        return {"protocol_version": "gymts.assembly-plan/1", "resolved_spec": resolved,
+            "manifests": {"environment": self.registries.environments.resolve(scene["environment"]["adapter"], scene["environment"]["version"]),
+                          "task": self.tasks.resolve(scene["task"]["plugin"], scene["task"]["version"]), "candidate": cm},
+            "descriptions": {"environment": env, "task": task}, "variables": variables,
+            "operations": operations, "read_scope": read_scope, "resource_checks": "deferred_to_open"}
 
     def validate(self, spec):
         try:
-            resolved = self._assemble(spec)[0]
-            ref = self.artifacts.save_json(resolved, "gymts.experiment/1")
-            return {"valid": True, "resolved_spec_ref": ref, "issues": []}
+            plan = self.plan(spec)
+            return {"valid": True, "resolved_spec_ref": None, "resolved_spec": plan["resolved_spec"], "issues": []}
         except GymTSError as error:
-            return {"valid": False, "resolved_spec_ref": None, "issues": [{
+            return {"valid": False, "resolved_spec_ref": None, "resolved_spec": None, "issues": [{
                 "code": error.code, "path": error.info["links"].get("path", "$"), "message": str(error)}]}
         except (KeyError, TypeError, ValueError) as error:
-            return {"valid": False, "resolved_spec_ref": None, "issues": [{
+            return {"valid": False, "resolved_spec_ref": None, "resolved_spec": None, "issues": [{
                 "code": "invalid_config", "path": "$", "message": f"Invalid component declaration: {type(error).__name__}"}]}
 
     def run(self, spec):
         try:
-            assembled = self._assemble(spec)
+            # A historical scene_ref is configuration and can be expanded for
+            # execution. Offline planning deliberately requires its inline form.
+            assembled = self._assemble(resolved_defaults(spec, self.artifacts))
         except GymTSError:
             raise
         except (KeyError, TypeError, ValueError) as error:
@@ -112,8 +127,12 @@ class Runner:
         self.evidence_status = "complete"
         self.deadline = None
         self.cleanup = {}
+        self.traces = None
 
     def _emit(self, kind, value, links=None, event_time=None, storage="full"):
+        if self.storage_failed:
+            raise GymTSError("recording_failure", "Execution evidence storage has already failed",
+                             stage="recording", run_id=self.run_id)
         event_id = new_id("event")
         # A malformed plugin return is a contract failure, not a broken record
         # backend. Keep the Run sealable and state honestly that raw evidence
@@ -129,6 +148,8 @@ class Runner:
             if storage == "reference":
                 ref = self.artifacts.save_json(value, "gymts.json/1")
                 payload = {"schema_ref": "gymts.json/1", "storage": "artifact", "artifact_ref": ref}
+            elif storage == "artifact":
+                payload = {"schema_ref": value["schema_ref"], "storage": "artifact", "artifact_ref": value}
             event = {"event_id": event_id, "run_id": self.run_id, "kind": kind,
                      "producer_ref": PRODUCER, "source_event_time": event_time,
                      "caused_by": [self.last_event] if self.last_event else [],
@@ -140,6 +161,54 @@ class Runner:
                              run_id=self.run_id, links={"last_confirmed_event_id": self.last_event}) from error
         self.last_event = event_id
         return event_id
+
+    def _capture_storage_failure(self, error):
+        self.storage_failed = True
+        raise GymTSError("recording_failure", "Could not commit internal-call evidence", stage="recording",
+                         run_id=self.run_id, links={"last_confirmed_event_id": self.last_event}) from error
+
+    def _capture_problem(self, message, evidence_ref, reason):
+        self.evidence_status = "incomplete"
+        error = GymTSError("capture_incomplete", message, stage="capture", run_id=self.run_id,
+                           links={"evidence_ref": evidence_ref, "reason": reason})
+        if self.spec["recording"]["on_capture_failure"] == "fail_run":
+            raise error
+        info = error.to_dict()
+        self.errors.append(info)
+        self._emit("error", info)
+
+    def _flush_capture(self):
+        try:
+            return self.traces.flush()
+        finally:
+            self.artifact_refs.extend(self.traces.artifact_refs)
+
+    def _infer(self, task_input, output_id):
+        if self.traces is not None:
+            self.traces.bind(self.run_id, task_input, output_id)
+        try:
+            output = self._invoke("candidate", "infer", self.candidate.infer, copy.deepcopy(task_input))
+            # Raw output is core evidence, including returns which later fail
+            # schema validation. Optional capture checks must not discard it.
+            self._emit("candidate_output", output, {"output_id": output_id, "input_id": task_input["input_id"],
+                       "case_id": task_input["case_id"], "turn_id": task_input["turn_id"]},
+                       storage=self.spec["recording"]["outputs"])
+            self.outputs[output_id] = copy.deepcopy(output)
+            self.counts["outputs"] += 1
+        except BaseException:
+            if self.traces is not None:
+                try:
+                    self._flush_capture()
+                except GymTSError as capture_error:
+                    if self.storage_failed:
+                        raise
+                    # Preserve the invocation/schema failure as the primary
+                    # error, and retain any independent capture deficiency.
+                    self.errors.append(capture_error.to_dict())
+            raise
+        if self.traces is not None:
+            self._flush_capture()
+        return output
 
     def _invoke(self, role, method, callback, *args):
         try:
@@ -459,12 +528,7 @@ class Runner:
             self.counts["inputs"] += 1
             self.cases[cid]["attempts"] += 1
             self.resources._grant_payload(task_input["payload"])
-            output = self._invoke("candidate", "infer", self.candidate.infer, copy.deepcopy(task_input))
-            # Preserve the raw output before schema interpretation can fail.
-            self._emit("candidate_output", output, {"output_id": output_id, "input_id": task_input["input_id"],
-                       "case_id": cid, "turn_id": task_input["turn_id"]}, storage=self.spec["recording"]["outputs"])
-            self.outputs[output_id] = copy.deepcopy(output)
-            self.counts["outputs"] += 1
+            output = self._infer(task_input, output_id)
             keys(output, {"input_id", "task_protocol_ref", "produced_at", "model_revision", "payload"}, label="CandidateOutput")
             ensure(output["input_id"] == task_input["input_id"] and output["task_protocol_ref"] == self.td["task_protocol_ref"],
                    "Candidate output identity/protocol mismatch", "schema_mismatch")
@@ -557,10 +621,21 @@ class Runner:
         try:
             self.records.begin_run({"run_id": self.run_id, "resolved_spec_ref": resolved_ref,
                 "component_refs": [self.description["adapter_ref"], self.td["plugin_ref"], self.cm["component_ref"], self.cm["implementation_ref"]],
-                "created_at": self.started_at, "origin": "executed", "source_refs": [], "usage_policy_ref": None})
+                "created_at": self.started_at, "origin": "executed",
+                "source_refs": copy.deepcopy(self.spec.get("provenance", {}).get("source_refs", [])),
+                "usage_policy_ref": copy.deepcopy(self.spec.get("provenance", {}).get("usage_policy_ref"))})
             self.began = True
             self._emit("run_start", {"resolved_spec_ref": resolved_ref})
             self._checkpoint()
+            # Actual resource availability and plugin construction belong to an
+            # execution, so failure here still produces a sealed failed Run.
+            check_execution_resources(self.spec, self.artifacts, self.schemas)
+            source_refs = scene["environment"]["source"].get("connection", {}).get("artifact_refs", [])
+            self.environment = self._invoke("environment", "create", self.service.registries.environments.create,
+                scene["environment"], RestrictedServices(self.artifacts, refs=source_refs, schemas=self.schemas))
+            ensure(self._invoke("environment", "describe", self.environment.describe) == self.description, "Opened Environment differs from its pure declaration", "conflict")
+            self.task = self._invoke("task", "create", self.service.tasks.create, scene["task"])
+            ensure(self._invoke("task", "describe", self.task.describe) == self.td, "Opened Task differs from its pure declaration", "conflict")
             start = {"run_id": self.run_id, "mode": execution["start"]["mode"], "scope": execution["scope"],
                      "read_scope": self.read_scope, "feedback_until": execution["feedback_until"], "seed": execution["seed"],
                      "permitted_variables": self.variables, "permitted_operations": self.operations}
@@ -606,16 +681,27 @@ class Runner:
             context = {"run_id": self.run_id, "session": self.session, "effective_scope": self.effective_scope,
                        "execution": execution, "data": self.data}
             self.task_session = self._invoke("task", "bind", self.task.bind, scene["task"], scene["binding"], self.description, context)
-            self.candidate = self.service.candidates.create(self.spec["candidate"])
+            self.candidate = self._invoke("candidate", "create", self.service.candidates.create, self.spec["candidate"])
             learning = execution["learning"]
             self.resources = RestrictedServices(self.artifacts, refs=[self.spec["candidate"]["artifact"]] + self.spec["candidate"]["inherited_state"],
                 views=[learning["training_view"], learning["training_targets"]], purpose="prepare", schemas=self.schemas)
+            if self.spec["recording"]["model_calls"] != "none":
+                self.traces = RunTraceCollector(
+                    self.run_id, self.spec["recording"]["model_calls"], self.schemas, self.artifacts,
+                    lambda kind, ref, links: self._emit(kind, ref, links, storage="artifact"),
+                    self._capture_problem, self._capture_storage_failure,
+                    execution_events=lambda: self.records.get_run(self.run_id)["events"])
             self._checkpoint()
+            randomness = {"seed": execution["seed"], "scope": "run", "algorithm": "python.random.Random",
+                          "backend_enforcement": "adapter"}
+            self._emit("artifact", {"role": "candidate_randomness", "value": randomness})
             prepared = self._invoke("candidate", "prepare", self.candidate.prepare, {"run_id": self.run_id, "task_protocol_ref": self.td["task_protocol_ref"],
                 "candidate_spec": self.spec["candidate"], "implementation_ref": self.cm["implementation_ref"],
                 "session_context": self.session["public_context"], "training_targets": learning["training_targets"],
                 "alignment_schema_ref": learning["alignment_schema_ref"], "learning": learning,
-                "resources": self.resources, "traces": None}, learning["training_view"])
+                "resources": self.resources, "traces": self.traces,
+                "execution_seed": execution["seed"], "rng": random.Random(execution["seed"]),
+                "randomness": copy.deepcopy(randomness)}, learning["training_view"])
             keys(prepared, {"model_revision", "state_refs", "training_provenance_ref"}, label="PreparationResult")
             for ref in prepared["state_refs"]:
                 self.artifacts.resolve(ref)
@@ -730,4 +816,3 @@ class Runner:
         # Exception text may include request bodies or credentials. Keep it out of public evidence.
         return GymTSError("backend_failure", f"Plugin raised {type(error).__name__}", stage=stage,
                           run_id=self.run_id).to_dict()
-

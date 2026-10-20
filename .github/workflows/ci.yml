@@ -25,3 +25,5 @@ jobs:
         run: python -B -m unittest discover -s tests -v
       - name: Build and verify isolated installations
         run: python -B scripts/check_release.py
+      - name: Verify independent adapter distributions
+        run: python -B scripts/check_adapters.py

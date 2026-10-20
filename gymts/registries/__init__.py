@@ -12,8 +12,15 @@ class ComponentRegistry:
     def __init__(self, kind: str, schemas: SchemaRegistry):
         self.kind, self.schemas = kind, schemas
         self._entries = {}
+        # Keep manifests/factories in the historical two-tuple layout. Pure
+        # declaration and compatibility callbacks are separate host metadata.
+        self._providers = {}
 
-    def register(self, manifest: dict, factory: Callable) -> None:
+    def register(self, manifest: dict, factory: Callable, *, describe=None, compatibility=None) -> None:
+        describe = describe if describe is not None else getattr(factory, "describe_spec", None)
+        compatibility = compatibility if compatibility is not None else getattr(factory, "check_compatibility_spec", None)
+        if any(callback is not None and not callable(callback) for callback in (describe, compatibility)):
+            raise GymTSError("invalid_config", "Provider callbacks must be callable")
         required = {"component_ref", "protocol_versions", "params_schema_ref", "origin_ref"}
         specific = {
             "environment": {"source_schema_ref", "mapping_schema_ref", "options_schema_ref"},
@@ -99,11 +106,44 @@ class ComponentRegistry:
         key = (component_ref["name"], component_ref["version"])
         if key in self._entries:
             old, old_factory = self._entries[key]
-            if old != manifest or old_factory is not factory:
+            if (old != manifest or old_factory is not factory or
+                    self._providers.get(key) != {"describe": describe, "compatibility": compatibility}):
                 raise GymTSError("conflict", f"Registration already exists: {key}")
             return
         canonical_json(manifest)
         self._entries[key] = (copy.deepcopy(manifest), factory)
+        self._providers[key] = {"describe": describe, "compatibility": compatibility}
+
+    def _selection(self, spec):
+        name = spec["plugin"] if self.kind == "task" else spec["adapter"]
+        manifest = self.resolve(name, spec["version"])
+        return (name, spec["version"]), manifest
+
+    def describe(self, spec: dict) -> dict:
+        """Read a trusted provider declaration without creating a live plugin.
+
+        Callbacks receive JSON configuration only. This API contract is not a
+        sandbox: a trusted callback must itself obey the no-I/O requirement.
+        """
+        key, manifest = self._selection(spec)
+        callback = self._providers.get(key, {}).get("describe")
+        if callback is None:
+            raise GymTSError("unsupported_capability", f"{self.kind} needs a pure describe_spec provider for planning")
+        result = callback(copy.deepcopy(spec))
+        try:
+            canonical_json(result)
+        except (TypeError, ValueError) as error:
+            raise GymTSError("invalid_config", "Provider description must be finite JSON") from error
+        if not isinstance(result, dict):
+            raise GymTSError("invalid_config", "Provider description must be an object")
+        return copy.deepcopy(result)
+
+    def check_compatibility(self, spec: dict, context: dict) -> None:
+        """Apply an optional pure domain rule; absence adds no domain assumptions."""
+        key, _ = self._selection(spec)
+        callback = self._providers.get(key, {}).get("compatibility")
+        if callback is not None and callback(copy.deepcopy(context)) is not None:
+            raise GymTSError("invalid_config", "Compatibility callbacks must return None or raise a contract error")
 
     def resolve(self, name: str, version: str) -> dict:
         if not isinstance(name, str) or not name or not isinstance(version, str) or not version:
@@ -152,4 +192,6 @@ class Registries:
         self.tasks = TaskRegistry(schemas)
         self.candidates = CandidateRegistry(schemas)
         self.scorers = ScorerRegistry(schemas)
-
+        from .resources import DatasetRegistry, BenchmarkRegistry
+        self.datasets = DatasetRegistry()
+        self.benchmarks = BenchmarkRegistry()

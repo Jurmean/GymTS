@@ -2,8 +2,6 @@
 import copy
 import json
 from pathlib import Path
-import subprocess
-import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -20,65 +18,16 @@ BASE = Path(__file__).resolve().parents[1]
 
 
 class OptionalIntegrationTests(unittest.TestCase):
-    def test_core_run_and_discovery_succeed_when_chatts_import_is_blocked(self):
-        script = '''
-import importlib.abc
-import json
-from pathlib import Path
-import sys
-class BlockChatTS(importlib.abc.MetaPathFinder):
-    def find_spec(self, fullname, path=None, target=None):
-        if fullname == "gymts.integrations.chatts" or fullname.startswith("gymts.integrations.chatts."):
-            raise ModuleNotFoundError("ChatTS is deliberately unavailable")
-sys.meta_path.insert(0, BlockChatTS())
-from gymts import GymTS
-with GymTS(sys.argv[1]) as gym:
-    assert any(item["name"] == "chatts" for item in gym.available_integrations())
-    assert not any(name.startswith("gymts.integrations.chatts") for name in sys.modules)
-    spec = json.loads(Path(sys.argv[2]).read_text())
-    assert gym.validate(spec)["valid"]
-    assert gym.run(spec)["status"] == "succeeded"
-    try:
-        gym.enable_integration("chatts")
-    except Exception as error:
-        assert error.code == "unsupported_capability", repr(error)
-    else:
-        raise AssertionError("Explicit missing integration must fail")
-    assert gym.run(spec)["status"] == "succeeded"
-'''
-        with tempfile.TemporaryDirectory() as root:
-            result = subprocess.run([sys.executable, "-B", "-c", script, root,
-                                     str(BASE / "examples" / "forecast_experiment.json")],
-                                    cwd=BASE, capture_output=True, text=True, timeout=30)
-        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-
-    def test_text_adapter_import_does_not_load_native_candidate(self):
-        script = '''
-import importlib.abc
-import sys
-class BlockNativeCandidate(importlib.abc.MetaPathFinder):
-    def find_spec(self, fullname, path=None, target=None):
-        if fullname == "gymts.integrations.chatts.candidate":
-            raise ModuleNotFoundError("Native ChatTS adapter is deliberately unavailable")
-sys.meta_path.insert(0, BlockNativeCandidate())
-from gymts.integrations.chatts.text_candidate import TextLLMHTTPCandidate
-from gymts.http_candidate import FrozenJSONHTTPCandidate
-assert TextLLMHTTPCandidate.__bases__ == (FrozenJSONHTTPCandidate,)
-assert "gymts.integrations.chatts.candidate" not in sys.modules
-'''
-        result = subprocess.run([sys.executable, "-B", "-c", script], cwd=BASE,
-                                capture_output=True, text=True, timeout=30)
-        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-
-    def test_explicit_registration_and_repeated_enable_preserve_v1_components(self):
-        with tempfile.TemporaryDirectory() as root, GymTS(root, integrations=("chatts", "chatts")) as gym:
-            self.assertEqual(("chatts",), gym.enabled_integrations)
-            self.assertEqual("chatts-http", gym.registries.candidates.resolve(
-                "chatts-http", "1.0.0")["component_ref"]["name"])
-            self.assertEqual("chatts-text-http", gym.registries.candidates.resolve(
-                "chatts-text-http", "1.0.0")["component_ref"]["name"])
-            gym.enable_integration("chatts")
-            self.assertEqual(("chatts",), gym.enabled_integrations)
+    def test_no_project_catalog_is_bundled_with_core(self):
+        with patch("gymts.integrations.entry_points", return_value={}), \
+                tempfile.TemporaryDirectory() as root, GymTS(root) as gym:
+            self.assertEqual([], gym.available_integrations())
+            spec = json.loads((BASE / "examples" / "forecast_experiment.json").read_text())
+            self.assertEqual("succeeded", gym.run(spec)["status"])
+            with self.assertRaises(GymTSError) as caught:
+                gym.enable_integration("not-installed")
+            self.assertEqual("unsupported_capability", caught.exception.code)
+            self.assertEqual("succeeded", gym.run(spec)["status"])
 
     def test_installed_entry_point_discovery_does_not_load_until_selected(self):
         calls = []
@@ -107,44 +56,45 @@ assert "gymts.integrations.chatts.candidate" not in sys.modules
             self.assertEqual(["load", "register"], calls)
 
     def test_duplicate_entry_points_and_unknown_names_are_rejected(self):
-        entry = SimpleNamespace(name="chatts", value="other:register", load=lambda: None)
-        with patch("gymts.integrations.entry_points", return_value={"gymts.integrations": [entry]}):
-            info = next(item for item in available_integrations() if item["name"] == "chatts")
+        entries = [SimpleNamespace(name="duplicate", value=value, dist=None, load=lambda: None)
+                   for value in ("first:register", "second:register")]
+        with patch("gymts.integrations.entry_points", return_value={"gymts.integrations": entries}):
+            info = next(item for item in available_integrations() if item["name"] == "duplicate")
             self.assertEqual("conflict", info["status"])
             self.assertEqual(2, len(info["providers"]))
             with tempfile.TemporaryDirectory() as root, GymTS(root) as gym:
                 with self.assertRaises(GymTSError) as caught:
-                    gym.enable_integration("chatts")
+                    gym.enable_integration("duplicate")
                 self.assertEqual("conflict", caught.exception.code)
-        with tempfile.TemporaryDirectory() as root, GymTS(root) as gym:
+        with patch("gymts.integrations.entry_points", return_value={}), \
+                tempfile.TemporaryDirectory() as root, GymTS(root) as gym:
             for name in ("missing-integration", "", None):
                 with self.subTest(name=name), self.assertRaises(GymTSError):
                     gym.enable_integration(name)
             self.assertEqual((), gym.enabled_integrations)
 
-    def test_unselected_broken_entry_point_does_not_block_other_integrations(self):
+    def test_unselected_broken_or_conflicting_plugins_do_not_block_selected_plugin(self):
         def unavailable():
             raise ModuleNotFoundError("Missing optional distribution")
 
-        entry = SimpleNamespace(name="unavailable-example", value="missing:register",
-                                dist=None, load=unavailable)
-        with patch("gymts.integrations.entry_points", return_value={"gymts.integrations": [entry]}):
-            self.assertIn("unavailable-example", [item["name"] for item in available_integrations()])
-            with tempfile.TemporaryDirectory() as root, GymTS(root, integrations=("chatts",)) as gym:
-                with self.assertRaises(GymTSError) as caught:
-                    gym.enable_integration("unavailable-example")
-                self.assertEqual("unsupported_capability", caught.exception.code)
-                self.assertEqual(("chatts",), gym.enabled_integrations)
-
-    def test_another_names_metadata_conflict_does_not_block_chatts(self):
-        entries = [SimpleNamespace(name="unrelated", value=value, dist=None, load=lambda: None)
-                   for value in ("first:register", "second:register")]
+        calls = []
+        entries = [SimpleNamespace(name="unavailable-example", value="missing:register",
+                                   dist=None, load=unavailable),
+                   SimpleNamespace(name="selected-example", value="example:register", dist=None,
+                                   load=lambda: lambda registries, schemas: calls.append("register"))]
+        entries.extend(SimpleNamespace(name="unrelated", value=value, dist=None, load=lambda: None)
+                       for value in ("first:register", "second:register"))
         with patch("gymts.integrations.entry_points", return_value={"gymts.integrations": entries}):
-            with tempfile.TemporaryDirectory() as root, GymTS(root, integrations=("chatts",)) as gym:
-                self.assertEqual(("chatts",), gym.enabled_integrations)
-                with self.assertRaises(GymTSError) as caught:
-                    gym.enable_integration("unrelated")
-                self.assertEqual("conflict", caught.exception.code)
+            self.assertEqual([], calls)
+            with tempfile.TemporaryDirectory() as root, GymTS(root, integrations=("selected-example",)) as gym:
+                self.assertEqual(["register"], calls)
+                for name, code in (("unavailable-example", "unsupported_capability"), ("unrelated", "conflict")):
+                    with self.subTest(name=name), self.assertRaises(GymTSError) as caught:
+                        gym.enable_integration(name)
+                    self.assertEqual(code, caught.exception.code)
+                self.assertEqual(("selected-example",), gym.enabled_integrations)
+                spec = json.loads((BASE / "examples" / "forecast_experiment.json").read_text())
+                self.assertEqual("succeeded", gym.run(spec)["status"])
 
     def test_failed_registration_rolls_back_all_roles_and_can_retry(self):
         calls = []
@@ -199,7 +149,7 @@ assert "gymts.integrations.chatts.candidate" not in sys.modules
 
     def test_invalid_integrations_collection_reports_contract_error(self):
         with tempfile.TemporaryDirectory() as root:
-            for names in ("chatts", None, 1):
+            for names in ("example", None, 1):
                 with self.subTest(names=names), self.assertRaises(GymTSError) as caught:
                     GymTS(root, integrations=names)
                 self.assertEqual("invalid_config", caught.exception.code)

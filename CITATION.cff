@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use GymTS, please cite this software and identify the exact version or commit used."
+type: software
+title: "GymTS: Time-series experiment execution and independent evaluation"
+authors:
+  - name: "GymTS contributors"
+repository-code: "https://github.com/Jurmean/GymTS"
+url: "https://github.com/Jurmean/GymTS"
+version: "0.5.0"
+license: MIT
+abstract: >-
+  GymTS provides local experiment execution, evidence capture, independent
+  evaluation and rescoring through public contracts and optional project adapters.
+keywords:
+  - time series
+  - reproducibility
+  - evaluation
+  - environments
+  - agents

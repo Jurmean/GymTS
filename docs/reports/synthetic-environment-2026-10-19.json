@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "report_date": "2026-10-19",
+  "scope": "Existing deterministic reference generator and counter; no new ChatTS generation claim",
+  "core_code_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+  "core_changes": [],
+  "forecast_run_id": "run_1f0f4137265747f0bba1f3e2cd53bff6",
+  "counter_run_id": "run_b1d69e47f01845c3928a75c48bde96a4",
+  "counter_operations": 3,
+  "initial_verdict": "insufficient_evidence",
+  "rescored_verdict": "pass",
+  "mae": {
+    "last-value": 1.0,
+    "window-mean": 2.0
+  },
+  "rescored_run_ids": [
+    "run_10d3b276b9044a4d8b735a48d435d7fe",
+    "run_2d1b37edc6324a98a507228bc6777ad6"
+  ],
+  "same_run_ids": true,
+  "original_results_unchanged": true,
+  "records_root": "/tmp/gymts-synthetic-environment-proof",
+  "evidence_archive": {
+    "path": "output/environment-adapters-2026-10-19/synthetic/evidence.tar.gz",
+    "sha256": "2f2a0aec3129055a8c27b64afa6aaf52fe6299afb30b8dac6cce9b3ddd95bc8f",
+    "size_bytes": 344585
+  }
+}

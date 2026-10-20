@@ -115,7 +115,8 @@ class ValidationContracts(unittest.TestCase):
         with stack:
             report = self.service.validate(self.forecast)
         self.assertTrue(report["valid"], report)
-        fixed = self.artifacts.read_json(report["resolved_spec_ref"])
+        self.assertIsNone(report["resolved_spec_ref"])
+        fixed = report["resolved_spec"]
         self.assertEqual("gymts.experiment/1", fixed["protocol_version"])
         for mock in mocks:
             mock.assert_not_called()
@@ -145,21 +146,23 @@ class ValidationContracts(unittest.TestCase):
         unit = copy.deepcopy(self.forecast)
         unit["scene"]["binding"]["variables"]["value"]["unit"] = "percent"
         self.reject(unit)
-        describe = TimeSeriesReplay.describe
-        def vector(instance):
-            result = describe(instance)
+        provider = self.registries.environments._providers[("local-timeseries-replay", "1.0.0")]
+        describe = provider["describe"]
+        def vector(spec):
+            result = describe(spec)
             result["variables"]["value"]["shape"] = [2]
             return result
-        with patch.object(TimeSeriesReplay, "describe", vector):
+        with patch.dict(provider, describe=vector):
             self.reject(self.forecast)
 
     def test_seed_fit_and_online_learning_capabilities_are_checked(self):
-        describe = TimeSeriesReplay.describe
-        def no_seed(instance):
-            result = describe(instance)
+        provider = self.registries.environments._providers[("local-timeseries-replay", "1.0.0")]
+        describe = provider["describe"]
+        def no_seed(spec):
+            result = describe(spec)
             result["capabilities"]["seed"] = False
             return result
-        with patch.object(TimeSeriesReplay, "describe", no_seed):
+        with patch.dict(provider, describe=no_seed):
             self.reject(self.forecast)
         fit = copy.deepcopy(self.forecast)
         fit["execution"]["learning"]["prepare"] = "fit"
@@ -172,22 +175,24 @@ class ValidationContracts(unittest.TestCase):
     def test_same_operation_name_with_different_argument_contract_is_rejected(self):
         self.schemas.register("test.wrong-operation/1", {"type": "object", "required": ["text"],
                              "properties": {"text": {"type": "string"}}, "additionalProperties": False})
-        describe = CounterControlTask.describe
-        def wrong_operation(instance):
-            result = describe(instance)
+        provider = self.registries.tasks._providers[("counter_control", "1.0.0")]
+        describe = provider["describe"]
+        def wrong_operation(spec):
+            result = describe(spec)
             result["required_operations"]["increment"]["arguments_schema_ref"] = "test.wrong-operation/1"
             return result
-        with patch.object(CounterControlTask, "describe", wrong_operation):
+        with patch.dict(provider, describe=wrong_operation):
             self.reject(self.counter)
 
     def test_malformed_environment_description_is_rejected(self):
-        describe = TimeSeriesReplay.describe
+        provider = self.registries.environments._providers[("local-timeseries-replay", "1.0.0")]
+        describe = provider["describe"]
         for changed in ({"clock_domain": "guess"}, {"advance_mode": "magic"}):
-            def malformed(instance, changed=changed):
-                result = describe(instance)
+            def malformed(spec, changed=changed):
+                result = describe(spec)
                 result.update(changed)
                 return result
-            with self.subTest(changed=changed), patch.object(TimeSeriesReplay, "describe", malformed):
+            with self.subTest(changed=changed), patch.dict(provider, describe=malformed):
                 self.reject(self.forecast)
 
     def test_invalid_task_duration_is_rejected_before_start(self):

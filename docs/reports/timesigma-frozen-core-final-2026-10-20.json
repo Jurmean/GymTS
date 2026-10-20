@@ -1,0 +1,96 @@
+{
+  "status": "passed",
+  "scope": "real native CPU integration gate on explicit synthetic arrays; not benchmark-quality evidence",
+  "recorded_at": "2026-10-19T13:11:09.319834Z",
+  "run_id": "run_550b2dc6c9d54f279a9a386b34c55f2e",
+  "versions": {
+    "gymts": "0.5.0",
+    "gymts-timesigma": "0.2.0",
+    "timesigma": "0.1.0",
+    "numpy": "1.26.4",
+    "torch": "2.5.1+cpu"
+  },
+  "upstream_revision": "5a953c1a84d0a442d1c41b17b4e8aba8c013be10",
+  "upstream_tracked_clean_after": true,
+  "core_wheel": {
+    "path": "/tmp/gymts-core05-final-frozen/wheels/gymts-0.5.0-py3-none-any.whl",
+    "sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226"
+  },
+  "installed_core_matches_exact_wheel": true,
+  "frozen_source_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+  "core_unchanged": true,
+  "core_unchanged_after_native_regression": true,
+  "core_tree_before": {
+    "installed_core": "sha256:ac1ac4fdb784baedeeb0380c11f73fa4a63f25c846bd19bd9029ddd39088779a",
+    "source_core": "sha256:16b6d3918c9423e1b7646c9312ac82d7b8f2f060bdd186ba6321a00ac8d2e17d"
+  },
+  "core_tree_after": {
+    "installed_core": "sha256:ac1ac4fdb784baedeeb0380c11f73fa4a63f25c846bd19bd9029ddd39088779a",
+    "source_core": "sha256:16b6d3918c9423e1b7646c9312ac82d7b8f2f060bdd186ba6321a00ac8d2e17d"
+  },
+  "native_operations": [
+    "fit",
+    "score",
+    "replay"
+  ],
+  "native_training_calls": 1,
+  "native_training_calls_during_infer": 0,
+  "scaler_fit_calls_during_infer": 0,
+  "bitwise_fresh_process_replay": true,
+  "training_randomness": {
+    "effective_training_seed": 19,
+    "requested_execution_seed": 19,
+    "seed_source": "execution_context"
+  },
+  "candidate_spec_contains_seed": false,
+  "official_report_status": "completed",
+  "repeated_report_status": "completed",
+  "official_report_verdict": "pass",
+  "repeated_report_verdict": "pass",
+  "sealed_result_and_trace_unchanged": true,
+  "official_metric_ids": [
+    "delay-reduced-length-auprc",
+    "delay-reduced-length-f1",
+    "event-wise-auprc",
+    "event-wise-f1",
+    "point-wise-auprc",
+    "point-wise-f1",
+    "reduced-length-auprc",
+    "reduced-length-f1"
+  ],
+  "result_sha256": "sha256:7eee538f5ea7d31f806519b685b62df4e4229f5381b1cd94abb4e6d72c7b2c3b",
+  "trace_sha256": "sha256:d88ef8d7e507012cf31a3288e4ecacba79e3ac3d054b49f8cd6de35d30103a9a",
+  "archive": {
+    "path": "/zzr/zmx/GymTS/Jurmean-GymTS/output/frozen-core-final-2026-10-20/timesigma/evidence.zip",
+    "sha256": "ece7988aabed0ac44ce45bdc5b464c0acd7e8f7ff439a53ced02f9b8b7b66cf7",
+    "record_snapshot_ref": {
+      "artifact_id": "1b3c7fa9a3e30fc7d35d8f326019c8d1473d91134a9f71d0a412434146ebf88c",
+      "revision": "ce8eec74c7f8cb0845c49b59147cbddd56393022a8e150b3977186a0b0dcc7ba",
+      "uri": "gymts-artifact://1b3c7fa9a3e30fc7d35d8f326019c8d1473d91134a9f71d0a412434146ebf88c/ce8eec74c7f8cb0845c49b59147cbddd56393022a8e150b3977186a0b0dcc7ba",
+      "content_hash": "ce8eec74c7f8cb0845c49b59147cbddd56393022a8e150b3977186a0b0dcc7ba",
+      "media_type": "application/json",
+      "schema_ref": "gymts.record-snapshot/1",
+      "size_bytes": 767
+    },
+    "run_count": 1,
+    "artifact_count": 56,
+    "schema_version": "gymts.timesigma.evidence-archive/1"
+  },
+  "adapter_wheel": {
+    "path": "/tmp/gymts-timesigma-frozen-gate/wheels/gymts_timesigma-0.2.0-py3-none-any.whl",
+    "sha256": "d223d0bf00b60c256a9862151f50f8eb9afec22d1e849556e3c9ccb957653658"
+  },
+  "native_regression": {
+    "total": 75,
+    "passed": 75,
+    "skipped": 0,
+    "errors": 0,
+    "elapsed_seconds": 102.945,
+    "log": "/tmp/gymts-timesigma-final-frozen-gate/native-unittest.log",
+    "log_sha256": "4851fde3ca7c9f050a094ff71949b601ece37fccdce6c9b5e02c532f6988e296"
+  },
+  "retained_evidence": "/zzr/zmx/GymTS/Jurmean-GymTS/output/frozen-core-final-2026-10-20/timesigma",
+  "full_evidence": "/zzr/zmx/GymTS/Jurmean-GymTS/output/frozen-core-final-2026-10-20/timesigma/result.json",
+  "previous_frozen_gate": "/tmp/gymts-timesigma-frozen-gate/summary.json",
+  "native_log": "/zzr/zmx/GymTS/Jurmean-GymTS/output/frozen-core-final-2026-10-20/timesigma/native-gate.log"
+}

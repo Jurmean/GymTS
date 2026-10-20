@@ -208,6 +208,8 @@ VIEW = obj({"view_id": STRING, "revision": STRING, "source_refs": array(ARTIFACT
 
 
 def register_core_schemas(schemas: SchemaRegistry) -> None:
+    from .resources import PROVENANCE, register_resource_schemas, resource_schemas
+    register_resource_schemas(schemas)
     source = obj({"kind": {"enum": ["dataset", "generator", "simulator", "live"]},
                   "locator": STRING, "revision": nullable(STRING), "connection": OBJECT,
                   "credential_ref": nullable(STRING)})
@@ -246,10 +248,65 @@ def register_core_schemas(schemas: SchemaRegistry) -> None:
         "protocol_version": {"const": "gymts.experiment/1"}, "name": nullable(STRING),
         "purpose": {"enum": ["development", "regression", "acceptance", "training_collection"]},
         "scene": obj({"environment": env, "task": task, "binding": binding}),
-        "candidate": candidate, "execution": execution, "recording": recording, "extensions": OBJECT}))
+        "candidate": candidate, "execution": execution, "recording": recording, "extensions": OBJECT,
+        "provenance": resource_schemas()[PROVENANCE]},
+        required=["protocol_version", "name", "purpose", "scene", "candidate", "execution", "recording", "extensions"]))
+    schemas.register("gymts.assembly-plan/1", obj({
+        "protocol_version": {"const": "gymts.assembly-plan/1"},
+        "resolved_spec": schemas.resolve("gymts.experiment/1"),
+        "manifests": obj({"environment": OBJECT, "task": OBJECT, "candidate": OBJECT}),
+        "descriptions": obj({"environment": OBJECT, "task": OBJECT}),
+        "variables": array(STRING, uniqueItems=True), "operations": array(STRING, uniqueItems=True),
+        "read_scope": SCOPE, "resource_checks": {"const": "deferred_to_open"}}))
     schemas.register("gymts.selection/1", obj({
         "kind": {"enum": ["all", "rows", "json_pointer"]},
         "source_index": {"type": "integer", "minimum": 0}, "pointer": {"type": "string"},
         "start": {"type": "integer", "minimum": 0}, "stop": nullable({"type": "integer", "minimum": 0})},
         required=["kind"]))
+    register_capture_schemas(schemas)
 
+
+def register_capture_schemas(schemas: SchemaRegistry) -> None:
+    """Formal v1 internal-call evidence, separate from a model's output schema."""
+    error = obj({"code": STRING, "stage": STRING, "method": nullable(STRING),
+                 "message": {"type": "string"}, "run_id": nullable(STRING), "links": OBJECT,
+                 "retryable": {"type": "boolean"},
+                 "side_effect": {"enum": ["none", "possible", "confirmed"]}})
+    capture = obj({"requested_profile": {"enum": ["io", "native_rollout"]},
+                   "acquired_fields": array(STRING, uniqueItems=True),
+                   "missing_fields": {"type": "object", "additionalProperties": STRING},
+                   "transforms": array(COMPONENT),
+                   "completeness": {"enum": ["complete", "partial", "none"]}})
+    identity = {"call_id": STRING, "attempt_id": STRING, "parent_call_id": nullable(STRING),
+                "run_id": STRING, "input_id": STRING, "output_id": STRING}
+    timing = {"started_at": STRING, "ended_at": nullable(STRING),
+              "status": {"enum": ["succeeded", "failed", "cancelled", "unknown"]}}
+    model = dict(identity, **timing)
+    model.update({"protocol_version": {"const": "gymts.model-call/1"},
+                  "model_ref": COMPONENT, "adapter_ref": COMPONENT,
+                  "policy_revision": nullable(STRING), "request_ref": nullable(ARTIFACT),
+                  "response_ref": nullable(ARTIFACT), "requested_params": OBJECT,
+                  "effective_params": OBJECT, "tokenizer_ref": nullable(ARTIFACT),
+                  "chat_template_ref": nullable(ARTIFACT), "native_inputs_ref": nullable(ARTIFACT),
+                  "prompt_token_ids_ref": nullable(ARTIFACT), "response_token_ids_ref": nullable(ARTIFACT),
+                  "logprobs_ref": nullable(ARTIFACT), "usage": nullable(OBJECT),
+                  "error": nullable(error), "capture": capture})
+    schemas.register("gymts.model-call/1", obj(model))
+    tool = dict(identity, **timing)
+    tool.update({"protocol_version": {"const": "gymts.tool-call/1"}, "tool_ref": COMPONENT,
+                 "arguments_ref": nullable(ARTIFACT), "result_ref": nullable(ARTIFACT),
+                 "error": nullable(error), "environment_request_id": nullable(STRING),
+                 "operation_id": nullable(STRING)})
+    schemas.register("gymts.tool-call/1", obj(tool))
+    schemas.register("gymts.token-ids/1", array({"type": "integer", "minimum": 0}, minItems=1))
+    sequence_hash = {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+    schemas.register("gymts.logprobs/1", obj({
+        "protocol_version": {"const": "gymts.logprobs/1"},
+        "source": {"enum": ["captured", "recomputed"]}, "call_id": STRING, "attempt_id": STRING,
+        "prompt_sequence_hash": sequence_hash, "response_sequence_hash": sequence_hash,
+        "values": array({"type": "number", "maximum": 0}), "policy_ref": nullable(ARTIFACT),
+        "policy_revision": nullable(STRING), "distribution": {"enum": ["model", "sampling"]},
+        "effective_params": OBJECT, "computation_ref": nullable(COMPONENT)}))
+    # The model adapter owns the tensor/processor layout. A generic collector
+    # verifies its immutable reference; a trainer validates the chosen layout.
+    schemas.register("gymts.native-inputs/1", OBJECT)

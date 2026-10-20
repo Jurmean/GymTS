@@ -23,8 +23,13 @@ class WindowForecastTask:
         if self.params.get("warmup_duration") is not None:
             duration(self.params["warmup_duration"])
 
-    def describe(self):
-        p = self.params
+    @staticmethod
+    def describe_spec(spec):
+        p = spec["params"]
+        duration(p["horizon"])
+        duration(p["advance_by"])
+        if p.get("warmup_duration") is not None:
+            duration(p["warmup_duration"])
         return {"plugin_ref": component("window_forecast"), "task_protocol_ref": PROTOCOL,
                 "input_schema_ref": INPUT, "output_schema_ref": OUTPUT,
                 "result_schema_ref": RESULT, "outcome_schema_ref": OUTCOME,
@@ -32,6 +37,9 @@ class WindowForecastTask:
                 "required_variables": {p["variable"]: {"dtype": "float64", "shape": [], "unit": p["unit"]}},
                 "required_operations": {}, "required_capabilities": [], "use_default_command": False,
                 "warmup": {"duration": p.get("warmup_duration"), "min_points": p["window_points"]}}
+
+    def describe(self):
+        return self.describe_spec({"params": self.params})
 
     def bind(self, spec, binding, environment, execution):
         return ForecastSession(self.params, binding, execution)

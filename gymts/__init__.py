@@ -3,11 +3,12 @@ from .contracts import GymTSError
 from .environment_ts import EnvironmentTS
 from .autobench_ts import AutoBenchTS
 
-__version__ = "0.3.1"
+__version__ = "0.5.0"
 
 
 class GymTS:
-    def __init__(self, root=".gymts", *, register_builtins=True, integrations=()):
+    def __init__(self, root=".gymts", *, register_builtins=True, integrations=(), data_home=None, cache_home=None):
+        import os
         from pathlib import Path
         from .contracts.schema import SchemaRegistry, register_core_schemas
         from .registries import Registries
@@ -33,6 +34,14 @@ class GymTS:
         self.artifacts = ArtifactStore(self.root / "artifacts")
         self.records = LocalExperimentRecords(self.root, self.artifacts)
         self.environment_ts = EnvironmentTS(self.registries, self.schemas, self.records, self.artifacts)
+        from .storage.resources import ResourceStore
+        from .environment_ts.datasets import DatasetCatalog
+        data_home = data_home or os.environ.get("GYMTS_DATA_HOME") or str(
+            Path(os.environ.get("XDG_DATA_HOME", "~/.local/share")).expanduser() / "gymts")
+        cache_home = cache_home or os.environ.get("GYMTS_CACHE_HOME") or str(
+            Path(os.environ.get("XDG_CACHE_HOME", "~/.cache")).expanduser() / "gymts")
+        self.environment_ts.datasets = DatasetCatalog(
+            ResourceStore(data_home, cache_home, self.schemas), self.registries.datasets, self.schemas)
         self.autobench = AutoBenchTS(self.environment_ts, self.registries.scorers, self.schemas,
                                      self.records, self.artifacts)
         self.autobench_ts = self.autobench
@@ -53,6 +62,9 @@ class GymTS:
 
     def validate(self, spec):
         return self.environment_ts.validate(spec)
+
+    def plan(self, spec):
+        return self.environment_ts.plan(spec)
 
     def run(self, spec):
         return self.environment_ts.run(spec)

@@ -2,9 +2,9 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 规范版本 | 1.1.0 |
-| 更新日期 | 2026-10-18 |
-| 状态 | 框架实现与插件接入基线 |
+| 规范版本 | 1.2.0 |
+| 更新日期 | 2026-10-20 |
+| 状态 | GymTS 0.5.0 现行合同；本地实现范围已验收 |
 | 核心模块 | EnvironmentTS、AutoBenchTS |
 | 适用对象 | 框架开发者、环境与任务接入者、算法与 Agent 适配者、评价与训练集成开发者 |
 
@@ -55,7 +55,7 @@ GymTS 接收有明确边界的时序实验计划，由 EnvironmentTS 组织环�
 | Scorer | 按固定结果、依据和参数计算指标 | ScoreResult |
 | 外置训练器 | 消费获准数据、优化权重、发布新制品 | 下一 Run 可选的模型制品 |
 
-LibraryTS、SkillTS 和已有服务提供实现或制品，经适配参与上述角色。LabTS 或调用方负责方案选择、评审与发布批准；运行成功和评价通过均不代表发布批准。
+任何项目均为外部提供方，通过适配参与上述角色；核心不内化项目、不维护必需工具集。LibraryTS、SkillTS 和其他算法库、MCP 或已有服务只是可替换提供方的例子，其自身工具实现与资产平台不属于框架交付。LabTS 或调用方负责方案选择、评审与发布批准；运行成功和评价通过均不代表发布批准。
 
 ```mermaid
 flowchart TD
@@ -147,10 +147,12 @@ TaskContext 只获得本次允许的读取视图和保存能力；CandidateConte
 
 ```python
 class GymTS:
+    def plan(self, spec: ExperimentSpec) -> AssemblyPlan: ...
     def validate(self, spec: ExperimentSpec) -> ValidationReport: ...
     def run(self, spec: ExperimentSpec) -> RunResult: ...
 
 class EnvironmentTS:
+    def plan(self, spec: ExperimentSpec) -> AssemblyPlan: ...
     def validate(self, spec: ExperimentSpec) -> ValidationReport: ...
     def run(self, spec: ExperimentSpec) -> RunResult: ...
 
@@ -159,9 +161,11 @@ class AutoBenchTS:
     def score(self, spec: ScoreSpec) -> EvaluationReport: ...
 ```
 
-GymTS.run/validate 委托 EnvironmentTS；不得重复创建 Run。`validate` 可以解析配置、读取能力和检查权限，但不得 reset、推进环境、执行操作或训练模型。
+GymTS.plan/validate/run 委托 EnvironmentTS；不得重复创建 Run。`plan/validate` 仅解析内联配置、schema、固定实现声明和组合约束，不调用插件 factory、不读取数据/权重/凭证、不连接服务、不提交 CAS。`scene_ref` 只在执行入口展开；离线规划需调用方提供内联 scene。依赖实际资源的完整性、权限和可用性检查推迟到运行打开阶段。
 
-ValidationReport 包含 `{valid, resolved_spec_ref, issues}`；每个 issue 为 `{code, path, message}`。有效时 resolved_spec_ref 指向展开默认值、精确组件版本和来源修订的配置快照；无效时可以为空。`run` 必须重新确认该快照与实际资源仍可用。
+AssemblyPlan 使用 `gymts.assembly-plan/1`，包含 `resolved_spec`、三角色 `manifests`、Environment/Task 的 `descriptions`、variables、operations、read_scope 和 `resource_checks=deferred_to_open`。它不包含 unit_id，不替代 AutoBenchTS EvaluationPlan。
+
+ValidationReport 包含 `{valid, resolved_spec_ref, resolved_spec, issues}`；每个 issue 为 `{code, path, message}`。有效时返回展开默认值的内联 resolved_spec，resolved_spec_ref 为 null；无效时两者均为 null。需要持久配置的调用方显式保存；AutoBenchTS 在生成其计划时提交配置。此 SDK 返回行为与 0.4.x 不同，迁移时改读 resolved_spec，不能继续假定 validate 已写入 CAS。已有 `/1` 执行证据不迁移、不改写。`run` 必须重新校验实际资源并保存实际解析配置。
 
 静态校验失败抛出 GymTSError，不启动环境。建立 Run 后的运行失败在记录可用时交付 `status=failed` 的 RunResult。持久记录自身失效、无法可靠封存时抛出携带 run_id 和已确认引用的 GymTSError，不能伪造已完成的 RunRecord。
 
@@ -226,7 +230,7 @@ Binding 必须显式检查变量类型、维度、单位和操作参数。transf
 
 LearningSpec 为 `{prepare: load_only | fit, online: frozen | update, training_view: DataViewRef | null, training_targets: DataViewRef | null, alignment_schema_ref: SchemaRef | null, allowed_feedback_sources: list[str]}`。
 
-- `load_only` 不得拟合权重；`fit` 只允许使用指定训练视图，是否需要 targets 由 CandidateManifest 声明。
+- `load_only` 的 prepare 不得拟合或更新持久权重；infer 中无状态输入条件化的边界见 §8.1；`fit` 只允许使用指定训练视图，是否需要 targets 由 CandidateManifest 声明。
 - `frozen` 不调用 Candidate.update；Agent 在本 Run 内积累上下文和规划状态仍合法。`update` 要求 Candidate 声明能力，且只消费已到达、来源获准的 CandidateFeedback。
 - training_targets 非空时必须有固定配对规则；AutoBenchTS 私有依据不得自动成为准备数据或在线反馈。
 - frozen 的外部模型服务必须固定可实际执行的 revision/handle，不能在 Run 中悄悄热更新。允许在线更新时，每次变更必须记录前后策略身份。
@@ -443,9 +447,9 @@ class Candidate:
     def finish(self) -> list[ArtifactRef]: ...
 ```
 
-CandidateContext 包含 `{run_id, task_protocol_ref, candidate_spec, implementation_ref, session_context, training_targets, alignment_schema_ref, learning, resources, traces}`。resources 为受限制品/视图服务；traces 为可空的内部采集出口。框架在 infer 期间将采集上下文绑定到当前 input_id 和预分配 output_id，不要求方法算法自己生成领域 ID。
+CandidateContext 包含 `{run_id, task_protocol_ref, candidate_spec, implementation_ref, session_context, training_targets, alignment_schema_ref, learning, resources, traces, execution_seed, rng, randomness}`。execution_seed 为本 Run 的 ExecutionSpec.seed，环境原 seed 语义保持；rng 为每 Run 独立的 random.Random 实例，不改全局随机状态。randomness 为可记录 JSON 声明，必须记录实际采样种子及后端生效程度；HTTP 仅发送请求而无法核实后端执行时标为 unverified。同一候选的 repetition seed 不进入 CandidateSpec 方法身份。resources 为受限制品/视图服务；traces 为可空的内部采集出口。框架在 infer 期间将采集上下文绑定到当前 input_id 和预分配 output_id，不要求方法算法自己生成领域 ID。
 
-PreparationResult 为 `{model_revision: string | null, state_refs: list[ArtifactRef], training_provenance_ref: ArtifactRef | null}`。fit 必须保存训练来源和实际产生的状态身份；load_only 不得隐式拟合。
+PreparationResult 为 `{model_revision: string | null, state_refs: list[ArtifactRef], training_provenance_ref: ArtifactRef | null}`。fit 必须保存训练来源和实际产生的状态身份；load_only 的 prepare 不得拟合或更新持久权重。每次 infer 对当前获准输入做临时条件化计算的无状态方法，可调用原生 fit 例程，但必须在版本化适配合同中明确声明，记录真实拟合范围与临时状态摘要，不读取未来值/评价参考，不跨调用保留拟合状态，不把临时系数冒充预训练权重。不能满足这些条件的拟合须使用 fit 与获准训练视图。
 
 CandidateOutput 为 `{input_id, task_protocol_ref, produced_at, model_revision: string | null, payload: Payload}`。payload 保留原生输出，是否表示预测、查询或命令由任务输出 schema 定义，框架不靠自然语言猜测。没有权重的函数允许 model_revision=null；外部模型未知修订必须明确记录未知，不得填一个虚构版本。
 
@@ -457,7 +461,7 @@ UpdateResult 为 `{feedback_id, before_revision: string | null, after_revision: 
 
 CandidateManifest 见第 13 节。它必须声明支持的任务协议、输入/输出 schema、fit/update 能力、模型修订能力和采集能力。名称相同不构成兼容；所有适配边界在装配时检查。
 
-内部工具可处理已有输入、计算特征和维护规划；取得新的环境数据或产生实验操作时必须返回 TaskRequest。接入原生 Agent 不要求把它改写为单次分类器，但必须能够在环境请求边界暂停和恢复交互。
+工具调用由 Agent 决策；其 SDK/平台经独立适配器执行外部工具，结果返回同一 Agent 继续推理。核心提供通用授权、调用关联和轨迹接口，不依据工具集名称安排算法。内部工具可处理已有输入、计算特征和维护规划；取得新的环境数据或产生实验操作时必须返回由 Task 解释的请求并生成 TaskRequest，经过 Runner 与 Environment。接入原生 Agent 不要求把它改写为单次分类器，但必须能够在环境请求边界暂停和恢复交互。逐工具声明效果与范围，不能因来自同一目录就授予同样权限；私有评价工具留在独立 Scorer。固定算法 Candidate 与独立脚本调用不构成 Agent 自主选工具的验收。详细状态见[外部工具集与 Agent](../../agent-toolsets.md)。
 
 ## 9 Runner 调用顺序与运行状态
 
@@ -1103,7 +1107,7 @@ core 必须通过 C01—C16；llm_trace 加 C17—C18；training_export 加 C19�
 
 ## 18 命名迁移与资料入口
 
-原模块名 BenchTS 统一更名为 **AutoBenchTS**，服务类使用 AutoBenchTS，建议包名为 autobench_ts；evaluate/score 的职责保持。当前没有需兼容的已发布 SDK，本规范不设置旧类名别名。
+原模块名 BenchTS 统一更名为 **AutoBenchTS**，服务类使用 AutoBenchTS，建议包名为 autobench_ts；evaluate/score 的职责保持。该命名迁移不设置旧类名别名；0.4.x 到 0.5.0 的 Python 装配迁移见 §4 与 §19.4，旧 `/1` 运行证据保持原身份。
 
 旧版接口中的 learning 字符串拆为 LearningSpec；append 增加提交回执，end_run 接收封存草案并返回完整 RunResult，update 增加状态变更结果；引用与交付对象补齐固定版本；内部轨迹和训练导出按 profile 选用。旧示例配置应按第 15 节迁移，不与新版字段混用。
 
@@ -1113,3 +1117,36 @@ core 必须通过 C01—C16；llm_trace 加 C17—C18；training_export 加 C19�
 - [改写前历史快照](../../archive/2026-10-12-before-api-v1/feishu/GymTS接口规范/GymTS接口规范.md)
 
 本文件是当前实现合同。历史 PDF、PPT、导入快照及其中图片用于保留来源，不承担字段级规范；现行文本文档与本规范冲突时，以本规范为准。
+
+
+## 19 数据资源与可复用 Benchmark（1.2.0）
+
+本节增加资源服务，不增加第三个主模块、执行引擎或报告协议。数据资源属于 `EnvironmentTS.datasets`；基准定义的登记、解析与评价组织属于 AutoBenchTS。资源包通过既有显式集成注册领域 schema、reader 和 benchmark resolver，核心不包含题库或项目名称表。
+
+### 19.1 资产与源数据身份
+
+DatasetAssetRef 使用 `gymts.dataset-asset/1`，严格字段为 `{uri, sha256, size_bytes, media_type}`。当前内置 store 的 URI 为 `gymts-data://sha256/<hex>`，对象存储在显式 data_home；不是 Run ArtifactRef。读取必须校验字节数与 SHA-256，转入 Run CAS 后才使用本地 ArtifactRef。缓存位置不进入资源内容身份。
+
+SourceDatasetRevision 使用 `gymts.source-dataset/1`，字段为 `{protocol_version,dataset_id,config,revision,schema_ref,reader_ref,features,splits,usage_policy,source_files,importer_ref,inputs,series,targets,quality_report_ref,card_ref}`。inputs/series/targets 为资产列表；source_files 为 `{name,asset_ref}` 列表。split 声明 `{row_count,split_origin,input_indices,target_indices}`；索引固定该 split 的公开和私有 shard。quality_report_ref/card_ref 可为 null。reader/importer 使用固定 ComponentRef，schema_ref 固定公开行合同。
+
+revision 为 `sha256:` 加除 revision 字段外规范 JSON 的内容摘要；固定原始字节摘要、分区、用途、导入和读取实现、公开/私有表示。显式发布标签只可绑定一次；同标签不同内容 conflict，不支持 latest/main/master。源行身份与重复保持，不静默丢弃数据。读取行数与 schema 必须同发布清单一致。
+
+usage_policy 为 `{allowed_uses,training_allowed}`，语义合同 `gymts.source-usage-policy/1`。源用途 evaluation-only 不允许 prepare/training/dataset_build；公开输入可投影为 runtime 视图，不意味着授权训练。公开 DatasetHandle 的 info、索引和批读取不提供 raw/targets 的资产引用或内容。只有 AutoBenchTS 解析器持有显式 EvaluationDatasets 服务，读取定义内已固定源的私有参考。
+
+### 19.2 Benchmark 定义与解析
+
+BenchmarkDefinition 使用 `gymts.autobench.benchmark/1`，字段为 `{protocol_version,benchmark_id,revision,resolver_ref,datasets,params,card_ref}`。datasets 中每项为 `{dataset_id,config,revision,split}`；发布时将标签解析为内容修订，随后固定。resolver_ref 指定领域解释和评分配方，params 必须固定选样/排除、Task/Binding、parser/scorer、比较与门槛等影响实验含义的规则。更改这些规则产生新定义修订。
+
+resolver provider 实现 `resolve(definition, resources, candidates, purpose, repetitions)`，只持有当前 store 制品服务和定义内、evaluation 授权的数据服务，返回原生 EvaluationSpec。解析器不得改变调用方指定的候选或目的；候选调用、unit_id、重复展开、预期计划、运行与评分仍由既有 evaluate/score 负责。未知题型或参考未决保留 missing/invalid 与原 eligible，不自动构造金标、不缩分母。Suite 仅索引多份原生报告，不另建总分引擎。
+
+### 19.3 服务与血缘
+
+公开入口为 `EnvironmentTS.datasets.publish_asset/register_dataset/list_datasets/load_dataset`，以及 `AutoBenchTS.register_benchmark/list_benchmarks/load_benchmark/resolve_benchmark`。load_dataset 必须显式指定固定 revision 或已发布标签、config、split；DatasetHandle 支持 info/features、索引、select/filter、iter_batches 和可选 HF 转换。默认核心仅依赖标准库；Parquet/HF 后端按需加载。
+
+ExperimentSpec/EvaluationSpec 可选 provenance 使用 `gymts.resource-provenance/1`：`{source_refs,usage_policy_ref,benchmark_definition_ref}`，均为当前 Run CAS 的不可变引用。AutoBenchTS 解析时保存固定源清单、定义和用途，传播到各 Run 的配置与 metadata；这些引用不自动授予 Candidate。报告保留相应证据引用。训练集合 Run 与训练构建器必须拒绝禁止训练的来源；新的 exporter 不能绕过此通用边界。
+
+### 19.4 声明式插件装配
+
+`registry.register(manifest,factory,describe=...,compatibility=...)` 可登记纯 `describe(spec)` 与 `compatibility(context)`；也可使用 factory.describe_spec 与 factory.check_compatibility_spec。Environment/Task 参与离线规划必须提供纯描述，不以构造实例作为回退。候选协议/schema之外的已知组合限制由纯 hook 声明，context 只包含已解析配置、三角色 manifest 与 Environment/Task 描述，不含 services 或数据。无来源事实时不得猜测值或形状；运行打开后重新校验实际声明与资源。
+
+运行应先建立 Run 并保存配置，再创建/打开插件和验证实际资源；打开失败保留阶段、错误和部分证据，并尽力清理封存。上述 Python provider 扩展不改变既有 Environment/Task/Candidate 的 `/1` 方法消息。缺少纯描述的旧插件需迁移方可 plan/validate，不能偷偷执行构造器来维持校验通过。

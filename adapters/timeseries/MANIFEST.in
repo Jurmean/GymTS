@@ -1,0 +1,7 @@
+include LICENSE
+include README.md pyproject.toml setup.cfg MANIFEST.in
+recursive-include src *.py
+recursive-include tests *.py *.json *.csv
+prune build
+prune dist
+global-exclude __pycache__ *.py[cod] .DS_Store

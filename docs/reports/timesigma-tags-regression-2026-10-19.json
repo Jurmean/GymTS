@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "scope": "Installed-wheel grouped rescoring regression after design consistency review; no new scientific benchmark conclusion",
+  "checks": {
+    "targeted": {
+      "tests": 1,
+      "seconds": 0.491,
+      "skipped": 0,
+      "log": "timesigma-tags-targeted-2026-10-19.log",
+      "sha256": "838871bb5594edc80d9a1906d93bc84e8e0d28fafe7c544b25d9bf9e62498073"
+    },
+    "pipeline": {
+      "tests": 7,
+      "seconds": 2.71,
+      "skipped": 0,
+      "log": "timesigma-tags-pipeline-2026-10-19.log",
+      "sha256": "bbd31fda7db032fd49da1d7c413db28b171c5319b94d2899c025623d725c2d88"
+    }
+  },
+  "assertions": [
+    "Original EvaluationPlan group tags copied to ScoreSpec and new EvaluationPlan",
+    "Original sealed RunResult content hash unchanged",
+    "No additional native fit, inference or replay call during rescoring"
+  ],
+  "source_files": {
+    "adapters/timesigma/src/gymts_timesigma/pipeline.py": "d35d61739412535bcb7fb5c99e41944e6810edd3e3edd3a1bcb5f22a979b200b",
+    "adapters/timesigma/tests/test_timesigma_pipeline.py": "e48f6b1f8c1e69144cf50abe547ccb3af57d61ff8b248c91c445713299a3b9a8"
+  },
+  "execution": "New adapter wheel installed into existing scientific environment; launch from /tmp with -I and PYTHONPATH unset",
+  "limits": "Native model and scorer algorithms are unchanged; full native CPU suite was not repeated for this metadata-only fix."
+}

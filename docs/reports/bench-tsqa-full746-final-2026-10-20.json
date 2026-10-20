@@ -1,0 +1,255 @@
+{
+  "status": "passed",
+  "scope": "Full746 original source rows; transparent first-public-choice integration/coverage baseline, not a model-quality claim",
+  "data_home": "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261020",
+  "store": "/tmp/gymts-tsqa-full746-final/records",
+  "python": "/tmp/gymts-bench-tsqa-final-frozen-env/bin/python",
+  "paid_calls": 0,
+  "large_model_training": false,
+  "commands": [
+    {
+      "command": [
+        "/tmp/gymts-bench-tsqa-final-frozen-env/bin/python",
+        "-I",
+        "-m",
+        "gymts",
+        "--store",
+        "/tmp/gymts-tsqa-full746-final/records",
+        "--data-home",
+        "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261020",
+        "--cache-home",
+        "/tmp/gymts-tsqa-full746-final/cache",
+        "--integration",
+        "bench-tsqa",
+        "datasets",
+        "list"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/tmp/gymts-bench-tsqa-final-frozen-env/bin/python",
+        "-I",
+        "-m",
+        "gymts",
+        "--store",
+        "/tmp/gymts-tsqa-full746-final/records",
+        "--data-home",
+        "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261020",
+        "--cache-home",
+        "/tmp/gymts-tsqa-full746-final/cache",
+        "--integration",
+        "bench-tsqa",
+        "autobench",
+        "list"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/tmp/gymts-bench-tsqa-final-frozen-env/bin/python",
+        "-I",
+        "-m",
+        "gymts",
+        "--store",
+        "/tmp/gymts-tsqa-full746-final/records",
+        "--data-home",
+        "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261020",
+        "--cache-home",
+        "/tmp/gymts-tsqa-full746-final/cache",
+        "--integration",
+        "bench-tsqa",
+        "datasets",
+        "info",
+        "local/tsexam-mcq",
+        "--revision",
+        "1.0.0"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/tmp/gymts-bench-tsqa-final-frozen-env/bin/python",
+        "-I",
+        "-m",
+        "gymts",
+        "--store",
+        "/tmp/gymts-tsqa-full746-final/records",
+        "--data-home",
+        "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261020",
+        "--cache-home",
+        "/tmp/gymts-tsqa-full746-final/cache",
+        "--integration",
+        "bench-tsqa",
+        "autobench",
+        "resolve",
+        "local/tsexam-mcq",
+        "--revision",
+        "1.0.0",
+        "--candidate",
+        "/tmp/gymts-tsqa-full746-final/candidate.json",
+        "--purpose",
+        "regression",
+        "--output",
+        "/tmp/gymts-tsqa-full746-final/evaluation.json"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/tmp/gymts-bench-tsqa-final-frozen-env/bin/python",
+        "-I",
+        "-m",
+        "gymts",
+        "--store",
+        "/tmp/gymts-tsqa-full746-final/records",
+        "--data-home",
+        "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261020",
+        "--cache-home",
+        "/tmp/gymts-tsqa-full746-final/cache",
+        "--integration",
+        "bench-tsqa",
+        "evaluate",
+        "/tmp/gymts-tsqa-full746-final/evaluation.json",
+        "--output",
+        "/tmp/gymts-tsqa-full746-final/evaluation-report.json"
+      ],
+      "returncode": 0
+    }
+  ],
+  "installed": {
+    "core": {
+      "wheel": "/tmp/gymts-core05-final-frozen/wheels/gymts-0.5.0-py3-none-any.whl",
+      "sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226",
+      "python_files_verified": 38,
+      "module_path": "/tmp/gymts-bench-tsqa-final-frozen-env/lib/python3.11/site-packages/gymts/__init__.py"
+    },
+    "adapter": {
+      "wheel": "/tmp/gymts-bench-tsqa-definition-guard-build/gymts_bench_tsqa-0.1.0-py3-none-any.whl",
+      "sha256": "4f4642fc1dcac27c9365c28298d6105c1183dd7d5520ad31b86a66374fbac1fe",
+      "python_files_verified": 12,
+      "module_path": "/tmp/gymts-bench-tsqa-final-frozen-env/lib/python3.11/site-packages/gymts_bench_tsqa/__init__.py"
+    }
+  },
+  "datasets": [
+    {
+      "dataset_id": "local/bedtime",
+      "revision": "sha256:16beafd6471055e7888f3ca97319c788ca73ceaeb002ed502aa1c40b98bea600",
+      "row_count": 394,
+      "usage_policy": {
+        "allowed_uses": [
+          "evaluation"
+        ],
+        "training_allowed": false
+      }
+    },
+    {
+      "dataset_id": "local/dataset-a-rlvr",
+      "revision": "sha256:9f06702fee2b3bc7591a117b03476643146ae407e736f365f176ffa777de3be0",
+      "row_count": 411,
+      "usage_policy": {
+        "allowed_uses": [
+          "evaluation"
+        ],
+        "training_allowed": false
+      }
+    },
+    {
+      "dataset_id": "local/mcq2",
+      "revision": "sha256:65191bf5cf19680e2bc4dc8bd0dcc96eb678d83abc25e7c91e53d84f749e0391",
+      "row_count": 100,
+      "usage_policy": {
+        "allowed_uses": [
+          "evaluation"
+        ],
+        "training_allowed": false
+      }
+    },
+    {
+      "dataset_id": "local/timemqa-full",
+      "revision": "sha256:6e77c1c044ae1cbdbef4e31c69fcab39e3b4aa3193f7b020bd1c1995f67dd3fc",
+      "row_count": 17703,
+      "usage_policy": {
+        "allowed_uses": [
+          "evaluation"
+        ],
+        "training_allowed": false
+      }
+    },
+    {
+      "dataset_id": "local/tsexam-mcq",
+      "revision": "sha256:247ef2e4f311bc5089f3723dd9ca3449c4aed794741ddee000c914fb1d987602",
+      "row_count": 746,
+      "usage_policy": {
+        "allowed_uses": [
+          "evaluation"
+        ],
+        "training_allowed": false
+      }
+    }
+  ],
+  "python_list_load_select_batch": true,
+  "public_no_private_refs": true,
+  "evaluation_only_policy_denied_training_prepare_build": true,
+  "dataset_revision": "sha256:247ef2e4f311bc5089f3723dd9ca3449c4aed794741ddee000c914fb1d987602",
+  "benchmark_revision": "sha256:910b2574b3755f12d93bf09eaeb40bb9933988912b4fe80b81e88c26eaa54c2a",
+  "expected_units": 746,
+  "succeeded_runs": 746,
+  "registered_rows": 19354,
+  "accuracy": {
+    "value": 0.4450402144772118,
+    "status": "ready",
+    "counts": {
+      "eligible": 746,
+      "scored": 746,
+      "missing": 0,
+      "invalid": 0,
+      "excluded": 0
+    },
+    "reason": null
+  },
+  "format_valid": {
+    "value": 1.0,
+    "status": "ready",
+    "counts": {
+      "eligible": 746,
+      "scored": 746,
+      "missing": 0,
+      "invalid": 0,
+      "excluded": 0
+    },
+    "reason": null
+  },
+  "final_evaluation_id": "evaluation_8ca5c37b0ed147b6bd83c3f8d6b2be6e",
+  "rescoring_evaluation_id": "evaluation_90a733abcf07425e955a7d9df8623c4c",
+  "python_and_cli_resolve_public_cases_equal": true,
+  "all_task_inputs_equal_public_dataset": true,
+  "original_question_and_all_series_preserved": true,
+  "same_original_run_ids": true,
+  "sealed_result_and_event_hashes_preserved": true,
+  "native_call_count": 0,
+  "record_snapshot_ref": {
+    "artifact_id": "382ec4e61b49002a8b65c4df72d15db6d4f2fcb7f477e560a6e236a3e214f560",
+    "revision": "863ecc1c46f2ea6f4d3d60d9fb258b52162258e70f9c8b03ee19cef2a7d6f320",
+    "uri": "gymts-artifact://382ec4e61b49002a8b65c4df72d15db6d4f2fcb7f477e560a6e236a3e214f560/863ecc1c46f2ea6f4d3d60d9fb258b52162258e70f9c8b03ee19cef2a7d6f320",
+    "content_hash": "863ecc1c46f2ea6f4d3d60d9fb258b52162258e70f9c8b03ee19cef2a7d6f320",
+    "media_type": "application/json",
+    "schema_ref": "gymts.record-snapshot/1",
+    "size_bytes": 434990
+  },
+  "elapsed_seconds": 227.29412066191435,
+  "acceptance_ref": {
+    "artifact_id": "b2e55d24cfd783d3a1bbfc1236ef4604f7a0aaf4d2fc4c3b1198749526755d8f",
+    "revision": "1877989b7b8c00c2d41f3f90fb030c618b31418c0523a5964a6283674dfe4f3d",
+    "uri": "gymts-artifact://b2e55d24cfd783d3a1bbfc1236ef4604f7a0aaf4d2fc4c3b1198749526755d8f/1877989b7b8c00c2d41f3f90fb030c618b31418c0523a5964a6283674dfe4f3d",
+    "content_hash": "1877989b7b8c00c2d41f3f90fb030c618b31418c0523a5964a6283674dfe4f3d",
+    "media_type": "application/json",
+    "schema_ref": "gymts.json/1",
+    "size_bytes": 5589
+  },
+  "archive": {
+    "path": "/zzr/zmx/GymTS/Jurmean-GymTS/output/bench-tsqa-full746-final-2026-10-20-evidence.tar.gz",
+    "sha256": "b3e317435b3b58be85e9a33ec6dbbae3e18fb15ccbd1b1a75e6283696f35dac5",
+    "size_bytes": 67073635
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "status": "passed",
+  "offline": true,
+  "python": "3.11.8",
+  "adapters": [
+    {
+      "distribution": "gymts-chatts",
+      "version": "0.1.0",
+      "distributions": {
+        "wheel": {
+          "file": "gymts_chatts-0.1.0-py3-none-any.whl",
+          "files": 18,
+          "bytes": 42257,
+          "sha256": "e6177d019fcd23e7e2a590f94f5087ed2a606423681a9125cd078f989495feb2"
+        },
+        "sdist": {
+          "file": "gymts_chatts-0.1.0.tar.gz",
+          "files": 40,
+          "bytes": 69251,
+          "sha256": "357af84060f490f78cb5db05fdd8961610289c3e73bfda04a327b40e8373d536"
+        },
+        "rebuilt_wheel": {
+          "file": "gymts_chatts-0.1.0-py3-none-any.whl",
+          "files": 18,
+          "bytes": 42257,
+          "sha256": "ef4a2c8b40a559d92ef73590525e18f269b772acd22a9e943dd27b8fba91ed70"
+        }
+      },
+      "core_only": {
+        "isolated_import": true,
+        "console_scripts": 1,
+        "counter_operations": 3,
+        "project_plugins_bundled": false
+      },
+      "activation": {
+        "discovery_without_import": true,
+        "explicit_idempotent_enable": true,
+        "core_evaluation_runs": 2
+      },
+      "tests": 69,
+      "skipped": 0,
+      "removal": {
+        "uninstall_preserves_core": true,
+        "rescoring_keeps_runs_and_results": true
+      },
+      "rebuilt_wheel_installed": true
+    },
+    {
+      "distribution": "gymts-libraryts",
+      "version": "0.1.0",
+      "distributions": {
+        "wheel": {
+          "file": "gymts_libraryts-0.1.0-py3-none-any.whl",
+          "files": 15,
+          "bytes": 21238,
+          "sha256": "ce0b45569f18dcf7b6378358e59543357593e6e2ebfad28b006049b679c29e5c"
+        },
+        "sdist": {
+          "file": "gymts_libraryts-0.1.0.tar.gz",
+          "files": 23,
+          "bytes": 24772,
+          "sha256": "32c6d8fa5ade19f0ce6273dbd9fe06e605117afa2585692b096a55ec51cfdf3c"
+        },
+        "rebuilt_wheel": {
+          "file": "gymts_libraryts-0.1.0-py3-none-any.whl",
+          "files": 15,
+          "bytes": 21238,
+          "sha256": "ce0b45569f18dcf7b6378358e59543357593e6e2ebfad28b006049b679c29e5c"
+        }
+      },
+      "core_only": {
+        "isolated_import": true,
+        "console_scripts": 1,
+        "counter_operations": 3,
+        "project_plugins_bundled": false
+      },
+      "activation": {
+        "discovery_without_import": true,
+        "explicit_idempotent_enable": true,
+        "core_evaluation_runs": 2
+      },
+      "tests": 9,
+      "skipped": 5,
+      "removal": {
+        "uninstall_preserves_core": true,
+        "rescoring_keeps_runs_and_results": true
+      },
+      "rebuilt_wheel_installed": true
+    },
+    {
+      "distribution": "gymts-rl",
+      "version": "0.1.0",
+      "distributions": {
+        "wheel": {
+          "file": "gymts_rl-0.1.0-py3-none-any.whl",
+          "files": 21,
+          "bytes": 56484,
+          "sha256": "23df5d551b03b960d47590cf46041d300dbafe4d03953bae20e98de34e6dc5c9"
+        },
+        "sdist": {
+          "file": "gymts_rl-0.1.0.tar.gz",
+          "files": 38,
+          "bytes": 71567,
+          "sha256": "8d7283db967764d1d9f404de4a863a82a63c7b2c21693e50d599bdc137daf82c"
+        },
+        "rebuilt_wheel": {
+          "file": "gymts_rl-0.1.0-py3-none-any.whl",
+          "files": 21,
+          "bytes": 56484,
+          "sha256": "23df5d551b03b960d47590cf46041d300dbafe4d03953bae20e98de34e6dc5c9"
+        }
+      },
+      "core_only": {
+        "isolated_import": true,
+        "console_scripts": 1,
+        "counter_operations": 3,
+        "project_plugins_bundled": false
+      },
+      "activation": {
+        "discovery_without_import": true,
+        "explicit_idempotent_enable": true,
+        "core_evaluation_runs": 2
+      },
+      "tests": 78,
+      "skipped": 13,
+      "removal": {
+        "uninstall_preserves_core": true,
+        "rescoring_keeps_runs_and_results": true
+      },
+      "rebuilt_wheel_installed": true
+    },
+    {
+      "distribution": "gymts-timeseries",
+      "version": "0.1.0",
+      "distributions": {
+        "wheel": {
+          "file": "gymts_timeseries-0.1.0-py3-none-any.whl",
+          "files": 14,
+          "bytes": 19582,
+          "sha256": "af665eab3b5f023eb4c10dab3d270471b04bacd8c38e871b5b5f0544849078c2"
+        },
+        "sdist": {
+          "file": "gymts_timeseries-0.1.0.tar.gz",
+          "files": 21,
+          "bytes": 20581,
+          "sha256": "1844c10f5c35c7a12a7dfe61a54d113cc32c3bf38eec6f7cf2a983088c451dcf"
+        },
+        "rebuilt_wheel": {
+          "file": "gymts_timeseries-0.1.0-py3-none-any.whl",
+          "files": 14,
+          "bytes": 19582,
+          "sha256": "cf586d7b5e5f45d4419444740eba1ca2f214f771dc2e137fd35752340cdb1fc8"
+        }
+      },
+      "core_only": {
+        "isolated_import": true,
+        "console_scripts": 1,
+        "counter_operations": 3,
+        "project_plugins_bundled": false
+      },
+      "activation": {
+        "discovery_without_import": true,
+        "explicit_idempotent_enable": true,
+        "core_evaluation_runs": 2
+      },
+      "tests": 6,
+      "skipped": 0,
+      "removal": {
+        "uninstall_preserves_core": true,
+        "rescoring_keeps_runs_and_results": true
+      },
+      "rebuilt_wheel_installed": true
+    },
+    {
+      "distribution": "gymts-timesigma",
+      "version": "0.1.0",
+      "distributions": {
+        "wheel": {
+          "file": "gymts_timesigma-0.1.0-py3-none-any.whl",
+          "files": 22,
+          "bytes": 58104,
+          "sha256": "d1e93dceb405b2599de493db81363caeb1944f9de7e847b449cc924993f8f924"
+        },
+        "sdist": {
+          "file": "gymts_timesigma-0.1.0.tar.gz",
+          "files": 38,
+          "bytes": 75126,
+          "sha256": "8bea22f458b7be5254c1cd2d189c2ec4f51cb38ada22ad8dc67d8eca35505d38"
+        },
+        "rebuilt_wheel": {
+          "file": "gymts_timesigma-0.1.0-py3-none-any.whl",
+          "files": 22,
+          "bytes": 58104,
+          "sha256": "d1e93dceb405b2599de493db81363caeb1944f9de7e847b449cc924993f8f924"
+        }
+      },
+      "core_only": {
+        "isolated_import": true,
+        "console_scripts": 1,
+        "counter_operations": 3,
+        "project_plugins_bundled": false
+      },
+      "activation": {
+        "discovery_without_import": true,
+        "explicit_idempotent_enable": true,
+        "core_evaluation_runs": 2
+      },
+      "tests": 72,
+      "skipped": 18,
+      "removal": {
+        "uninstall_preserves_core": true,
+        "rescoring_keeps_runs_and_results": true
+      },
+      "rebuilt_wheel_installed": true
+    }
+  ],
+  "coexistence": {
+    "all_enabled": [
+      "chatts",
+      "libraryts",
+      "rl",
+      "timeseries",
+      "timesigma"
+    ],
+    "uninstalled": "gymts-chatts",
+    "remaining_enabled_and_core_run_succeeded": [
+      "libraryts",
+      "rl",
+      "timeseries",
+      "timesigma"
+    ]
+  },
+  "scope": "Independent package/activation/regression/removal checks; no model training or quality claim"
+}

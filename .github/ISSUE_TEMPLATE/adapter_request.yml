@@ -1,0 +1,53 @@
+name: 新项目或适配请求
+description: 接入数据集、仿真/testbed、任务、模型、工具集、训练或评分后端。
+title: "[Adapter] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        所有项目均通过独立适配包接入，安装与显式启用分开。请提供公开文档或可分享的接口描述。
+        不要提交账号密钥、私有 benchmark 答案、个人数据或敏感生产地址。
+  - type: input
+    id: upstream
+    attributes:
+      label: 项目与上游接口
+      description: 项目名、公开仓库/文档、要适配的固定版本或提交。
+    validations:
+      required: true
+  - type: checkboxes
+    id: providers
+    attributes:
+      label: 涉及的提供方
+      options:
+        - label: 数据集或合成来源
+        - label: 仿真或外部实时环境
+        - label: 任务或 benchmark
+        - label: Candidate / 模型 / Agent
+        - label: 工具集或训练扩展
+        - label: Scorer / 领域指标
+  - type: textarea
+    id: lifecycle
+    attributes:
+      label: 生命周期与语义
+      description: 说明启动/连接/重置/动作/观察/结束、时钟、随机种子、原生终止与奖励，或文件读取/冻结方式；不适用项可注明。
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: 数据与权限
+      description: 数据许可与来源、公开输入/私有参考、是否仅评测、能否训练、凭证环境变量名及本地验证条件；不要填写凭证值。
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: 现有接口是否足够
+      description: 对照公开插件合同，说明预期独立包、依赖、公共 schema；若需改核心，请给出无法表达的最小例子。
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 可运行验收
+      description: 在冻结核心上怎样完成一次真实运行、成功/失败轨迹、独立评价和原 Run 重评？说明可用的 CPU/GPU/本机服务。
+    validations:
+      required: true

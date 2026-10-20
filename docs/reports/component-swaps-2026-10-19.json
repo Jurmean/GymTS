@@ -1,0 +1,383 @@
+{
+  "status": "passed",
+  "scope": "Independent component substitution on a known synthetic ramp; not a scientific model-quality benchmark",
+  "store": "/tmp/gymts-component-swaps-20261019/records",
+  "implementation": {
+    "repository": "/tmp/gymts-libraryts-sktime",
+    "revision": "080f4c3c3695f239e328548bac7d7a3ef7aa9127",
+    "python": "/tmp/gymts-libraryts-install/bin/python"
+  },
+  "combinations": 8,
+  "source_replacement_inputs_equal": true,
+  "task_replacement_reuses_same_observations": true,
+  "model_replacement_preserves_public_inputs": true,
+  "record_snapshot_ref": {
+    "artifact_id": "b40859a5b0ac9f59226843d29be9fafa2e540dc506fa0efd6fb5cfb7758c3dc7",
+    "revision": "5334f6675cb94635f74981685ffcf0a73c1ab433155ca37631a242e8c876d4ed",
+    "uri": "gymts-artifact://b40859a5b0ac9f59226843d29be9fafa2e540dc506fa0efd6fb5cfb7758c3dc7/5334f6675cb94635f74981685ffcf0a73c1ab433155ca37631a242e8c876d4ed",
+    "content_hash": "5334f6675cb94635f74981685ffcf0a73c1ab433155ca37631a242e8c876d4ed",
+    "media_type": "application/json",
+    "schema_ref": "gymts.record-snapshot/1",
+    "size_bytes": 5199
+  },
+  "summary_ref": {
+    "artifact_id": "34d2df5746275e65a1eac3987c7284b86aea6bd9b78c196b84e2072a71401ca0",
+    "revision": "17e2544fde6d455caa367bfe052f68f1666a303109c40443e00c49359abc9033",
+    "uri": "gymts-artifact://34d2df5746275e65a1eac3987c7284b86aea6bd9b78c196b84e2072a71401ca0/17e2544fde6d455caa367bfe052f68f1666a303109c40443e00c49359abc9033",
+    "content_hash": "17e2544fde6d455caa367bfe052f68f1666a303109c40443e00c49359abc9033",
+    "media_type": "application/json",
+    "schema_ref": "gymts.json/1",
+    "size_bytes": 180865
+  },
+  "full_summary_sha256": "a1bb921830682cf87bccf3a8f5e1c190052a208f7d06387dd5bbdf55375f6932",
+  "groups": [
+    {
+      "source": "json",
+      "task": "forecast.numeric",
+      "initial_evaluation_id": "evaluation_4f83b4f41ac14b8b916c35dd6dc31ed2",
+      "initial_verdict": "insufficient_evidence",
+      "evaluation_id": "evaluation_97a193837d674588b09374444977ff8e",
+      "verdict": "pass",
+      "rescoring_preserved_execution": true,
+      "runs": [
+        {
+          "run_id": "run_a59d98e8a6164c368e720e3fc9b2e3b6",
+          "run_result_hash": "sha256:ce756c3d524e811559db548536c15a064d84eced5201c257992d11bd1c527411",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:e14456bc3966e9710383dd4c72482fdf1e20679f0be55e975a6b2a7bcd8f4b26"
+        },
+        {
+          "run_id": "run_2b9cefdf8aef446f98dbcee6c5817f82",
+          "run_result_hash": "sha256:9498f63a1c98d26be7e15d86afcb32d863a7e64d9db84f251a83946ddb8a61ff",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:e14456bc3966e9710383dd4c72482fdf1e20679f0be55e975a6b2a7bcd8f4b26"
+        }
+      ],
+      "aggregate_metrics": [
+        {
+          "level": "aggregate",
+          "candidate_id": "naive-drift",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "mae",
+          "result": {
+            "value": 0.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "naive-drift",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "rmse",
+          "result": {
+            "value": 0.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "polynomial",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "mae",
+          "result": {
+            "value": 1.7763568394002505e-15,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "polynomial",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "rmse",
+          "result": {
+            "value": 1.7763568394002505e-15,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "source": "json",
+      "task": "pattern.trend_direction",
+      "initial_evaluation_id": "evaluation_71680a49d5f441a4bf14f32fc741b40f",
+      "initial_verdict": "insufficient_evidence",
+      "evaluation_id": "evaluation_b121569b76ca4a47915ce01fc7825861",
+      "verdict": "pass",
+      "rescoring_preserved_execution": true,
+      "runs": [
+        {
+          "run_id": "run_1c9642c5dc994195abbf343a3e042003",
+          "run_result_hash": "sha256:49883fbaf8988c273410f26afcb1c732885530950930b626574f5e688b935f39",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:883a84286cff8b0fbe981c4c981593d87596dfefe5e6a9eaa0d02ece0e26acce"
+        },
+        {
+          "run_id": "run_fa48dbfc237e4f2db06bf563ad4bc894",
+          "run_result_hash": "sha256:efc29c393a93450382a59fd4a1b6b6705e0c1f706bfd95fa131070c40be9330f",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:883a84286cff8b0fbe981c4c981593d87596dfefe5e6a9eaa0d02ece0e26acce"
+        }
+      ],
+      "aggregate_metrics": [
+        {
+          "level": "aggregate",
+          "candidate_id": "naive-drift",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "accuracy",
+          "result": {
+            "value": 1.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "polynomial",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "accuracy",
+          "result": {
+            "value": 1.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "source": "csv",
+      "task": "forecast.numeric",
+      "initial_evaluation_id": "evaluation_7150484a80b94df98873d7afafe409d1",
+      "initial_verdict": "insufficient_evidence",
+      "evaluation_id": "evaluation_9c70c9e2a0c54c078c13af487eb80cd6",
+      "verdict": "pass",
+      "rescoring_preserved_execution": true,
+      "runs": [
+        {
+          "run_id": "run_d3b2abe38e8a42dc9b668c98f4a236d0",
+          "run_result_hash": "sha256:c2dac17225230b977f3bbf87b138dcdef6b4d20e5b9519f64bd934fa9e397af0",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:e14456bc3966e9710383dd4c72482fdf1e20679f0be55e975a6b2a7bcd8f4b26"
+        },
+        {
+          "run_id": "run_0c1c1cf9306947ed8417dfcf1d3f1727",
+          "run_result_hash": "sha256:fd7c1b63123949cd97fd56baf38ff01b164cc1a82e088318deeabde6d929de64",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:e14456bc3966e9710383dd4c72482fdf1e20679f0be55e975a6b2a7bcd8f4b26"
+        }
+      ],
+      "aggregate_metrics": [
+        {
+          "level": "aggregate",
+          "candidate_id": "naive-drift",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "mae",
+          "result": {
+            "value": 0.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "naive-drift",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "rmse",
+          "result": {
+            "value": 0.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "polynomial",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "mae",
+          "result": {
+            "value": 1.7763568394002505e-15,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "polynomial",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "rmse",
+          "result": {
+            "value": 1.7763568394002505e-15,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "source": "csv",
+      "task": "pattern.trend_direction",
+      "initial_evaluation_id": "evaluation_caf0f9df11f54799b38c1683b81c6c06",
+      "initial_verdict": "insufficient_evidence",
+      "evaluation_id": "evaluation_3b3ce9994bc2422e8d03550064d66c33",
+      "verdict": "pass",
+      "rescoring_preserved_execution": true,
+      "runs": [
+        {
+          "run_id": "run_4491907becba4f0e83f14c74934fd9aa",
+          "run_result_hash": "sha256:d7bc62ca12b41bd4ac3772ccb87bcdcb4730b378e794616edce79c4eccd602a0",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:883a84286cff8b0fbe981c4c981593d87596dfefe5e6a9eaa0d02ece0e26acce"
+        },
+        {
+          "run_id": "run_4719bfc1f9dc40569f8d436fe9f38c29",
+          "run_result_hash": "sha256:c55e18fb2ce580991fc4b1d42a3f6b50b5f199b7555486355b630186bbb7012b",
+          "execution_event_count": 13,
+          "native_call_events": 2,
+          "task_input_hash": "sha256:883a84286cff8b0fbe981c4c981593d87596dfefe5e6a9eaa0d02ece0e26acce"
+        }
+      ],
+      "aggregate_metrics": [
+        {
+          "level": "aggregate",
+          "candidate_id": "naive-drift",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "accuracy",
+          "result": {
+            "value": 1.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        {
+          "level": "aggregate",
+          "candidate_id": "polynomial",
+          "group_key": {},
+          "unit_id": null,
+          "repetition": null,
+          "metric_id": "accuracy",
+          "result": {
+            "value": 1.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        }
+      ]
+    }
+  ]
+}

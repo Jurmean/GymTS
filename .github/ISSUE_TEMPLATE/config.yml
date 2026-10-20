@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 安全问题：请勿在公开 Issue 中披露细节
+    url: https://github.com/Jurmean/GymTS/blob/main/SECURITY.md
+    about: 先按安全策略确认私密报告渠道；若不可用，仅公开请求建立渠道。
+  - name: 使用与支持说明
+    url: https://github.com/Jurmean/GymTS/blob/main/SUPPORT.md
+    about: 文档入口、最小复现要求和当前支持范围。

@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "started_at": "2026-10-19T09:14:03.013358+00:00",
+  "duration_seconds": 1.974,
+  "python": "/tmp/gymts-rl-venv/bin/python",
+  "python_version": "3.11.13",
+  "installed_packages": {
+    "gymts": {
+      "version": "0.4.1",
+      "module_path": "/tmp/gymts-rl-venv/lib/python3.11/site-packages/gymts/__init__.py"
+    },
+    "gymts-rl": {
+      "version": "0.1.0",
+      "module_path": "/tmp/gymts-rl-venv/lib/python3.11/site-packages/gymts_rl/__init__.py"
+    }
+  },
+  "versions": {
+    "gymts": "0.4.1",
+    "gymts-rl": "0.1.0",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "PyYAML": "6.0.2",
+    "torch": "2.11.0+cu126",
+    "transformers": "4.52.4",
+    "trl": "0.18.2"
+  },
+  "wheel_build": {
+    "builder_python": "/root/miniconda3/bin/python",
+    "runtime_python": "/tmp/gymts-rl-venv/bin/python",
+    "offline": true,
+    "science_dependencies_changed": false,
+    "wheels": [
+      {
+        "path": "/tmp/gymts-training-final-wheels/wheels/gymts-0.4.1-py3-none-any.whl",
+        "sha256": "3665988f7e1a43d17d0fb6b2597289d8c11aea1cd013ccb81ee387850be59a86",
+        "size_bytes": 93025
+      },
+      {
+        "path": "/tmp/gymts-training-final-wheels/wheels/gymts_rl-0.1.0-py3-none-any.whl",
+        "sha256": "1d2f59a4db0c50e7436af8cc19d01e72f5e0812ea319926e9e5f0401442809a1",
+        "size_bytes": 56484
+      }
+    ]
+  },
+  "test": {
+    "name": "test_real_pinned_sources_produce_runnable_mixed_training_and_eval_data",
+    "tests_run": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "source_cache": [
+    {
+      "split": "train",
+      "path": "/tmp/gymts-rl-sources/gsm8k-3101c7d/train.jsonl",
+      "sha256": "17f347dc51477c50d4efb83959dbb7c56297aba886e5544ee2aaed3024813465",
+      "size_bytes": 4166206
+    },
+    {
+      "split": "test",
+      "path": "/tmp/gymts-rl-sources/gsm8k-3101c7d/test.jsonl",
+      "sha256": "3730d312f6e3440559ace48831e51066acaca737f6eabec99bccb9e4b3c39d14",
+      "size_bytes": 749738
+    }
+  ],
+  "chatts_source": {
+    "path": "/zzr/scripts/ChatTS",
+    "git_revision": "695520a0abc3a6ee93de4b4eab962c7211623c18",
+    "matches_pinned_revision": true,
+    "code_tree_sha256": "7ffc777eed5603c64f2f1dccf52b14cefde31a03c25c8ce77fcc73340c318747"
+  },
+  "checks": {
+    "offline_cache_only": true,
+    "cuda_visible_devices": "",
+    "torch_imported_in_test_process": false,
+    "science_dependencies_changed": false,
+    "model_training": false,
+    "paid_model_calls": false
+  },
+  "log_path": "/zzr/zmx/GymTS/Jurmean-GymTS/docs/reports/rl-native-source-final-2026-10-19.log",
+  "scope": "Exactly one opt-in real cached GSM8K plus native ChatTS numerical generation test. No full suite rerun, GPU or model training."
+}

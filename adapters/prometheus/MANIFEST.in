@@ -1,0 +1,4 @@
+include LICENSE
+include README.md pyproject.toml setup.cfg MANIFEST.in
+recursive-include tests *.py
+recursive-include examples *.py *.json

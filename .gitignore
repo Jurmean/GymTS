@@ -49,3 +49,29 @@ service-account*.json
 *.key
 *.p12
 *.pfx
+
+# Local execution evidence and downloaded/generated assets are not source.
+*.log
+*.whl
+*.tar.gz
+*.zip
+/site/
+/data/
+/datasets/
+/models/
+/checkpoints/
+
+# Private attachment audit contains question and reference excerpts.
+/docs/examples/benchmark-upload-audit-2026-10-19.json
+
+# Superseded probes and intermediate summaries; keep final acceptance reports.
+/docs/reports/*.py
+/docs/reports/*-candidate[0-9]-*.json
+/docs/reports/bench-tsqa-full746-definition-guard-2026-10-20.json
+/docs/reports/bench-tsqa-full746-frozen-2026-10-20.json
+/docs/reports/core-package-check-2026-10-19.json
+/docs/reports/mit-package-license-audit-2026-10-20.json
+/docs/reports/oss-core-package-check-2026-10-19.json
+/docs/reports/oss-documentation-2026-10-19.json
+/docs/reports/resource-publication-s3fs-2026-10-20.json
+/docs/reports/timesigma-design-alignment-package-check-2026-10-19.json

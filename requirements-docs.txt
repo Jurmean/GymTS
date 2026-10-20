@@ -1,0 +1,2 @@
+# Optional documentation tools; never a GymTS runtime dependency.
+mkdocs==1.6.1

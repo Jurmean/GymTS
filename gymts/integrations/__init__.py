@@ -5,24 +5,13 @@ callable accepts ``(registries, schemas)``. Installing an integration does not
 enable it: users select its name in ``GymTS(integrations=(... ,))``.
 """
 import copy
-import importlib
 from importlib.metadata import entry_points
 
 from gymts.contracts import GymTSError
 
 
-_SHIPPED = {
-    "chatts": {
-        "name": "chatts",
-        "description": "ChatTS synthetic QA data, tasks, HTTP adapters and scoring",
-        "registration": "gymts.integrations.chatts:register_chatts_plugins",
-        "distribution": "gymts",
-    }
-}
-
-
 def _catalog():
-    items = {name: [(copy.deepcopy(info), None)] for name, info in _SHIPPED.items()}
+    items = {}
     discovered = entry_points()
     entries = (discovered.select(group="gymts.integrations") if hasattr(discovered, "select")
                else discovered.get("gymts.integrations", ()))
@@ -51,10 +40,14 @@ def _snapshot_registration(registries, schemas):
     # Host-side registration transactions preserve callable identities; copying
     # callable factory instances can silently change idempotent registrations.
     entries = []
-    for kind in ("environments", "tasks", "candidates", "scorers"):
+    for kind in ("environments", "tasks", "candidates", "scorers", "datasets", "benchmarks"):
         registry = getattr(registries, kind)
-        entries.append((registry, {key: (copy.deepcopy(manifest), factory)
-                                  for key, (manifest, factory) in registry._entries.items()}))
+        if kind in {"datasets", "benchmarks"}:
+            entries.append((registry, dict(registry._entries), None))
+        else:
+            entries.append((registry, {key: (copy.deepcopy(manifest), factory)
+                                      for key, (manifest, factory) in registry._entries.items()},
+                            {key: dict(value) for key, value in registry._providers.items()}))
     return copy.deepcopy(schemas._schemas), entries
 
 
@@ -62,9 +55,12 @@ def _restore_registration(snapshot, schemas):
     definitions, entries = snapshot
     schemas._schemas.clear()
     schemas._schemas.update(definitions)
-    for registry, prior in entries:
+    for registry, prior, providers in entries:
         registry._entries.clear()
         registry._entries.update(prior)
+        if providers is not None:
+            registry._providers.clear()
+            registry._providers.update(providers)
 
 
 def register_integration(name, registries, schemas):
@@ -76,14 +72,10 @@ def register_integration(name, registries, schemas):
         raise GymTSError("unsupported_capability", "Unknown optional integration: " + name)
     if len(catalog[name]) != 1:
         raise GymTSError("conflict", "Duplicate optional integration: " + name)
-    info, entry = catalog[name][0]
+    _, entry = catalog[name][0]
     snapshot = _snapshot_registration(registries, schemas)
     try:
-        if entry is not None:
-            register = entry.load()
-        else:
-            module, attribute = info["registration"].split(":", 1)
-            register = getattr(importlib.import_module(module), attribute)
+        register = entry.load()
         if not callable(register):
             raise GymTSError("invalid_config", "Integration entry point must be callable")
         register(registries, schemas)

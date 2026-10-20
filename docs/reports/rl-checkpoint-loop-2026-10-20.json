@@ -1,0 +1,827 @@
+{
+  "status": "passed",
+  "training": {
+    "status": "passed",
+    "pid": 1942840,
+    "fixture": {
+      "kind": "controlled-qwen2-cpu-engineering-fixture",
+      "pretrained": false,
+      "vocab_size": 8,
+      "hidden_size": 16,
+      "layers": 1,
+      "initialization": "two equiprobable numeric answer tokens then EOS; fixed before LoRA training",
+      "quality_claim": false
+    },
+    "training_sample_ids": [
+      "4723ebc0460ec7664e7495d32dae5b74bd49cbe8d2450841417eac98dded80e5",
+      "2b50292486ae88a2a08069122d6194c0416db461884cd1f2e1cc4fbf9bdd5798"
+    ],
+    "selection": "official training rows with numeric answer 1; no eval label filtering",
+    "training_partition_counts": {
+      "train": 130,
+      "eval": 6
+    },
+    "steps_completed": 2,
+    "reward_groups": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    ],
+    "gradient_norms": [
+      0.5753310918807983,
+      0.6843612194061279
+    ],
+    "weights_changed": true,
+    "weight_decay": 0.0,
+    "initial_trainable_digest": "sha256:fab4bc5c1f3f3eec006d98189bee908bedd16462e8662843476c693eeb63124e",
+    "final_trainable_digest": "sha256:573b24417c64bfef354783d5e29eaafd8c8e8cc34177538a74bbf914843dbece",
+    "checkpoint_reload_equal": true,
+    "checkpoint_bundle_ref": {
+      "artifact_id": "fe64ef8d32d6b17d7fdb14f30a4fd3439c23c58349ba53d1acd95ff0528983ab",
+      "revision": "47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+      "uri": "gymts-artifact://fe64ef8d32d6b17d7fdb14f30a4fd3439c23c58349ba53d1acd95ff0528983ab/47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+      "content_hash": "47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+      "media_type": "application/vnd.gymts.rl-checkpoint+zip",
+      "schema_ref": "gymts.rl/checkpoint-bundle/1",
+      "size_bytes": 7870
+    },
+    "training_provenance_ref": {
+      "artifact_id": "bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0",
+      "revision": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+      "uri": "gymts-artifact://bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0/b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+      "content_hash": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+      "media_type": "application/json",
+      "schema_ref": "gymts.rl/training-provenance/1",
+      "size_bytes": 5550
+    },
+    "dataset_manifest_refs": [
+      {
+        "artifact_id": "951904c32fada3e1183d264386f7e8483fe564a29a0d902460351b0be4485807",
+        "revision": "202719ec34bf52ea5982d09d3be311868e9da0ab73514117cce7bc747c0b24be",
+        "uri": "gymts-artifact://951904c32fada3e1183d264386f7e8483fe564a29a0d902460351b0be4485807/202719ec34bf52ea5982d09d3be311868e9da0ab73514117cce7bc747c0b24be",
+        "content_hash": "202719ec34bf52ea5982d09d3be311868e9da0ab73514117cce7bc747c0b24be",
+        "media_type": "application/json",
+        "schema_ref": "gymts.dataset/1",
+        "size_bytes": 7436
+      },
+      {
+        "artifact_id": "235522627a91287345aefc2852a20abcad2f98306d9c180ca7d6373d6256e5f6",
+        "revision": "a59790899dbe020dc3a883f3bf0d256c7458202e35af6b282ff69dda176c9331",
+        "uri": "gymts-artifact://235522627a91287345aefc2852a20abcad2f98306d9c180ca7d6373d6256e5f6/a59790899dbe020dc3a883f3bf0d256c7458202e35af6b282ff69dda176c9331",
+        "content_hash": "a59790899dbe020dc3a883f3bf0d256c7458202e35af6b282ff69dda176c9331",
+        "media_type": "application/json",
+        "schema_ref": "gymts.dataset/1",
+        "size_bytes": 7436
+      }
+    ],
+    "record_snapshot_refs": [
+      {
+        "artifact_id": "36427ea9735e5d5c10676eacf8554374225d2c411a2a400413f55f2b016ed326",
+        "revision": "98f0057d032d4ea4861c4ced6d66114a45259b242506bf425e624faba85fae4d",
+        "uri": "gymts-artifact://36427ea9735e5d5c10676eacf8554374225d2c411a2a400413f55f2b016ed326/98f0057d032d4ea4861c4ced6d66114a45259b242506bf425e624faba85fae4d",
+        "content_hash": "98f0057d032d4ea4861c4ced6d66114a45259b242506bf425e624faba85fae4d",
+        "media_type": "application/json",
+        "schema_ref": "gymts.record-snapshot/1",
+        "size_bytes": 5359
+      },
+      {
+        "artifact_id": "cab44d82e55048ed940a80e603ec25f35ad4d932542cf42b98fdc450a2e0c7eb",
+        "revision": "19da0b8ea6ca0bdc8ec18660aacacd1986c18d3466b970f7123e9a9018dfde59",
+        "uri": "gymts-artifact://cab44d82e55048ed940a80e603ec25f35ad4d932542cf42b98fdc450a2e0c7eb/19da0b8ea6ca0bdc8ec18660aacacd1986c18d3466b970f7123e9a9018dfde59",
+        "content_hash": "19da0b8ea6ca0bdc8ec18660aacacd1986c18d3466b970f7123e9a9018dfde59",
+        "media_type": "application/json",
+        "schema_ref": "gymts.record-snapshot/1",
+        "size_bytes": 5359
+      }
+    ],
+    "versions": {
+      "gymts": "0.5.0",
+      "gymts-rl": "0.2.0",
+      "torch": "2.11.0+cu126",
+      "transformers": "4.52.4",
+      "trl": "0.18.2",
+      "peft": "0.15.2"
+    }
+  },
+  "evaluation": {
+    "status": "passed",
+    "pid": 1942949,
+    "installed_modules": {
+      "gymts": "/tmp/gymts-rl-venv/lib/python3.11/site-packages/gymts/__init__.py",
+      "gymts_rl": "/tmp/gymts-rl-venv/lib/python3.11/site-packages/gymts_rl/__init__.py"
+    },
+    "pure_validation": true,
+    "fresh_process_resident_policy_used": false,
+    "technical_gates_only": true,
+    "quality_claim": false,
+    "seeds": [
+      0,
+      1,
+      5
+    ],
+    "candidate_count": 1,
+    "run_ids": [
+      "run_9bbfdbe0716145948215fdaf58d1c95b",
+      "run_83261ac88e9c44c18850cff74f6eae5a",
+      "run_682c2213c0f946de85883e915068fe3d",
+      "run_8000ff1bb1d344079630ed6fc64c2d45",
+      "run_1c5eda3971ca460a806eeadbc190164c",
+      "run_5300a1587da046a2954b60a5733d5d9c"
+    ],
+    "model_calls": [
+      {
+        "run_id": "run_9bbfdbe0716145948215fdaf58d1c95b",
+        "call_id": "id_61908dfb2a1941a3b9f7dd222923972f",
+        "seed": 0,
+        "policy_revision": "sha256:606392701fb21bcf249b07fc464425e271ada6b91ac722de92400f91555b85d0",
+        "call_ref": {
+          "artifact_id": "af0437d348fdac984edaa4ea453410f5586aca1775a5359e0e2b0bfc0aaccb33",
+          "content_hash": "2f0880aa612cfa9ef0c7e912034077824980b3845f6d91d2d9380bd044afc51b",
+          "media_type": "application/json",
+          "revision": "2f0880aa612cfa9ef0c7e912034077824980b3845f6d91d2d9380bd044afc51b",
+          "schema_ref": "gymts.model-call/1",
+          "size_bytes": 7350,
+          "uri": "gymts-artifact://af0437d348fdac984edaa4ea453410f5586aca1775a5359e0e2b0bfc0aaccb33/2f0880aa612cfa9ef0c7e912034077824980b3845f6d91d2d9380bd044afc51b"
+        },
+        "training_provenance_ref": {
+          "artifact_id": "bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0",
+          "content_hash": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "media_type": "application/json",
+          "revision": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "schema_ref": "gymts.rl/training-provenance/1",
+          "size_bytes": 5550,
+          "uri": "gymts-artifact://bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0/b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d"
+        }
+      },
+      {
+        "run_id": "run_83261ac88e9c44c18850cff74f6eae5a",
+        "call_id": "id_3b2200e770514373be5615ef4ff431d1",
+        "seed": 1,
+        "policy_revision": "sha256:606392701fb21bcf249b07fc464425e271ada6b91ac722de92400f91555b85d0",
+        "call_ref": {
+          "artifact_id": "8a14469ec80f33bedb6028cb4b1fb7908a963a4225b9944f3d3be5ed9cffd4ab",
+          "content_hash": "eea9f92555c22f84d16152a89e375e471fc846396f2acc1b873007d37e9f671d",
+          "media_type": "application/json",
+          "revision": "eea9f92555c22f84d16152a89e375e471fc846396f2acc1b873007d37e9f671d",
+          "schema_ref": "gymts.model-call/1",
+          "size_bytes": 7350,
+          "uri": "gymts-artifact://8a14469ec80f33bedb6028cb4b1fb7908a963a4225b9944f3d3be5ed9cffd4ab/eea9f92555c22f84d16152a89e375e471fc846396f2acc1b873007d37e9f671d"
+        },
+        "training_provenance_ref": {
+          "artifact_id": "bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0",
+          "content_hash": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "media_type": "application/json",
+          "revision": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "schema_ref": "gymts.rl/training-provenance/1",
+          "size_bytes": 5550,
+          "uri": "gymts-artifact://bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0/b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d"
+        }
+      },
+      {
+        "run_id": "run_682c2213c0f946de85883e915068fe3d",
+        "call_id": "id_4466c0ae62e74924aa10773081f64253",
+        "seed": 5,
+        "policy_revision": "sha256:606392701fb21bcf249b07fc464425e271ada6b91ac722de92400f91555b85d0",
+        "call_ref": {
+          "artifact_id": "31c69e00985ab954a7b61889a2c852ed098d1ce10f06a59e47af565ecc613b0f",
+          "content_hash": "d7903efeff0b5a19fcebc6c68f1ebc9f9d25b134175ccb4b88e99c6eeb8eb794",
+          "media_type": "application/json",
+          "revision": "d7903efeff0b5a19fcebc6c68f1ebc9f9d25b134175ccb4b88e99c6eeb8eb794",
+          "schema_ref": "gymts.model-call/1",
+          "size_bytes": 7350,
+          "uri": "gymts-artifact://31c69e00985ab954a7b61889a2c852ed098d1ce10f06a59e47af565ecc613b0f/d7903efeff0b5a19fcebc6c68f1ebc9f9d25b134175ccb4b88e99c6eeb8eb794"
+        },
+        "training_provenance_ref": {
+          "artifact_id": "bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0",
+          "content_hash": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "media_type": "application/json",
+          "revision": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "schema_ref": "gymts.rl/training-provenance/1",
+          "size_bytes": 5550,
+          "uri": "gymts-artifact://bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0/b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d"
+        }
+      },
+      {
+        "run_id": "run_8000ff1bb1d344079630ed6fc64c2d45",
+        "call_id": "id_b0f8f69c73e349f4ae75b4728e0fd211",
+        "seed": 0,
+        "policy_revision": "sha256:606392701fb21bcf249b07fc464425e271ada6b91ac722de92400f91555b85d0",
+        "call_ref": {
+          "artifact_id": "ba1200aec5e42711f3e0ec69be7f2db196048b8e26b1105e8fb07ca870e07ec7",
+          "content_hash": "e9ff777a9bb5998b757639b5b2b64eabce96a28216fcf0c79f88c307bc6ce866",
+          "media_type": "application/json",
+          "revision": "e9ff777a9bb5998b757639b5b2b64eabce96a28216fcf0c79f88c307bc6ce866",
+          "schema_ref": "gymts.model-call/1",
+          "size_bytes": 7353,
+          "uri": "gymts-artifact://ba1200aec5e42711f3e0ec69be7f2db196048b8e26b1105e8fb07ca870e07ec7/e9ff777a9bb5998b757639b5b2b64eabce96a28216fcf0c79f88c307bc6ce866"
+        },
+        "training_provenance_ref": {
+          "artifact_id": "bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0",
+          "content_hash": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "media_type": "application/json",
+          "revision": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "schema_ref": "gymts.rl/training-provenance/1",
+          "size_bytes": 5550,
+          "uri": "gymts-artifact://bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0/b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d"
+        }
+      },
+      {
+        "run_id": "run_1c5eda3971ca460a806eeadbc190164c",
+        "call_id": "id_a44e117c66a4443c86389eb32178cc28",
+        "seed": 1,
+        "policy_revision": "sha256:606392701fb21bcf249b07fc464425e271ada6b91ac722de92400f91555b85d0",
+        "call_ref": {
+          "artifact_id": "bf45847e95bc920468cdb5cb4d015e5010b959184e7943aa43d4efcd08ddaa59",
+          "content_hash": "7a4387f5169bb56bcad0aa18e303a21e3130ee7340797a00342aa498345eafae",
+          "media_type": "application/json",
+          "revision": "7a4387f5169bb56bcad0aa18e303a21e3130ee7340797a00342aa498345eafae",
+          "schema_ref": "gymts.model-call/1",
+          "size_bytes": 7353,
+          "uri": "gymts-artifact://bf45847e95bc920468cdb5cb4d015e5010b959184e7943aa43d4efcd08ddaa59/7a4387f5169bb56bcad0aa18e303a21e3130ee7340797a00342aa498345eafae"
+        },
+        "training_provenance_ref": {
+          "artifact_id": "bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0",
+          "content_hash": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "media_type": "application/json",
+          "revision": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "schema_ref": "gymts.rl/training-provenance/1",
+          "size_bytes": 5550,
+          "uri": "gymts-artifact://bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0/b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d"
+        }
+      },
+      {
+        "run_id": "run_5300a1587da046a2954b60a5733d5d9c",
+        "call_id": "id_1641a46be4074e1fac224084f8482faf",
+        "seed": 5,
+        "policy_revision": "sha256:606392701fb21bcf249b07fc464425e271ada6b91ac722de92400f91555b85d0",
+        "call_ref": {
+          "artifact_id": "241248aebbc0638d35ff08e4aeabbe926108e1831a84ebf2180e51d4cd460670",
+          "content_hash": "fc7b02786a7f9f69847559a0596b3497d6db0da233899586f018671085b97c22",
+          "media_type": "application/json",
+          "revision": "fc7b02786a7f9f69847559a0596b3497d6db0da233899586f018671085b97c22",
+          "schema_ref": "gymts.model-call/1",
+          "size_bytes": 7353,
+          "uri": "gymts-artifact://241248aebbc0638d35ff08e4aeabbe926108e1831a84ebf2180e51d4cd460670/fc7b02786a7f9f69847559a0596b3497d6db0da233899586f018671085b97c22"
+        },
+        "training_provenance_ref": {
+          "artifact_id": "bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0",
+          "content_hash": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "media_type": "application/json",
+          "revision": "b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d",
+          "schema_ref": "gymts.rl/training-provenance/1",
+          "size_bytes": 5550,
+          "uri": "gymts-artifact://bf90f1b551e4bf465e0572089a3b8ff0fb75fbb17bb2419ac542922d3d9a4fb0/b2b3554116e45bb8bf6fdb5b20c6cdc5ee3763cea719079b54e4d3cc12044f1d"
+        }
+      }
+    ],
+    "report_ref": {
+      "artifact_id": "c6c83609c2750cef6048a9257aef62a761445438b0e91a4166b9a6bbc12cf0e7",
+      "revision": "2c0986735435d4f9d4a4522e2f4c37d785d83a8731583d7f728e9dde096cf002",
+      "uri": "gymts-artifact://c6c83609c2750cef6048a9257aef62a761445438b0e91a4166b9a6bbc12cf0e7/2c0986735435d4f9d4a4522e2f4c37d785d83a8731583d7f728e9dde096cf002",
+      "content_hash": "2c0986735435d4f9d4a4522e2f4c37d785d83a8731583d7f728e9dde096cf002",
+      "media_type": "application/json",
+      "schema_ref": "gymts.evaluation-report/1",
+      "size_bytes": 30035
+    },
+    "repeated_report_ref": {
+      "artifact_id": "64a58413f72b52ccd74f76ecf8b4ab59fa7d542810c978d621000de37d43f051",
+      "revision": "caa9e756e7dde5c9d3661784b0cc8c727f30c27a6fd287008f7d3e8800ef01eb",
+      "uri": "gymts-artifact://64a58413f72b52ccd74f76ecf8b4ab59fa7d542810c978d621000de37d43f051/caa9e756e7dde5c9d3661784b0cc8c727f30c27a6fd287008f7d3e8800ef01eb",
+      "content_hash": "caa9e756e7dde5c9d3661784b0cc8c727f30c27a6fd287008f7d3e8800ef01eb",
+      "media_type": "application/json",
+      "schema_ref": "gymts.evaluation-report/1",
+      "size_bytes": 30035
+    },
+    "rescored_report_ref": {
+      "artifact_id": "fc90e77e6f64b183b0fac86041cc7b55d6567ae9b560f3838be76135393fc560",
+      "revision": "883dba0ae76f103a22e9a41c1529651a35f6ed14191eba6b3ca1969a53926fcc",
+      "uri": "gymts-artifact://fc90e77e6f64b183b0fac86041cc7b55d6567ae9b560f3838be76135393fc560/883dba0ae76f103a22e9a41c1529651a35f6ed14191eba6b3ca1969a53926fcc",
+      "content_hash": "883dba0ae76f103a22e9a41c1529651a35f6ed14191eba6b3ca1969a53926fcc",
+      "media_type": "application/json",
+      "schema_ref": "gymts.evaluation-report/1",
+      "size_bytes": 30071
+    },
+    "repeated_evaluation_id": "evaluation_a03ae1f3213a4713add37aeef66a90fa",
+    "same_seed_token_ids_reproduced": true,
+    "training_provenance_content_identity_preserved": true,
+    "evaluation_id": "evaluation_aa8da7875c7d4997ad60853744865a73",
+    "rescored_evaluation_id": "evaluation_9d2a856c46d2432ebf92c5d6d780dde1",
+    "metrics": [
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": "unit_e5c6aa7792c44051b69292f270a7e654",
+        "repetition": 0,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": "unit_e5c6aa7792c44051b69292f270a7e654",
+        "repetition": 0,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": "unit_5c8882f388a14d1c82263304d7b767a5",
+        "repetition": 1,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": "unit_5c8882f388a14d1c82263304d7b767a5",
+        "repetition": 1,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": "unit_b75c81d577354b36bd37ad46221a3a95",
+        "repetition": 2,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": "unit_b75c81d577354b36bd37ad46221a3a95",
+        "repetition": 2,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": "unit_8b6da9e187184d56843401d2d83b52cc",
+        "repetition": 0,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": "unit_8b6da9e187184d56843401d2d83b52cc",
+        "repetition": 0,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": "unit_69688e8b664d41d49f3fff157a034239",
+        "repetition": 1,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": "unit_69688e8b664d41d49f3fff157a034239",
+        "repetition": 1,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": "unit_0dcfba3ef9224520b0d643aad4c88bb1",
+        "repetition": 2,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "unit",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": "unit_0dcfba3ef9224520b0d643aad4c88bb1",
+        "repetition": 2,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "group",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 3,
+            "scored": 3,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "group",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "9c0fb4b9935d0f3e11adf1c98326944818f92c0223a85d15aee6cc51871afb55"
+        },
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 3,
+            "scored": 3,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "group",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 3,
+            "scored": 3,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "group",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {
+          "evaluation_case_id": "42a7818de3bb1f22e35470addf266ce23a72a43f2c99845bf03eab8606b3d20e"
+        },
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 3,
+            "scored": 3,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "accuracy",
+        "result": {
+          "value": 0.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 6,
+            "scored": 6,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "format_valid",
+        "result": {
+          "value": 0.5,
+          "status": "ready",
+          "counts": {
+            "eligible": 6,
+            "scored": 6,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      }
+    ],
+    "gate_results": [
+      {
+        "gate_index": 0,
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": null,
+        "status": "pass",
+        "value": 0.0,
+        "reason": null
+      },
+      {
+        "gate_index": 1,
+        "candidate_id": "checkpoint-47c63b03cf601d318d79fea26d4a12220667a5ca81966978cfdc358db18cd083",
+        "group_key": null,
+        "status": "pass",
+        "value": 1.0,
+        "reason": null
+      }
+    ],
+    "coverage": {
+      "expected_units": 6,
+      "succeeded_runs": 6,
+      "failed_runs": 0,
+      "cancelled_runs": 0,
+      "not_started_units": 0
+    },
+    "verdict": "pass",
+    "rescore_new_model_calls": 0,
+    "sealed_results_and_events_unchanged": true,
+    "base_and_training_checkpoint_paths_unavailable": true
+  },
+  "fixture_model": true,
+  "data": "pinned official GSM8K + genuine ChatTS numerical generation",
+  "attachment_benchmarks_used": false,
+  "paid_calls": false,
+  "gpu_training": false,
+  "release_verification": {
+    "wheel_from_independent_sdist": true,
+    "source_checkout_on_pythonpath": false,
+    "cwd": "/tmp",
+    "core_wheel": "/tmp/gymts-rl-resource-final-release-2026-10-20/wheels/gymts-0.5.0-py3-none-any.whl",
+    "rl_wheel": "/tmp/gymts-rl-resource-final-release-2026-10-20/wheels/gymts_rl-0.2.0-py3-none-any.whl",
+    "sha256": {
+      "gymts_rl-0.2.0-py3-none-any.whl": "bb413ca23e3d6a7ba5797e03d8b498b5c91c211dcecb378704a17336d9411a3b",
+      "gymts-0.5.0-py3-none-any.whl": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226"
+    },
+    "suite_log": "/tmp/gymts-rl-resource-final-release-2026-10-20/installed-tests.log",
+    "native_source_opt_in": true,
+    "installed_versions": {
+      "gymts": "0.5.0",
+      "gymts-rl": "0.2.0",
+      "torch": "2.11.0+cu126",
+      "transformers": "4.52.4",
+      "trl": "0.18.2",
+      "peft": "0.15.2"
+    },
+    "suite_tests": 87,
+    "suite_passed": 87,
+    "suite_skipped": 0,
+    "core_source_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20"
+  },
+  "verification_round": "final: resource-alias immutable-publication core refreeze; unchanged final RL base/provenance guards",
+  "data_evidence": {
+    "partition_counts_by_source": {
+      "train": {
+        "openai/gsm8k": 128,
+        "chatts-native-generated/v1": 2
+      },
+      "eval": {
+        "chatts-native-generated/v1": 2,
+        "openai/gsm8k": 4
+      }
+    },
+    "source_manifest_ref": {
+      "artifact_id": "f268a187bee9f0377a354762d7548864de8819018584059dc1bdb9b38f9d2dc0",
+      "revision": "5d4b1ea282b22ad02632efe64a1ea57d6ef0ae38077eda542fb8b98c3666b74d",
+      "uri": "gymts-artifact://f268a187bee9f0377a354762d7548864de8819018584059dc1bdb9b38f9d2dc0/5d4b1ea282b22ad02632efe64a1ea57d6ef0ae38077eda542fb8b98c3666b74d",
+      "content_hash": "5d4b1ea282b22ad02632efe64a1ea57d6ef0ae38077eda542fb8b98c3666b74d",
+      "media_type": "application/json",
+      "schema_ref": "gymts.rl.dataset-manifest/1",
+      "size_bytes": 12111
+    },
+    "source_snapshot_ref": {
+      "artifact_id": "ceeb8bae85df28c772307ce6169b6dc5605d8eb738ce0eb46c2de9ca196fe2fc",
+      "revision": "a85b043b9fa94c1fda5554513ddd7c5da7b52eca8bd5d1c6a532cc8e8d985e46",
+      "uri": "gymts-artifact://ceeb8bae85df28c772307ce6169b6dc5605d8eb738ce0eb46c2de9ca196fe2fc/a85b043b9fa94c1fda5554513ddd7c5da7b52eca8bd5d1c6a532cc8e8d985e46",
+      "content_hash": "a85b043b9fa94c1fda5554513ddd7c5da7b52eca8bd5d1c6a532cc8e8d985e46",
+      "media_type": "application/json",
+      "schema_ref": "gymts.rl.snapshot/1",
+      "size_bytes": 115295
+    },
+    "optimization_fixture": "two official GSM8K train samples with target 1; two 8-rollout groups; no evaluation label filtering",
+    "chatts": "genuine numerical source preparation and held-out benchmark cases; not effective optimization data for this restricted tiny vocabulary",
+    "user_uploaded_benchmarks": "not read or used"
+  },
+  "record_evidence": {
+    "total_sealed_runs": 28,
+    "training_rollout_runs": 16,
+    "new_evaluation_runs": 6,
+    "repeated_evaluation_runs": 6,
+    "rescoring_new_runs": 0
+  },
+  "durable_archive": {
+    "path": "/zzr/zmx/GymTS/Jurmean-GymTS/output/rl-checkpoint-loop-resource-final-2026-10-20/full-evidence.tar.gz",
+    "sha256": "b371921701f3001c7bd9fea227eb0fd14796873da38d6c05f07843e1c980ee81",
+    "size_bytes": 1600105,
+    "contents": "complete records SQLite/CAS, prepared sources, training state/checkpoints, checkpoint bundle, native evaluation/repeat/rescore reports, source identities, installed wheel/sdist files and logs"
+  }
+}

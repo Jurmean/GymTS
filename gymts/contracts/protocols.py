@@ -1,10 +1,21 @@
 """Structural plugin contracts; implementations need no base class."""
 from typing import List, Optional, Protocol
-from .types import (ActionReceipt, ArtifactRef, BindingSpec, CandidateContext,
+from .types import (ActionReceipt, ArtifactRef, BindingSpec, CandidateContext, CompatibilityContext,
                     CandidateFeedback, CandidateOutput, DataViewRef,
                     EnvironmentCommand, EnvironmentDescription, ObservationBatch,
                     ObservationRequest, TaskEffect, TaskExecutionContext,
                     TaskInput, TaskSpec, TaskUpdate)
+
+
+class DeclarativeProvider(Protocol):
+    """A trusted declaration callback, distinct from a live plugin session.
+
+    describe_spec and check_compatibility_spec may inspect JSON configuration
+    only; they must not open data, credentials, services or models. Registration
+    also accepts independent describe=/compatibility= callables.
+    """
+    def describe_spec(self, spec: dict) -> dict: ...
+    def check_compatibility_spec(self, context: CompatibilityContext) -> None: ...
 
 
 class Environment(Protocol):
@@ -43,8 +54,21 @@ class Scorer(Protocol):
     def score(self, results: dict, outcomes: dict, context: dict) -> dict: ...
 
 
-class TraceCollector(Protocol):
-    """Optional injected collector; no profile is claimed by the base runtime."""
-    def bind(self, run_id: str, task_input: TaskInput, output_id: str) -> None: ...
-    def flush(self) -> List[dict]: ...
+class DatasetReaderProvider(Protocol):
+    def read(self, resources, assets: List[dict]) -> List[dict]: ...
 
+
+class BenchmarkResolverProvider(Protocol):
+    def resolve(self, definition: dict, resources, candidates: List[dict],
+                purpose: str, repetitions: Optional[dict]) -> dict: ...
+
+
+class TraceCollector(Protocol):
+    """Optional call evidence, bound by the Runner only during infer."""
+    profile: str
+    @property
+    def context(self) -> dict: ...
+    def bind(self, run_id: str, task_input: TaskInput, output_id: str) -> None: ...
+    def record_model_call(self, value: dict) -> dict: ...
+    def record_tool_call(self, value: dict) -> dict: ...
+    def flush(self) -> List[dict]: ...

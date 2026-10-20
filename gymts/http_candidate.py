@@ -44,6 +44,8 @@ class FrozenJSONHTTPCandidate:
                 "temperature": 0.0, "top_p": 1.0, "api_key_env": None,
                 "expected_system_fingerprint": None}
     DIALECTS = ()
+    # Concrete codecs opt in only for wire dialects that accept OpenAI seed.
+    SEED_DIALECTS = ()
     KIND = "json_http"
     NORMALIZATION = "none"
     REVISION_PROVENANCE = "configured"
@@ -113,6 +115,12 @@ class FrozenJSONHTTPCandidate:
         if self.spec.get("artifact") is not None or self.spec.get("inherited_state"):
             _fail("unsupported_capability", "HTTP model state is managed by the fixed external deployment", "prepare")
         self.resources = context["resources"]
+        self.execution_seed = context.get("execution_seed")
+        if self.execution_seed is not None and type(self.execution_seed) is not int:
+            _fail("invalid_config", "execution_seed must be an integer or null", "prepare")
+        self.randomness = {"requested_seed": self.execution_seed,
+            "parameter_sent": self.execution_seed is not None and self.params["dialect"] in self.SEED_DIALECTS,
+            "backend_enforcement": "unverified"}
         if self.params["api_key_env"] is not None:
             self.key = os.environ.get(self.params["api_key_env"])
             if not self.key or any(ord(char) < 32 or ord(char) == 127 for char in self.key):
@@ -124,7 +132,8 @@ class FrozenJSONHTTPCandidate:
                       "dialect": self.params["dialect"], "normalization": self.NORMALIZATION,
                       "generation": {key: self.params[key] for key in ("temperature", "top_p", "max_tokens")},
                       "expected_system_fingerprint": self.params["expected_system_fingerprint"],
-                      "capture_profile": "core", "model_calls": "not_collected"}
+                      "capture_profile": "core", "model_calls": "not_collected",
+                      "randomness": copy.deepcopy(self.randomness)}
         deployment.update(self._representation_metadata())
         ref = self._save(deployment)
         self.state = "prepared"
@@ -147,8 +156,11 @@ class FrozenJSONHTTPCandidate:
             _fail("invalid_state", "Candidate infer requires prepared state", "infer")
         model_input = self._load_input(task_input)
         wire = self._wire(model_input)
+        if self.randomness["parameter_sent"]:
+            wire["seed"] = self.execution_seed
         request_ref = self._save({"input_id": task_input["input_id"], "captured_at": utc_now(),
-                                  "wire_payload": wire, **self._request_metadata(model_input),
+                                  "wire_payload": wire, "randomness": copy.deepcopy(self.randomness),
+                                  **self._request_metadata(model_input),
                                   "normalization": self.NORMALIZATION, "model_revision": self.revision,
                                   "revision_provenance": self.REVISION_PROVENANCE,
                                   **self._representation_metadata()})
@@ -215,6 +227,7 @@ class FrozenJSONHTTPCandidate:
                     "response_model": identity["model"], "system_fingerprint": fingerprint,
                     "usage": self._redact(body.get("usage")), "finish_reason": choice.get("finish_reason"),
                     "capture_profile": "core", "model_calls": "not_collected",
+                    "randomness": copy.deepcopy(self.randomness),
                     "missing": ["native_token_ids", "native_logprobs", "processor_revision"]}
         evidence.update(self._representation_metadata())
         evidence["normalization"] = self.NORMALIZATION

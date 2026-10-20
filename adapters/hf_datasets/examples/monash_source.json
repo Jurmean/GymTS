@@ -1,0 +1,8 @@
+{
+  "mode": "hub",
+  "repo_id": "Monash-University/monash_tsf",
+  "revision": "7bf79ee8270e340b6c5848b7b56d8e1c35305fb6",
+  "format": "parquet",
+  "files": ["tourism_monthly/test/0000.parquet"],
+  "split": "test"
+}

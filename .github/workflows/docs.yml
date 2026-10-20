@@ -1,0 +1,30 @@
+name: Documentation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check curated source documentation
+        run: python -B scripts/docs.py check
+      - name: Install optional documentation tools
+        run: python -m pip install -r requirements-docs.txt
+      - name: Build local static documentation
+        run: python -B scripts/docs.py build --work "$RUNNER_TEMP/gymts-docs" --site-dir "$RUNNER_TEMP/gymts-docs-site"
+      - name: Upload documentation preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: gymts-documentation
+          path: ${{ runner.temp }}/gymts-docs-site
+          if-no-files-found: error

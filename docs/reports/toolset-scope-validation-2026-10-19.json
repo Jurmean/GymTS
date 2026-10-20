@@ -1,0 +1,557 @@
+{
+  "status": "passed",
+  "scope": "External LibraryTS provider scopes; Agent SDK selection and tool-result continuation are not implemented or validated by this change",
+  "api": {
+    "constructor": "LibraryTSTools(artifacts, implementation, *, timeout_seconds=120, traces=None, scope=None)",
+    "scope_values": [
+      "current_input",
+      "standalone"
+    ],
+    "default": "current_input when traces is supplied, standalone otherwise",
+    "run_binding": "explicit standalone with traces is rejected; LibraryTSQACandidate always supplies current_input even with capture disabled",
+    "current_input_tools": [
+      "forecast.naive",
+      "forecast.polynomial",
+      "detect.threshold",
+      "analyze.seasonality",
+      "distance.euclidean"
+    ],
+    "standalone_only": [
+      "dataset.load",
+      "labts.catalog",
+      "labts.run",
+      "labts.analyze",
+      "labts.metrics"
+    ],
+    "denied_call_evidence": "request persisted before scope validation; failed response references original request; native dispatch is never entered"
+  },
+  "validation": {
+    "complete_installed_native_suite": {
+      "total": 14,
+      "skipped": 0,
+      "passed": 14,
+      "log": "/tmp/gymts-libraryts-scope-validation/native-unittest.log",
+      "log_sha256": "75badefa87d2b3d2e2b4d7ea4285dfce2095fa66ccaccb5a3c7b51babcb9fb47"
+    },
+    "followup_native_scope_verification": {
+      "total": 2,
+      "passed": 2,
+      "covers": "All five permitted tools execute with explicit current_input scope"
+    },
+    "clean_standard_library_contract_suite": {
+      "discovered": 14,
+      "passed": 9,
+      "skipped": 5,
+      "skips": "Native scientific tests explicitly disabled; all 5 already passed in installed native suite"
+    },
+    "sdist_contains_tests_and_examples": true,
+    "same_implementation_as_complete_native_suite": true
+  },
+  "distribution": {
+    "wheel": {
+      "path": "/tmp/gymts-libraryts-scope-release/rebuilt/gymts_libraryts-0.2.0-py3-none-any.whl",
+      "sha256": "c05e3b3b2c7ae7e90d3ccca4b070cbc913a56807288e985c3d43ac38a1285269"
+    },
+    "sdist": {
+      "path": "/tmp/gymts-libraryts-scope-release/dist/gymts_libraryts-0.2.0.tar.gz",
+      "sha256": "1bcca96d3c0840b8f7c409ae3c41887394dc203e43e8e1bda16c4fb234bd252b"
+    },
+    "core_wheel": {
+      "path": "/tmp/gymts-core05-final-frozen/wheels/gymts-0.5.0-py3-none-any.whl",
+      "sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226"
+    },
+    "shared_wheel": {
+      "path": "/tmp/gymts-timesigma-pure-check-2y2ku8t2/wheels/gymts_timeseries-0.2.0-py3-none-any.whl",
+      "sha256": "deac78d4f81ac60e5422b9e3d0dd0e1551a5adc25abf284ac41baab04a33e27c"
+    }
+  },
+  "implementation_files": {
+    "__init__.py": "ca9b932e205e7b901dcb2c639449db19d9ac86abd7c3f958433e6c3042f7dc40",
+    "candidate.py": "c61411a9fd7dcd5bebb40f8701dc09bbaa860c30cc68ea381f0df1d97754edc3",
+    "cli.py": "32d468fd5408de618843026810bd2b45a9b80d804eb9f7602fd828c87b9cd65f",
+    "data.py": "e08698d50cfe84319dc5e5741d0091c463b3c28df5fd594240884e000dabe2df",
+    "registration.py": "059e12d2e0de4034d51892a9cb41ed0c16a8ae2fccf3d91d8cd12c635c0a5a73",
+    "runtime.py": "8025d05544ef1b4ceaa7a7a7b5a54939faa564972ab7129892e0dd363a39275b",
+    "scoring.py": "345bf82ca0fff3cb56941ea41af38e7d2d01ccf04c708e589366e9c2aa5eb86e",
+    "source.py": "3eae26ef28f00d105390a2577bd7cb256392d3672d5186221d755b3e1f191138",
+    "tools.py": "9e16447b2500d7c074fcb5db1b3a1f57d1222c8d34ed8df764b708e99150f480",
+    "worker.py": "7d5c294a75e3d516abfe4bec2bad196ab242e100e28fc1e041eafab5327f0df9"
+  },
+  "test_sha256": "a31940720d9f6f1c2e2ef3f1a3aa55bd76c43574c7815b1cede3bdd419965e52",
+  "core_installed_unchanged": true,
+  "core_source_unchanged": true,
+  "steps": [
+    {
+      "label": "build",
+      "exit_code": 0,
+      "seconds": 1.434,
+      "log": "/tmp/gymts-libraryts-scope-release/build.log",
+      "log_sha256": "39a2a7dd0e2d22d262a82db2a80919fc4b9eeffb5d803c4e099f11114b85472d",
+      "tail": [
+        "copying tests/test_libraryts.py -> gymts_libraryts-0.2.0/tests",
+        "copying src/gymts_libraryts.egg-info/SOURCES.txt -> gymts_libraryts-0.2.0/src/gymts_libraryts.egg-info",
+        "Writing gymts_libraryts-0.2.0/setup.cfg",
+        "Creating tar archive",
+        "removing 'gymts_libraryts-0.2.0' (and everything under it)",
+        "Successfully built gymts_libraryts-0.2.0-py3-none-any.whl and gymts_libraryts-0.2.0.tar.gz"
+      ]
+    },
+    {
+      "label": "sdist-rebuild",
+      "exit_code": 0,
+      "seconds": 0.815,
+      "log": "/tmp/gymts-libraryts-scope-release/sdist-rebuild.log",
+      "log_sha256": "f6e70bb3465e25b33a4a15737ba95569ebb93bad60247ac55f16d4f435aa88a0",
+      "tail": [
+        "adding 'gymts_libraryts-0.2.0.dist-info/WHEEL'",
+        "adding 'gymts_libraryts-0.2.0.dist-info/entry_points.txt'",
+        "adding 'gymts_libraryts-0.2.0.dist-info/top_level.txt'",
+        "adding 'gymts_libraryts-0.2.0.dist-info/RECORD'",
+        "removing build/bdist.linux-x86_64/wheel",
+        "Successfully built gymts_libraryts-0.2.0-py3-none-any.whl"
+      ]
+    },
+    {
+      "label": "native-install",
+      "exit_code": 0,
+      "seconds": 0.509,
+      "log": "/tmp/gymts-libraryts-scope-release/native-install.log",
+      "log_sha256": "8298d3a6c06119bd9c54decf6cb7535b44ef303c619a575bafe9a0b9d7bf5c0f",
+      "tail": [
+        "    Uninstalling gymts-libraryts-0.2.0:",
+        "      Successfully uninstalled gymts-libraryts-0.2.0",
+        "Successfully installed gymts-libraryts-0.2.0",
+        "",
+        "[notice] A new release of pip is available: 24.0 -> 26.2.1",
+        "[notice] To update, run: python -m pip install --upgrade pip"
+      ]
+    },
+    {
+      "label": "current-input-native",
+      "exit_code": 0,
+      "seconds": 7.739,
+      "log": "/tmp/gymts-libraryts-scope-release/current-input-native.log",
+      "log_sha256": "13171fe43802f7cd7aad2ddda9f1012897588cad51e620ff0421c82f58ada1b5",
+      "tail": [
+        "test_threshold_seasonality_and_distance_use_native_tools (test_libraryts.LibraryTSNativeTests.test_threshold_seasonality_and_distance_use_native_tools) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 2 tests in 7.636s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "label": "offline-install",
+      "exit_code": 0,
+      "seconds": 0.561,
+      "log": "/tmp/gymts-libraryts-scope-release/offline-install.log",
+      "log_sha256": "0b73cfcf1da2c680aa341fe80f49ec87b2f20f085dfacc8347ff3543a304459f",
+      "tail": [
+        "Processing ./gymts-core05-final-frozen/wheels/gymts-0.5.0-py3-none-any.whl",
+        "Processing ./gymts-timesigma-pure-check-2y2ku8t2/wheels/gymts_timeseries-0.2.0-py3-none-any.whl",
+        "Processing ./gymts-libraryts-scope-release/rebuilt/gymts_libraryts-0.2.0-py3-none-any.whl",
+        "Installing collected packages: gymts-timeseries, gymts-libraryts, gymts",
+        "Successfully installed gymts-0.5.0 gymts-libraryts-0.2.0 gymts-timeseries-0.2.0"
+      ]
+    },
+    {
+      "label": "clean-contract",
+      "exit_code": 0,
+      "seconds": 0.639,
+      "log": "/tmp/gymts-libraryts-scope-release/clean-contract.log",
+      "log_sha256": "2046be3629cf88ac29c65cd06be0b62a51953a411471ac2ac5d09b58735f438e",
+      "tail": [
+        "test_two_forecasters_record_real_fit_and_loaded_module_hashes (test_libraryts.LibraryTSNativeTests.test_two_forecasters_record_real_fit_and_loaded_module_hashes) ... skipped 'Opt in to fixed-source native CPU computations'",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 14 tests in 0.532s",
+        "",
+        "OK (skipped=5)"
+      ]
+    }
+  ],
+  "recorded_at": "2026-10-19T13:36:06.259501+00:00",
+  "user_facing_date": "2026-10-19",
+  "runtime_examples": {
+    "scope": "current_input",
+    "catalog": [
+      {
+        "tool": "forecast.naive",
+        "scope": "current_input",
+        "effect": "compute_current_input",
+        "allowed_scopes": [
+          "current_input",
+          "standalone"
+        ]
+      },
+      {
+        "tool": "forecast.polynomial",
+        "scope": "current_input",
+        "effect": "compute_current_input",
+        "allowed_scopes": [
+          "current_input",
+          "standalone"
+        ]
+      },
+      {
+        "tool": "detect.threshold",
+        "scope": "current_input",
+        "effect": "compute_current_input",
+        "allowed_scopes": [
+          "current_input",
+          "standalone"
+        ]
+      },
+      {
+        "tool": "analyze.seasonality",
+        "scope": "current_input",
+        "effect": "compute_current_input",
+        "allowed_scopes": [
+          "current_input",
+          "standalone"
+        ]
+      },
+      {
+        "tool": "distance.euclidean",
+        "scope": "current_input",
+        "effect": "compute_current_input",
+        "allowed_scopes": [
+          "current_input",
+          "standalone"
+        ]
+      }
+    ],
+    "success": {
+      "call_ref": {
+        "artifact_id": "7c05ac013c5dab83a12af45a946b794abb3e592218e9abbec442133240b91b00",
+        "revision": "fe7b7fe89b65c83fbdb1be6db9f1eef5bcc7a843e45190bf9da353c782740aa1",
+        "uri": "gymts-artifact://7c05ac013c5dab83a12af45a946b794abb3e592218e9abbec442133240b91b00/fe7b7fe89b65c83fbdb1be6db9f1eef5bcc7a843e45190bf9da353c782740aa1",
+        "content_hash": "fe7b7fe89b65c83fbdb1be6db9f1eef5bcc7a843e45190bf9da353c782740aa1",
+        "media_type": "application/json",
+        "schema_ref": "gymts.libraryts/tool-response/1",
+        "size_bytes": 23196
+      },
+      "request": {
+        "arguments": {
+          "horizons": [
+            1,
+            2
+          ],
+          "values": [
+            1,
+            2,
+            3
+          ]
+        },
+        "effect": "compute_current_input",
+        "implementation": {
+          "python": "/tmp/gymts-libraryts-install/bin/python",
+          "repository": "/tmp/gymts-libraryts-sktime"
+        },
+        "params": {
+          "strategy": "drift"
+        },
+        "scope": "current_input",
+        "started_at": "2026-10-19T13:35:33.412686Z",
+        "tool": "forecast.naive"
+      },
+      "response_ref": {
+        "artifact_id": "2b7b1f41548f35b2888b225b40859befc9fd24d05d15b94f8ca931a4431c8efa",
+        "revision": "7a18748247c02d353f18f1f04965d5fe62f74a899cc5655dddd603bb81e0e915",
+        "uri": "gymts-artifact://2b7b1f41548f35b2888b225b40859befc9fd24d05d15b94f8ca931a4431c8efa/7a18748247c02d353f18f1f04965d5fe62f74a899cc5655dddd603bb81e0e915",
+        "content_hash": "7a18748247c02d353f18f1f04965d5fe62f74a899cc5655dddd603bb81e0e915",
+        "media_type": "application/json",
+        "schema_ref": "gymts.libraryts/tool-response/1",
+        "size_bytes": 21912
+      },
+      "predictions": [
+        4.0,
+        5.0
+      ]
+    },
+    "denials": [
+      {
+        "call_ref": {
+          "artifact_id": "b58ed4a9df61cfc4ba2d67f87595fbb12700e9b2d722cdc5873b89d04a9f0b2e",
+          "revision": "f903798c3184e7bbab87e262ada91580f1cfdd8c070bee90435478cf337aa65e",
+          "uri": "gymts-artifact://b58ed4a9df61cfc4ba2d67f87595fbb12700e9b2d722cdc5873b89d04a9f0b2e/f903798c3184e7bbab87e262ada91580f1cfdd8c070bee90435478cf337aa65e",
+          "content_hash": "f903798c3184e7bbab87e262ada91580f1cfdd8c070bee90435478cf337aa65e",
+          "media_type": "application/json",
+          "schema_ref": "gymts.libraryts/tool-response/1",
+          "size_bytes": 939
+        },
+        "request": {
+          "arguments": {
+            "dataset": "airline"
+          },
+          "effect": "read_external_data",
+          "implementation": {
+            "python": "/tmp/gymts-libraryts-install/bin/python",
+            "repository": "/tmp/gymts-libraryts-sktime"
+          },
+          "params": {},
+          "scope": "current_input",
+          "started_at": "2026-10-19T13:35:34.844445Z",
+          "tool": "dataset.load"
+        },
+        "failure": {
+          "attempt_id": "libraryts-attempt_9fb76f06f2634c5c85e2a0b8cc308c3a",
+          "call_id": "libraryts-call_21695b8db38548dd9cbb1fe5dc1b2a29",
+          "ended_at": "2026-10-19T13:35:34.848881Z",
+          "error": {
+            "code": "permission_denied",
+            "links": {},
+            "message": "LibraryTS tool is outside the current-input scope",
+            "method": null,
+            "retryable": false,
+            "run_id": null,
+            "side_effect": "none",
+            "stage": "libraryts.scope"
+          },
+          "request_ref": {
+            "artifact_id": "4114b16f37bc6a8da4885009868028a6662e66eb9e2fa02565d471b842ef9169",
+            "content_hash": "e278f3b0cf6b822a6f731479f8a75e165c4a63269d252e06568ec1a77f5ef7b2",
+            "media_type": "application/json",
+            "revision": "e278f3b0cf6b822a6f731479f8a75e165c4a63269d252e06568ec1a77f5ef7b2",
+            "schema_ref": "gymts.libraryts/tool-request/1",
+            "size_bytes": 279,
+            "uri": "gymts-artifact://4114b16f37bc6a8da4885009868028a6662e66eb9e2fa02565d471b842ef9169/e278f3b0cf6b822a6f731479f8a75e165c4a63269d252e06568ec1a77f5ef7b2"
+          },
+          "started_at": "2026-10-19T13:35:34.844445Z",
+          "status": "failed"
+        }
+      },
+      {
+        "call_ref": {
+          "artifact_id": "d97d160847bc5af64d7a5f6a0b74f1a630f590cb9f68257d2b8f81134a1b47b0",
+          "revision": "1f00212af68afca4997c5e7e826fc4ea81ecc9ef687bb0879a58ab912307b2bb",
+          "uri": "gymts-artifact://d97d160847bc5af64d7a5f6a0b74f1a630f590cb9f68257d2b8f81134a1b47b0/1f00212af68afca4997c5e7e826fc4ea81ecc9ef687bb0879a58ab912307b2bb",
+          "content_hash": "1f00212af68afca4997c5e7e826fc4ea81ecc9ef687bb0879a58ab912307b2bb",
+          "media_type": "application/json",
+          "schema_ref": "gymts.libraryts/tool-response/1",
+          "size_bytes": 939
+        },
+        "request": {
+          "arguments": {
+            "dataset": "airline"
+          },
+          "effect": "inspect_external_catalog",
+          "implementation": {
+            "python": "/tmp/gymts-libraryts-install/bin/python",
+            "repository": "/tmp/gymts-libraryts-sktime"
+          },
+          "params": {},
+          "scope": "current_input",
+          "started_at": "2026-10-19T13:35:34.853702Z",
+          "tool": "labts.catalog"
+        },
+        "failure": {
+          "attempt_id": "libraryts-attempt_cf7afa1f2006402cbef1f02c891137fd",
+          "call_id": "libraryts-call_8a9657e50a20451d837f4c593fa87005",
+          "ended_at": "2026-10-19T13:35:34.859207Z",
+          "error": {
+            "code": "permission_denied",
+            "links": {},
+            "message": "LibraryTS tool is outside the current-input scope",
+            "method": null,
+            "retryable": false,
+            "run_id": null,
+            "side_effect": "none",
+            "stage": "libraryts.scope"
+          },
+          "request_ref": {
+            "artifact_id": "f1b15313ac5b888fd0cf9f4323ca25386c47dbd1de0ff03844766cd42c79d1a5",
+            "content_hash": "10064fe50c2b878249cbe479fcb03aa3c48c1065a0201753bec9b8e9e01be89c",
+            "media_type": "application/json",
+            "revision": "10064fe50c2b878249cbe479fcb03aa3c48c1065a0201753bec9b8e9e01be89c",
+            "schema_ref": "gymts.libraryts/tool-request/1",
+            "size_bytes": 286,
+            "uri": "gymts-artifact://f1b15313ac5b888fd0cf9f4323ca25386c47dbd1de0ff03844766cd42c79d1a5/10064fe50c2b878249cbe479fcb03aa3c48c1065a0201753bec9b8e9e01be89c"
+          },
+          "started_at": "2026-10-19T13:35:34.853702Z",
+          "status": "failed"
+        }
+      },
+      {
+        "call_ref": {
+          "artifact_id": "9d82affba39081c9f8c1743e6d962832b255101bd5b16471a83def2d88d98679",
+          "revision": "05afd15db94c4dc50281a85f0e54b9e21f4c834cfeb03cceacbef43fda1bd24b",
+          "uri": "gymts-artifact://9d82affba39081c9f8c1743e6d962832b255101bd5b16471a83def2d88d98679/05afd15db94c4dc50281a85f0e54b9e21f4c834cfeb03cceacbef43fda1bd24b",
+          "content_hash": "05afd15db94c4dc50281a85f0e54b9e21f4c834cfeb03cceacbef43fda1bd24b",
+          "media_type": "application/json",
+          "schema_ref": "gymts.libraryts/tool-response/1",
+          "size_bytes": 939
+        },
+        "request": {
+          "arguments": {
+            "dataset": "airline"
+          },
+          "effect": "run_standalone_experiment",
+          "implementation": {
+            "python": "/tmp/gymts-libraryts-install/bin/python",
+            "repository": "/tmp/gymts-libraryts-sktime"
+          },
+          "params": {},
+          "scope": "current_input",
+          "started_at": "2026-10-19T13:35:34.864298Z",
+          "tool": "labts.run"
+        },
+        "failure": {
+          "attempt_id": "libraryts-attempt_4c2f5c3a343245ddabc721e406354f58",
+          "call_id": "libraryts-call_129f133ff66145f7807f6bd15522bd24",
+          "ended_at": "2026-10-19T13:35:34.869049Z",
+          "error": {
+            "code": "permission_denied",
+            "links": {},
+            "message": "LibraryTS tool is outside the current-input scope",
+            "method": null,
+            "retryable": false,
+            "run_id": null,
+            "side_effect": "none",
+            "stage": "libraryts.scope"
+          },
+          "request_ref": {
+            "artifact_id": "23a12482e9b8b67cbcdd7617c887feb7a0795d669406c7f3fab4b56c8c0f9032",
+            "content_hash": "c008cb47762b164f46843fcd3eecd25ceb15bd83390cb292053e4dc92d1527fb",
+            "media_type": "application/json",
+            "revision": "c008cb47762b164f46843fcd3eecd25ceb15bd83390cb292053e4dc92d1527fb",
+            "schema_ref": "gymts.libraryts/tool-request/1",
+            "size_bytes": 283,
+            "uri": "gymts-artifact://23a12482e9b8b67cbcdd7617c887feb7a0795d669406c7f3fab4b56c8c0f9032/c008cb47762b164f46843fcd3eecd25ceb15bd83390cb292053e4dc92d1527fb"
+          },
+          "started_at": "2026-10-19T13:35:34.864298Z",
+          "status": "failed"
+        }
+      },
+      {
+        "call_ref": {
+          "artifact_id": "1b2f13893615bb31d34444d6b26800fe69c12c8aed94cf6f9b7b6300f737fd29",
+          "revision": "2c5ca8f56760b25988a9ad914eb89f50634e58a4ca26aabf623207cb09828d30",
+          "uri": "gymts-artifact://1b2f13893615bb31d34444d6b26800fe69c12c8aed94cf6f9b7b6300f737fd29/2c5ca8f56760b25988a9ad914eb89f50634e58a4ca26aabf623207cb09828d30",
+          "content_hash": "2c5ca8f56760b25988a9ad914eb89f50634e58a4ca26aabf623207cb09828d30",
+          "media_type": "application/json",
+          "schema_ref": "gymts.libraryts/tool-response/1",
+          "size_bytes": 939
+        },
+        "request": {
+          "arguments": {
+            "dataset": "airline"
+          },
+          "effect": "read_external_data_and_analyze",
+          "implementation": {
+            "python": "/tmp/gymts-libraryts-install/bin/python",
+            "repository": "/tmp/gymts-libraryts-sktime"
+          },
+          "params": {},
+          "scope": "current_input",
+          "started_at": "2026-10-19T13:35:34.876574Z",
+          "tool": "labts.analyze"
+        },
+        "failure": {
+          "attempt_id": "libraryts-attempt_d6d17cfd404b454bb75fd33427f1ca8e",
+          "call_id": "libraryts-call_2f739bef030c4fe9a688999adb6b96e0",
+          "ended_at": "2026-10-19T13:35:34.882020Z",
+          "error": {
+            "code": "permission_denied",
+            "links": {},
+            "message": "LibraryTS tool is outside the current-input scope",
+            "method": null,
+            "retryable": false,
+            "run_id": null,
+            "side_effect": "none",
+            "stage": "libraryts.scope"
+          },
+          "request_ref": {
+            "artifact_id": "84304c97d484912330520ae6a775906a8ed12ad78e5dcafb8d55251962e0ae08",
+            "content_hash": "f52c359f9c1a872c803f4f4e5c4147fcfdf9a3578c2c56ebe9663bf6cd12c766",
+            "media_type": "application/json",
+            "revision": "f52c359f9c1a872c803f4f4e5c4147fcfdf9a3578c2c56ebe9663bf6cd12c766",
+            "schema_ref": "gymts.libraryts/tool-request/1",
+            "size_bytes": 292,
+            "uri": "gymts-artifact://84304c97d484912330520ae6a775906a8ed12ad78e5dcafb8d55251962e0ae08/f52c359f9c1a872c803f4f4e5c4147fcfdf9a3578c2c56ebe9663bf6cd12c766"
+          },
+          "started_at": "2026-10-19T13:35:34.876574Z",
+          "status": "failed"
+        }
+      },
+      {
+        "call_ref": {
+          "artifact_id": "acfd547c3abcb02917beb2f522d7e290766c491fe4b0614bf3f35c28a38a5caa",
+          "revision": "19b51c88158ce83eabd96769abef4dcc1aa3a6b2618796dd10ad67f63618e6d9",
+          "uri": "gymts-artifact://acfd547c3abcb02917beb2f522d7e290766c491fe4b0614bf3f35c28a38a5caa/19b51c88158ce83eabd96769abef4dcc1aa3a6b2618796dd10ad67f63618e6d9",
+          "content_hash": "19b51c88158ce83eabd96769abef4dcc1aa3a6b2618796dd10ad67f63618e6d9",
+          "media_type": "application/json",
+          "schema_ref": "gymts.libraryts/tool-response/1",
+          "size_bytes": 939
+        },
+        "request": {
+          "arguments": {
+            "dataset": "airline"
+          },
+          "effect": "evaluate_supplied_values",
+          "implementation": {
+            "python": "/tmp/gymts-libraryts-install/bin/python",
+            "repository": "/tmp/gymts-libraryts-sktime"
+          },
+          "params": {},
+          "scope": "current_input",
+          "started_at": "2026-10-19T13:35:34.887053Z",
+          "tool": "labts.metrics"
+        },
+        "failure": {
+          "attempt_id": "libraryts-attempt_cbcd5675f6ea457fb098df684e88708b",
+          "call_id": "libraryts-call_b432e77443ba4e3fa55c47981e153fc6",
+          "ended_at": "2026-10-19T13:35:34.891091Z",
+          "error": {
+            "code": "permission_denied",
+            "links": {},
+            "message": "LibraryTS tool is outside the current-input scope",
+            "method": null,
+            "retryable": false,
+            "run_id": null,
+            "side_effect": "none",
+            "stage": "libraryts.scope"
+          },
+          "request_ref": {
+            "artifact_id": "f6e36133882ea71e8ffc44c885098e64071eb753c7ac124648ba1379d3ee90ef",
+            "content_hash": "193c87d520ef6a6e1a55eda68a34ae53e2a8ecb6985d24994314995c0c561d39",
+            "media_type": "application/json",
+            "revision": "193c87d520ef6a6e1a55eda68a34ae53e2a8ecb6985d24994314995c0c561d39",
+            "schema_ref": "gymts.libraryts/tool-request/1",
+            "size_bytes": 286,
+            "uri": "gymts-artifact://f6e36133882ea71e8ffc44c885098e64071eb753c7ac124648ba1379d3ee90ef/193c87d520ef6a6e1a55eda68a34ae53e2a8ecb6985d24994314995c0c561d39"
+          },
+          "started_at": "2026-10-19T13:35:34.887053Z",
+          "status": "failed"
+        }
+      }
+    ]
+  },
+  "limitations": [
+    "These are trusted Python adapter scope checks, not a process sandbox.",
+    "Current-input computations receive explicit caller values; source visibility is still governed by the Task/Runner and trusted adapter.",
+    "This change does not implement or validate autonomous Agent tool selection or tool-result continuation.",
+    "Provider catalog still verifies fixed upstream source metadata on inspection; it is not a pure plan declaration."
+  ],
+  "combined_validation_log": {
+    "path": "/zzr/zmx/GymTS/Jurmean-GymTS/docs/reports/toolset-scope-validation-2026-10-19.log",
+    "sha256": "20e99a03040d63eaa8faa0b2d6e57eb08889a494495318d7765f28b26b9c467b"
+  },
+  "retained_evidence": {
+    "path": "/zzr/zmx/GymTS/Jurmean-GymTS/output/toolset-scope-validation-2026-10-19/libraryts-scope-evidence.zip",
+    "sha256": "f0d1f9f5103ca5f1b415d31fa1251e04596b9ff345616fcacd95c5f94550ea78",
+    "size_bytes": 85815,
+    "verification": {
+      "verified_at": "2026-10-19T13:38:23.427570+00:00",
+      "previous_recorded_sha256": "008786cced77ced15370caaec764a5bf2c38bb40ab3b9db64aa59e98c04839a5",
+      "source_sha256": "f0d1f9f5103ca5f1b415d31fa1251e04596b9ff345616fcacd95c5f94550ea78",
+      "persistent_readback_sha256": "f0d1f9f5103ca5f1b415d31fa1251e04596b9ff345616fcacd95c5f94550ea78",
+      "source_and_persistent_bytes_identical": true,
+      "zip_testzip": null,
+      "embedded_wheel_sdist_and_log_hashes_match_report": true,
+      "all_cas_blob_filenames_match_content_hashes": true,
+      "correction": "The initial recorded digest differed from subsequent reads. The archive is complete and source/persistent bytes are identical; the report now records the directly verified persistent digest. The cause of the initial recorded mismatch is not established."
+    }
+  }
+}

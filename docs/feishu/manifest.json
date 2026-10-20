@@ -33,8 +33,8 @@
     },
     {
       "path": "GymTS接口规范/GymTS接口规范.md",
-      "size": 83700,
-      "sha256": "42d7e7fb6003e762d0b1e572b50af8a0992330961edbce3bd7d6a95dea3b7600"
+      "size": 92012,
+      "sha256": "27dc3219760ebc8261b8fc31a65d4cd338e91fcc61946a17f7a76fe14ce1c316"
     },
     {
       "path": "场景接入/场景接入.md",
@@ -42,8 +42,15 @@
       "sha256": "13c479e27cab10e8a34a8818ce4d1a24ffb0e48aa8866b6b6fdbe122e22aeb1d"
     }
   ],
-  "updated_date": "2026-10-12",
+  "updated_date": "2026-10-20",
   "normative_document": "GymTS接口规范/GymTS接口规范.md",
-  "normative_version": "1.0.0",
-  "original_manifest": "../archive/2026-10-12-before-api-v1/feishu/manifest.json"
+  "normative_version": "1.2.0",
+  "original_manifest": "../archive/2026-10-12-before-api-v1/feishu/manifest.json",
+  "previous_normative_snapshot": "../archive/2026-10-20-before-api-v1.2/GymTS接口规范.md",
+  "tool_agent_clarification": {
+    "date": "2026-10-19",
+    "timezone": "Asia/Shanghai",
+    "document": "../agent-toolsets.md",
+    "message_schema_changed": false
+  }
 }

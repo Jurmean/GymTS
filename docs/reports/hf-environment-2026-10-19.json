@@ -1,0 +1,158 @@
+{
+  "status": "passed",
+  "date": "2026-10-19",
+  "scope": "Independent static HF data environment adapter; frozen GymTS core unchanged",
+  "identities": {
+    "frozen_core": {
+      "version": "0.5.0",
+      "tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+      "wheel_sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226",
+      "source_and_installed_files_match": true,
+      "changes": []
+    },
+    "adapter": {
+      "name": "gymts-hf-datasets",
+      "version": "0.1.0",
+      "wheel_sha256": "211c72852db716d9359b0b4f4ed0bb5135c8361a9e8eb0fbdcb728e9c908d3cf",
+      "sdist_sha256": "366ae94c21ab04d65f183994479bd7a731b6d69dae972cd49baf212f179dfb7c",
+      "module_sha256": {
+        "gymts_hf_datasets/__init__.py": "79d676d576bedb38971a145e4b3f6df9d279f24b3e55ed272acbfc98adef904e",
+        "gymts_hf_datasets/benchmark.py": "4a064268c00a61a28904725b099db11536b1c72a9e98d91fe124d50b2bd93ace",
+        "gymts_hf_datasets/cli.py": "05a56e8d250bdd0569d170304311facf9630b243735d986263c677a5309bc75c",
+        "gymts_hf_datasets/contracts.py": "c662af7b04f00745c17a72a12ad9dc9247520310e3983037f0c70e539aa390bb",
+        "gymts_hf_datasets/importer.py": "26e7488c86dd44e8a2d6deceb1a4204ab06ec3ab03407e69f0e89a2e846e1638",
+        "gymts_hf_datasets/registration.py": "ef0fe069eda832d628e5370596e6ccaef1a26ba987a7885788076acd33aa14f2",
+        "gymts_hf_datasets/runtime.py": "63a1bfce0f47d8c837ab01576a0f98d76275709e5256dac8a9d9217000efea3d"
+      }
+    },
+    "runtime": {
+      "datasets": "3.6.0",
+      "pyarrow": "21.0.0",
+      "huggingface_hub": "0.35.0"
+    },
+    "original_source_sha256": "741e7d50a13de43cc0f3ed840147ba30701bf739d098e901805a665808ff41e6",
+    "source_rows": 366,
+    "fidelity_verified": true,
+    "training_policy_denials": [
+      "training",
+      "prepare",
+      "dataset_build"
+    ]
+  },
+  "source": {
+    "mode": "hub",
+    "repo_id": "Monash-University/monash_tsf",
+    "revision": "7bf79ee8270e340b6c5848b7b56d8e1c35305fb6",
+    "format": "parquet",
+    "files": [
+      "tourism_monthly/test/0000.parquet"
+    ],
+    "split": "test"
+  },
+  "hub": {
+    "dataset_revision": "sha256:6a426894699f0645158fbb810cd934c942d749a5593e1c07ce8154f28998df24",
+    "benchmark_revision": "sha256:1af722bb60f4a2a6ff66ab06d7d41afd64d427f4a3c90a466710ec354ce7657c",
+    "public_rows": 3,
+    "direct_run_id": "run_2e5f2cf24ebc4687a1c0f2c1ae75a5f8",
+    "evaluation_run_ids": [
+      "run_df59561b781b421a9dd881ad93e743a7",
+      "run_af1538453c7a4eafb0557cf391fab4c3",
+      "run_eecb78a07a9246a4b3c273b9c4e1a604",
+      "run_3d427f425ed041c5b119f288f1bf89e0",
+      "run_07c3931c983541959750d238b8229916",
+      "run_a3c51ef999374414a6e5cc69f7797cff"
+    ],
+    "evaluation_id": "evaluation_d08ec53e4e8944b08e7873e090ed8776",
+    "rescore_evaluation_id": "evaluation_70b043d347d344218313243d50bbc65e",
+    "run_records_unchanged": true,
+    "run_record_sha256": {
+      "run_df59561b781b421a9dd881ad93e743a7": "ffd7583e3c22aa233cc4927a5b32d5e8e7282ec4fc917b31f49772de7c458d2c",
+      "run_af1538453c7a4eafb0557cf391fab4c3": "c0ff60aed9a92cd4926f80fa8f2befe2c6dfb2d87060659c9d2082ef44f11dd6",
+      "run_eecb78a07a9246a4b3c273b9c4e1a604": "53c025baae00dff97302809961c08a0e445ee048d82a2828d147135b58490665",
+      "run_3d427f425ed041c5b119f288f1bf89e0": "4d43ed683843b01378c42bf59d2bc402b95c438378c67b46a5ce731365215e49",
+      "run_07c3931c983541959750d238b8229916": "c6b7c2a5e08932ae4251b7cf1337836bc95fc943db3acb46be6ddf6b98a43d2d",
+      "run_a3c51ef999374414a6e5cc69f7797cff": "7a5df3ff42c853ead1d26ae721ba6caf8f6dceb70e1f6db7518e391df05d29af"
+    },
+    "expected_per_series_mae": {
+      "db7f272f2bfefacaa665af5450ae29f3d6fcf0823b6bb36c33995065c152eb89": 2811.577189127604,
+      "7ef6ab45ffac44200c6ac929954831d542e37e495be63043174ca00ffb51970a": 46410.636393229164,
+      "3aae891067e4bd59c08942c007577d18e7a4c27f10768a0d96fc826dbc674ea9": 11198.5
+    },
+    "expected_macro_mae": 20140.23786078559
+  },
+  "hub_coverage": {
+    "expected_units": 6,
+    "succeeded_runs": 6,
+    "failed_runs": 0,
+    "cancelled_runs": 0,
+    "not_started_units": 0
+  },
+  "local_modes": {
+    "local": {
+      "dataset_revision": "sha256:36a566b16f328452751b2dbca84f8dd1feefa26e9104b836a38b8c7cb2056905",
+      "benchmark_revision": "sha256:2850aff918f5aaf203a5fb88e033b2d3faf1dd0b60878e35c510df8c3f6029ae",
+      "direct_run_id": "run_d69ccfaa0c1445a2b260a6f77b581168",
+      "evaluation_id": "evaluation_e5c2f610851c4313938081422788178b",
+      "rescore_evaluation_id": "evaluation_cd6b967b23c94e5ebdfaae5ecbffe408",
+      "coverage": {
+        "expected_units": 3,
+        "succeeded_runs": 3,
+        "failed_runs": 0,
+        "cancelled_runs": 0,
+        "not_started_units": 0
+      },
+      "original_source_moved": true,
+      "fresh_process_offline_execution": true
+    },
+    "saved": {
+      "dataset_revision": "sha256:8f3a733226967cd0d7709541268a5a39df9c052cc2bcf613c6cad440d36493ab",
+      "benchmark_revision": "sha256:b0c8675bbef1cd8b28af9dc004579f5e8d0fffb94554fe8089ea5f9c0c71f5cc",
+      "direct_run_id": "run_9e8ba5d77db14da8b32db3cc9447252d",
+      "evaluation_id": "evaluation_d25471334e41466892d29937014fe07b",
+      "rescore_evaluation_id": "evaluation_d214b9a456194c74adcae0681fc55b20",
+      "coverage": {
+        "expected_units": 3,
+        "succeeded_runs": 3,
+        "failed_runs": 0,
+        "cancelled_runs": 0,
+        "not_started_units": 0
+      },
+      "original_source_moved": true,
+      "fresh_process_offline_execution": true
+    }
+  },
+  "failure_evidence": {
+    "missing_public_snapshot_run_id": "run_3625b6eaeadd4b629011af478481b2d7",
+    "status": "failed",
+    "event_count": 3,
+    "preparation_invalid_local_symlink_receipt_preserved": true
+  },
+  "tests": {
+    "sdist_rebuild_installed": {
+      "passed": 8,
+      "skipped": 0
+    },
+    "minimal_without_hf_runtime": {
+      "passed": 2,
+      "skipped": 6
+    },
+    "planning_dereference_guards": true,
+    "independent_numeric_fixture_mae": 6.75
+  },
+  "core_change_rationale": {
+    "changes": [],
+    "reason": "Existing pure providers, resource manifests, scoped CAS services and native evaluate/score already express this requirement; source loading, projection and MAE stay in this adapter."
+  },
+  "evidence_archive": {
+    "path": "output/hf-environment-2026-10-19/hf-environment-2026-10-19-evidence.tar.gz",
+    "sha256": "d5f7dce6f8ddd1a75fd6cd75d06063da80e873be1fdcabf1def866d565277365",
+    "size_bytes": 1330251
+  },
+  "limitations": [
+    "explicit 3-row projection, not complete Monash benchmark",
+    "last-value engineering baseline",
+    "One-dimensional finite numeric series only; no streaming or remote code",
+    "Evaluation-only projections; no automatic training authorization",
+    "API capability separation for trusted plugins, not process sandboxing"
+  ]
+}

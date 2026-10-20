@@ -1,0 +1,10 @@
+{
+  "candidate_id": "first-choice",
+  "spec": {
+    "adapter": "tsqa-first-choice",
+    "version": "1.0.0",
+    "artifact": null,
+    "params": {},
+    "inherited_state": []
+  }
+}

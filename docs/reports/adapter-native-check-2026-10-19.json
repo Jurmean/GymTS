@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "scope": "Installed adapter migration checks on CPU with existing scientific environments; no paid model calls or new large-model training",
+  "checks": {
+    "rl_cpu": {
+      "tests": 68,
+      "skipped": 1,
+      "seconds": 18.248,
+      "log": "rl_cpu-adapter-check-2026-10-19.log",
+      "sha256": "6876c072ca7f1e6966d3d00a5fdd52c87064362746f5987f8e3982232b28ab6d"
+    },
+    "rl_sources": {
+      "tests": 1,
+      "skipped": 0,
+      "seconds": 5.479,
+      "log": "rl_sources-adapter-check-2026-10-19.log",
+      "sha256": "c3f11ee8a88fe2d484264f4eadf8dec45714593dd82deee6596a122c811c7680"
+    },
+    "timesigma_cpu": {
+      "tests": 71,
+      "skipped": 0,
+      "seconds": 105.724,
+      "log": "timesigma_cpu-adapter-check-2026-10-19.log",
+      "sha256": "0f71ae0d5dde700f4123004fadfde800c7ad61ac7781eee49e0cb3d716b5c9a0"
+    }
+  },
+  "rl_coverage": "67 of 68 tests passed in the pinned runtime; the one explicitly gated real data-source test passed separately, covering all 68 distinct tests",
+  "timesigma_coverage": "71 of 71 passed, including explicit native CPU tests; see timesigma-adapter-native-check-2026-10-19.json",
+  "limits": [
+    "These are adapter and evidence regression checks, not new benchmark quality claims.",
+    "Exact source identities in historical model bundles remain enforced; historical archives are unchanged."
+  ]
+}

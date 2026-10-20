@@ -1,0 +1,23 @@
+{
+  "candidate_id": "deepseek-flash-text",
+  "spec": {
+    "adapter": "timeseries-text-http",
+    "version": "1.0.0",
+    "artifact": null,
+    "inherited_state": [],
+    "params": {
+      "base_url": "https://api.deepseek.com/v1",
+      "model": "deepseek-flash",
+      "model_revision": "deepseek-flash-api-alias",
+      "dialect": "openai-chat-timeseries-text/v1",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "thinking_mode": "disabled",
+      "json_object": true,
+      "max_tokens": 1024,
+      "temperature": 0,
+      "top_p": 1,
+      "timeout_seconds": 120,
+      "expected_system_fingerprint": null
+    }
+  }
+}

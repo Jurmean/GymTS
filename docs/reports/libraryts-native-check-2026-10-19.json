@@ -1,0 +1,141 @@
+{
+  "recorded_at": "2026-10-19T09:00:30.127319+00:00",
+  "status": "passed",
+  "scope": "Independent LibraryTS adapter fixed-source CPU/tool/source/AutoBench integration validation",
+  "tests": {
+    "total": 9,
+    "passed": 9,
+    "skipped": 0,
+    "failed": 0,
+    "errors": 0,
+    "elapsed_seconds": 28.813
+  },
+  "module_paths": {
+    "core": "/tmp/gymts-libraryts-install/lib/python3.11/site-packages/gymts/__init__.py",
+    "adapter": "/tmp/gymts-libraryts-install/lib/python3.11/site-packages/gymts_libraryts/__init__.py",
+    "domain": "/tmp/gymts-libraryts-install/lib/python3.11/site-packages/gymts_timeseries/__init__.py",
+    "native": "/tmp/gymts-libraryts-sktime/sktime/__init__.py"
+  },
+  "versions": {
+    "gymts": "0.4.1",
+    "gymts-libraryts": "0.1.0",
+    "gymts-timeseries": "0.1.0",
+    "sktime": "0.40.1",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scikit-base": "0.13.2",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.17.1"
+  },
+  "python": "/tmp/gymts-libraryts-install/bin/python",
+  "launch_cwd": "/tmp",
+  "python_isolated_mode": true,
+  "pythonpath_injection": false,
+  "source": {
+    "repository": "/tmp/gymts-libraryts-sktime",
+    "origin": "https://github.com/NetmanAIOps/sktime",
+    "commit": "080f4c3c3695f239e328548bac7d7a3ef7aa9127",
+    "tracked_clean_after": true
+  },
+  "native_tools_verified": [
+    "forecast.naive",
+    "forecast.polynomial",
+    "detect.threshold",
+    "analyze.seasonality",
+    "distance.euclidean",
+    "labts.catalog",
+    "labts.run",
+    "labts.analyze",
+    "labts.metrics",
+    "dataset.load"
+  ],
+  "native_airline_demo": {
+    "runs": [
+      {
+        "run_id": "run_51f16c60c91c47739bf5d2134f04c22e",
+        "status": "succeeded",
+        "model_calls": 1,
+        "tool_calls": 1,
+        "native_estimator": "sktime.forecasting.naive.NaiveForecaster",
+        "fit_occurred": true,
+        "fit_calls": 1,
+        "fitted_state_sha256": "36761ad3056f076eadb9ae9cd457dea81d51e66fd6e3f9bf5c60ec3d7f830e3f",
+        "trace_ref": {
+          "artifact_id": "de614e2cfdeb2588f8c7e6fc816fd5fb0404bf4eda5384c02b075043f13a7150",
+          "content_hash": "5f3d061f7ea5f33040c981650bf63e5e3de04ff42fd7d30e873847112bb7cc42",
+          "media_type": "application/json",
+          "revision": "5f3d061f7ea5f33040c981650bf63e5e3de04ff42fd7d30e873847112bb7cc42",
+          "schema_ref": "gymts.execution-trace/1",
+          "size_bytes": 18911,
+          "uri": "gymts-artifact://de614e2cfdeb2588f8c7e6fc816fd5fb0404bf4eda5384c02b075043f13a7150/5f3d061f7ea5f33040c981650bf63e5e3de04ff42fd7d30e873847112bb7cc42"
+        },
+        "model_bundle_semantics": "no persistent model; stateless current-authorized-input computation"
+      },
+      {
+        "run_id": "run_5aa7e825ffeb4b948d1ad3d252fc50eb",
+        "status": "succeeded",
+        "model_calls": 1,
+        "tool_calls": 1,
+        "native_estimator": "sktime.forecasting.trend.PolynomialTrendForecaster",
+        "fit_occurred": true,
+        "fit_calls": 1,
+        "fitted_state_sha256": "1efa55f1c5e1c215f6a58cbe8f37683c6729091090d02ab1a47e233c87db708e",
+        "trace_ref": {
+          "artifact_id": "34fdb48bc0775ad2bc8634e72545c2bebde0b471e8a67b714a6dac051c42b6de",
+          "content_hash": "0bfb814eb435d48b240d0f1dd59aa3c3286da7147c763d628d027c56e1725f0d",
+          "media_type": "application/json",
+          "revision": "0bfb814eb435d48b240d0f1dd59aa3c3286da7147c763d628d027c56e1725f0d",
+          "schema_ref": "gymts.execution-trace/1",
+          "size_bytes": 18920,
+          "uri": "gymts-artifact://34fdb48bc0775ad2bc8634e72545c2bebde0b471e8a67b714a6dac051c42b6de/0bfb814eb435d48b240d0f1dd59aa3c3286da7147c763d628d027c56e1725f0d"
+        },
+        "model_bundle_semantics": "no persistent model; stateless current-authorized-input computation"
+      }
+    ],
+    "initial_status": "completed",
+    "final_status": "completed",
+    "verdict": "insufficient_evidence",
+    "gate_interpretation": "No acceptance gate was configured; ready metrics do not imply acceptance",
+    "metrics": [
+      {
+        "candidate_id": "naive-drift",
+        "metric_id": "mae",
+        "value": 66.30788804071248
+      },
+      {
+        "candidate_id": "naive-drift",
+        "metric_id": "rmse",
+        "value": 92.66636342994126
+      },
+      {
+        "candidate_id": "polynomial-linear",
+        "metric_id": "mae",
+        "value": 58.657860096690946
+      },
+      {
+        "candidate_id": "polynomial-linear",
+        "metric_id": "rmse",
+        "value": 78.82273053909202
+      }
+    ],
+    "store": "/tmp/gymts-libraryts-demo-state",
+    "output": "/tmp/gymts-libraryts-demo.json"
+  },
+  "log": "/tmp/gymts-libraryts-new-test/native.log",
+  "log_sha256": "c6f95bd60feb15351aa55bad69863edde8c2efcd5cc5819de0c2676c36922dbd",
+  "limitations": [
+    "Small CPU adapter validation, not a scientific generalization claim",
+    "Native model fits on each current authorized input; no persistent trainer adapter delivered",
+    "Full independent source/task/model replacement matrix belongs to root validation"
+  ],
+  "artifacts": [
+    {
+      "path": "/tmp/gymts-libraryts-new-build/gymts_libraryts-0.1.0-py3-none-any.whl",
+      "sha256": "12ddfa0d965150447394ec1fc757232b660abeb3a4c8fe75aade1eb36c47d89e"
+    },
+    {
+      "path": "/tmp/gymts-libraryts-new-build/gymts_libraryts-0.1.0.tar.gz",
+      "sha256": "974ed22fa19943a3b7f4189d676a9d819d156ac7a6caa4165356546f2071e00b"
+    }
+  ]
+}

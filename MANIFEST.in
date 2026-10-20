@@ -1,9 +1,10 @@
-include README.md pyproject.toml setup.cfg MANIFEST.in
+include README.md README.en.md pyproject.toml setup.cfg MANIFEST.in
+include LICENSE
+include CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md SUPPORT.md CHANGELOG.md CITATION.cff THIRD_PARTY.md
 recursive-include gymts *.py py.typed
-recursive-include examples *.json *.py README.md
+recursive-include examples *.json *.py *.sh README.md
 recursive-include tests *.py
-include scripts/check_release.py scripts/audit_chatts_http_experiment.py
-recursive-include .github/workflows *.yml *.yaml
+include scripts/check_release.py
 
 # The source distribution is the runnable framework, examples, and regression
 # tests. Historical presentations and local experiment data stay outside it.
@@ -13,6 +14,9 @@ prune outputs
 prune build
 prune dist
 prune .gymts
+prune adapters
+# The tutorial adapter is a separate package from a full Git checkout.
+prune examples/adapters
 global-exclude __pycache__ *.py[cod] .DS_Store
 global-exclude .env .env.* .netrc .pypirc credentials.json service-account*.json
 global-exclude *.pem *.key *.p12 *.pfx *.sqlite *.sqlite3 *.sqlite-wal *.sqlite-shm

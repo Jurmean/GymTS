@@ -1,0 +1,48 @@
+name: 功能建议
+description: 说明实际问题、建议接口和可验证的完成条件。
+title: "[Feature] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        EnvironmentTS 管运行与证据，AutoBenchTS 管评价。领域和项目差异优先通过独立适配包表达。
+        请描述真实需求，不要在公开内容中填写私有服务、密钥或数据。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 真实场景与当前限制
+      description: 谁在什么操作中遇到问题？当前结果是什么？可提供最小配置或已有 Issue。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议行为
+      description: 给出期望的调用方式和产出，区分已实现能力与新建议。
+    validations:
+      required: true
+  - type: dropdown
+    id: location
+    attributes:
+      label: 预期改动位置
+      options:
+        - 独立适配包
+        - 文档或示例
+        - 公共核心接口
+        - 尚不确定
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 现有扩展点与替代方案
+      description: 如果建议改核心，说明哪个真实需求无法表达、为什么适配器不能解决，以及旧配置/Run/适配包如何兼容。
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收条件
+      description: 如何验证运行、轨迹、独立评价、原 Run 重评；是否需要原生依赖或外部服务？
+    validations:
+      required: true

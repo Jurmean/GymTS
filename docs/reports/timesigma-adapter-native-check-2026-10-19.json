@@ -1,0 +1,61 @@
+{
+  "recorded_at": "2026-10-19T08:18:53.582398+00:00",
+  "scope": "Independent TimeSigma adapter installed-wheel CPU migration regression; not benchmark claims or a new project experiment",
+  "status": "passed",
+  "tests": {
+    "total": 71,
+    "passed": 71,
+    "skipped": 0,
+    "failed": 0,
+    "errors": 0,
+    "elapsed_seconds": 105.724
+  },
+  "python": "/tmp/gymts-timesigma-model-venv/bin/python",
+  "versions": {
+    "gymts": "0.4.0",
+    "gymts-timesigma": "0.1.0",
+    "timesigma": "0.1.0",
+    "numpy": "1.26.4",
+    "EasyTSAD": "0.3.0.2",
+    "torch": "2.5.1+cpu"
+  },
+  "module_paths": {
+    "gymts": "/tmp/gymts-timesigma-model-venv/lib/python3.12/site-packages/gymts/__init__.py",
+    "gymts_timesigma": "/tmp/gymts-timesigma-model-venv/lib/python3.12/site-packages/gymts_timesigma/__init__.py",
+    "timesigma": "/tmp/gymts-timesigma-source/timesigma/__init__.py"
+  },
+  "launch_cwd": "/tmp",
+  "test_source": "/tmp/gymts-decouple-timesigma-native-tests/gymts_timesigma-0.1.0/tests",
+  "test_source_provenance": "self-contained extracted adapter sdist",
+  "pythonpath_unset": true,
+  "upstream": {
+    "repository": "/tmp/gymts-timesigma-source",
+    "revision": "5a953c1a84d0a442d1c41b17b4e8aba8c013be10",
+    "tracked_clean_after": true,
+    "installation": "explicit editable package; original source unchanged"
+  },
+  "native_checks": [
+    "AR real CPU prepare/fit, infer, independent no-fit replay and load_only restore",
+    "IsolationForest native execution with naive/all_in_one/zero_shot",
+    "18 native preprocessing dtype/difference/normalization parity cases",
+    "Official eight metric parity with independent native reference and zero training in scorer",
+    "Native bridge health and Core12 method catalog without provider"
+  ],
+  "other_checks": "All existing adapter data permissions, registration isolation, child process/deadline capture, Research journal, CAS archive/restore tests included",
+  "limitations": [
+    "Small CPU fixtures validate adapter migration; no new scientific generalization benchmark conclusion",
+    "Historical archives were not rewritten; exact recorded model-bundle source checks remain strict"
+  ],
+  "log": "/tmp/gymts-decouple-timesigma-native-tests/unittest-native.log",
+  "log_sha256": "0f71ae0d5dde700f4123004fadfde800c7ad61ac7781eee49e0cb3d716b5c9a0",
+  "installed_wheels": [
+    {
+      "path": "/tmp/gymts-decoupling-native-build/wheels/gymts-0.4.0-py3-none-any.whl",
+      "sha256": "4bc14584de2af594518fe04bc25f5f9c552e6dedb7615d8e932541749723fdf5"
+    },
+    {
+      "path": "/tmp/gymts-decoupling-native-build/wheels/gymts_timesigma-0.1.0-py3-none-any.whl",
+      "sha256": "82c8a55e6cfc31f2359c92b1c67afdd402bd8e4bf731bb92ad947c25ee53b347"
+    }
+  ]
+}

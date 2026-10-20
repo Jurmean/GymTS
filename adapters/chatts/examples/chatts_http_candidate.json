@@ -1,0 +1,23 @@
+{
+  "candidate_id": "chatts-checkpoint-420",
+  "spec": {
+    "adapter": "timeseries-chatts-http",
+    "version": "1.0.0",
+    "artifact": null,
+    "inherited_state": [],
+    "params": {
+      "base_url": "http://127.0.0.1:12345/v1",
+      "model": "chatts",
+      "model_revision": "checkpoint-420",
+      "dialect": "chatts-vllm-text-envelope/v1",
+      "timeout_seconds": 120,
+      "max_tokens": 512,
+      "temperature": 0,
+      "top_p": 1,
+      "enable_thinking": false,
+      "json_object": true,
+      "api_key_env": null,
+      "expected_system_fingerprint": null
+    }
+  }
+}

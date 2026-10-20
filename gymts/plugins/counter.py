@@ -23,7 +23,8 @@ class CounterTransition:
         self._terminal = None
         self._counts = {"batches": 0, "points": 0, "operations": 0, "late_points": 0, "dropped_points": 0}
 
-    def describe(self):
+    @staticmethod
+    def describe_spec(spec):
         return {"environment_id": "counter-transition", "adapter_ref": component("counter-transition"),
                 "clock_domain": "step", "observation_granularity": "transition", "advance_mode": "on_action",
                 "variables": {"counter": {"dtype": "float64", "shape": [], "unit": "count",
@@ -34,6 +35,9 @@ class CounterTransition:
                     "attach": False, "seed": True, "operation_idempotency": False},
                 "context_schema_ref": STATE, "native_schema_ref": STATE,
                 "default_command": {"name": "increment", "arguments": payload(ARGS, {"amount": 1})}}
+
+    def describe(self):
+        return self.describe_spec(self.spec)
 
     def start(self, spec):
         if self.state != "created":
@@ -137,7 +141,8 @@ class CounterControlTask:
     def __init__(self, spec):
         self.spec = spec
 
-    def describe(self):
+    @staticmethod
+    def describe_spec(spec):
         return {"plugin_ref": component("counter_control"), "task_protocol_ref": PROTOCOL,
             "input_schema_ref": INPUT, "output_schema_ref": OUTPUT, "result_schema_ref": RESULT,
             "outcome_schema_ref": None, "alignment_schema_ref": ALIGNMENT,
@@ -145,6 +150,9 @@ class CounterControlTask:
             "required_operations": {"increment": {"arguments_schema_ref": ARGS}},
             "required_capabilities": [], "use_default_command": False,
             "warmup": {"duration": None, "min_points": 0}}
+
+    def describe(self):
+        return self.describe_spec(self.spec)
 
     def bind(self, spec, binding, environment, execution):
         return CounterControlSession(execution, binding)

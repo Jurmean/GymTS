@@ -1,0 +1,79 @@
+{
+  "status": "passed",
+  "goal": "Three local framework delivery targets; complete design limitations remain explicit",
+  "core_version": "0.5.0",
+  "interface_spec_version": "1.2.0",
+  "core_source_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+  "native_core_wheel_sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226",
+  "core_suite": {
+    "total": 160,
+    "passed": 160,
+    "skipped": 0
+  },
+  "reports": [
+    {
+      "path": "docs/reports/core-package-check-2026-10-20.json",
+      "status": "passed",
+      "sha256": "8594103ed495a7da43dad3a917f71dda94efe5800450feeab06090f4e8ea5e54"
+    },
+    {
+      "path": "docs/reports/adapter-package-check-2026-10-20.json",
+      "status": "passed",
+      "sha256": "70a2578ba56dcb0a8f2c23430094fac740d24cac1faba1f49479641812fae803"
+    },
+    {
+      "path": "docs/reports/bench-tsqa-full746-final-2026-10-20.json",
+      "status": "passed",
+      "sha256": "d4eb781e0b3e47d6487a0b4113fa4f7e33b6258da76306af94e4a2c3ca64ab28"
+    },
+    {
+      "path": "docs/reports/rl-checkpoint-loop-2026-10-20.json",
+      "status": "passed",
+      "sha256": "7e850849e1ef1ab4d5314e0ccfe61ce326db08d3cf8cc72f66b5c4c648d8ca05"
+    },
+    {
+      "path": "docs/reports/timesigma-frozen-core-final-2026-10-20.json",
+      "status": "passed",
+      "sha256": "9cca4e8bf251585ce28554c485921487164e7a74fe5bf398dd7b84d0ea3424f7"
+    },
+    {
+      "path": "docs/reports/libraryts-native-final-2026-10-20.json",
+      "status": "passed",
+      "sha256": "a2ee253f558844db057622bfab3ec24ceea124438ded540005d07d941cd161bc"
+    }
+  ],
+  "archives_verified": [
+    {
+      "path": "output/bench-tsqa-full746-final-2026-10-20-evidence.tar.gz",
+      "sha256": "b3e317435b3b58be85e9a33ec6dbbae3e18fb15ccbd1b1a75e6283696f35dac5",
+      "size_bytes": 67073635
+    },
+    {
+      "path": "output/frozen-core-final-2026-10-20/timesigma/evidence.zip",
+      "sha256": "ece7988aabed0ac44ce45bdc5b464c0acd7e8f7ff439a53ced02f9b8b7b66cf7",
+      "size_bytes": 131377
+    },
+    {
+      "path": "output/rl-checkpoint-loop-resource-final-2026-10-20/full-evidence.tar.gz",
+      "sha256": "b371921701f3001c7bd9fea227eb0fd14796873da38d6c05f07843e1c980ee81",
+      "size_bytes": 1600105
+    }
+  ],
+  "checks": {
+    "python39_ast_files": 152,
+    "current_local_doc_links": 180,
+    "core_imports_no_project_adapters": true,
+    "core_unchanged_after_native_validation": true,
+    "design_manifest_hashes_valid": true,
+    "git_head_unchanged": "cffa38f223e64a75874936ad58ce53d9391e63a9",
+    "git_index_unchanged_empty": true,
+    "diff_whitespace_clean": true
+  },
+  "limits": [
+    "Local synchronous trusted adapters; no generic isolated/remote Runtime",
+    "Benchmark baseline and tiny CPU RL are engineering proof, not model quality evidence",
+    "Only full TSExam746 run; all five19354 sources registered evaluation-only",
+    "No paid LLM calls or GPU training in this validation",
+    "No git stage, commit or push"
+  ]
+}

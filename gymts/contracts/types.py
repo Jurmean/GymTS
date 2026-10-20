@@ -3,6 +3,7 @@
 Runtime validation is performed by SchemaRegistry and the service boundaries;
 TypedDicts are provided for IDEs and static type checking, not as constructors.
 """
+from random import Random
 from typing import Any, Dict, List, Optional, TypedDict, Union
 
 TimePoint = Union[str, int]
@@ -24,6 +25,61 @@ class ArtifactRef(TypedDict):
     media_type: str
     schema_ref: Optional[str]
     size_bytes: Optional[int]
+
+
+class DatasetAssetRef(TypedDict):
+    uri: str
+    sha256: str
+    size_bytes: int
+    media_type: str
+
+
+class SourceUsagePolicy(TypedDict):
+    allowed_uses: List[str]
+    training_allowed: bool
+
+
+class DatasetSplit(TypedDict):
+    row_count: int
+    split_origin: str
+    input_indices: List[int]
+    target_indices: List[int]
+
+
+class SourceDatasetRevision(TypedDict):
+    protocol_version: str
+    dataset_id: str
+    config: str
+    revision: str
+    schema_ref: str
+    reader_ref: ComponentRef
+    features: dict
+    splits: Dict[str, DatasetSplit]
+    usage_policy: SourceUsagePolicy
+    source_files: List[dict]
+    importer_ref: ComponentRef
+    inputs: List[DatasetAssetRef]
+    series: List[DatasetAssetRef]
+    targets: List[DatasetAssetRef]
+    quality_report_ref: Optional[DatasetAssetRef]
+    card_ref: Optional[DatasetAssetRef]
+
+
+class BenchmarkDatasetRef(TypedDict):
+    dataset_id: str
+    config: str
+    revision: str
+    split: str
+
+
+class BenchmarkDefinition(TypedDict):
+    protocol_version: str
+    benchmark_id: str
+    revision: str
+    resolver_ref: ComponentRef
+    datasets: List[BenchmarkDatasetRef]
+    params: dict
+    card_ref: Optional[DatasetAssetRef]
 
 
 class Payload(TypedDict, total=False):
@@ -111,7 +167,13 @@ class RecordingSpec(TypedDict):
     extra_event_kinds: List[str]
 
 
-class ExperimentSpec(TypedDict):
+class ResourceProvenance(TypedDict):
+    source_refs: List[ArtifactRef]
+    usage_policy_ref: Optional[ArtifactRef]
+    benchmark_definition_ref: Optional[ArtifactRef]
+
+
+class _ExperimentSpecBase(TypedDict):
     protocol_version: str
     name: Optional[str]
     purpose: str
@@ -122,10 +184,36 @@ class ExperimentSpec(TypedDict):
     extensions: dict
 
 
-class ValidationReport(TypedDict):
+class ExperimentSpec(_ExperimentSpecBase, total=False):
+    provenance: ResourceProvenance
+
+
+class _ValidationReportBase(TypedDict):
     valid: bool
     resolved_spec_ref: Optional[ArtifactRef]
     issues: List[dict]
+
+
+class ValidationReport(_ValidationReportBase, total=False):
+    resolved_spec: Optional[dict]
+
+
+class AssemblyPlan(TypedDict):
+    protocol_version: str
+    resolved_spec: dict
+    manifests: Dict[str, dict]
+    descriptions: Dict[str, dict]
+    variables: List[str]
+    operations: List[str]
+    read_scope: TimeScope
+    resource_checks: str
+
+
+class CompatibilityContext(TypedDict):
+    experiment: dict
+    environment: dict
+    task: dict
+    manifests: Dict[str, dict]
 
 
 class EnvironmentDescription(TypedDict):
@@ -283,7 +371,27 @@ class RunResult(TypedDict):
 
 # Contexts deliberately include live, restricted service objects and are never
 # serialized wholesale. Their JSON members are recorded separately by Runner.
-CandidateContext = Dict[str, Any]
+class RandomnessContext(TypedDict):
+    seed: Optional[int]
+    scope: str
+    algorithm: str
+    backend_enforcement: str
+
+
+class CandidateContext(TypedDict, total=False):
+    run_id: str
+    task_protocol_ref: str
+    candidate_spec: dict
+    implementation_ref: ComponentRef
+    session_context: Optional[Payload]
+    training_targets: Optional[DataViewRef]
+    alignment_schema_ref: Optional[str]
+    learning: LearningSpec
+    resources: Any
+    traces: Any
+    execution_seed: Optional[int]
+    rng: Random
+    randomness: RandomnessContext
 TaskExecutionContext = Dict[str, Any]
 SessionInfo = Dict[str, Any]
 PreparationResult = Dict[str, Any]
@@ -298,4 +406,3 @@ EvaluationSpec = Dict[str, Any]
 ScoreSpec = Dict[str, Any]
 EvaluationReport = Dict[str, Any]
 ScoreResult = Dict[str, Any]
-

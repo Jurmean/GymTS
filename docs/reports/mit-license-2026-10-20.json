@@ -1,0 +1,317 @@
+{
+  "status": "passed",
+  "date": "2026-10-20",
+  "timezone": "Asia/Shanghai",
+  "license": "MIT",
+  "authorized_by": "User explicitly selected MIT in this conversation",
+  "copyright": "Copyright (c) 2026 GymTS contributors",
+  "canonical_text_source": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/MIT.txt",
+  "canonical_text_match": "exact after whitespace normalization and copyright substitution",
+  "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+  "projects_checked": 13,
+  "packages": [
+    {
+      "distribution": "gymts",
+      "version": "0.5.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts-0.5.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts-0.5.0.tar.gz",
+        "sha256": "42ccda159838ee0456283f76f580a9d7f1a30085198e2bf13ed13a8a31cc3dcd",
+        "bytes": 165903
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts-0.5.0-py3-none-any.whl",
+        "sha256": "3bedcb954eaf838e6d71b09bb882a7d76be661ebfff871c97cd7fee7efb8ba27",
+        "bytes": 109813
+      }
+    },
+    {
+      "distribution": "gymts-bench-tsqa",
+      "version": "0.1.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_bench_tsqa-0.1.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_bench_tsqa-0.1.0.tar.gz",
+        "sha256": "558caeaf2bd8b8325f66f02d43f3718fc5eeaef1e8eb3faebaf8d3c3b8e3d2ab",
+        "bytes": 29132
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_bench_tsqa-0.1.0-py3-none-any.whl",
+        "sha256": "533ffa88f5a454a97b5e0b796021040c63078c40f8c63b83613f20cc7a625958",
+        "bytes": 30817
+      }
+    },
+    {
+      "distribution": "gymts-chatts",
+      "version": "0.2.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_chatts-0.2.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_chatts-0.2.0.tar.gz",
+        "sha256": "937916c2159b6adfac11280e8b4896b67e28a363d97d7c0b77c5f05756efeced",
+        "bytes": 72232
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_chatts-0.2.0-py3-none-any.whl",
+        "sha256": "b1b4ad9d7ce3f2f398a50edf67f3a58a8db7d6260142754614d4d0d9e429ac51",
+        "bytes": 44004
+      }
+    },
+    {
+      "distribution": "gymts-gymnasium",
+      "version": "0.1.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_gymnasium-0.1.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_gymnasium-0.1.0.tar.gz",
+        "sha256": "72097c49a47308d6e8ba1ff41ba6f7e71bfcd87315d0bb97d13e7892ac7e58e3",
+        "bytes": 11174
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_gymnasium-0.1.0-py3-none-any.whl",
+        "sha256": "3097bc90f8ff18b929e586556f7f8ba2dc31ac24e4ddca2f665f7a9db54f1d81",
+        "bytes": 7133
+      }
+    },
+    {
+      "distribution": "gymts-hf-datasets",
+      "version": "0.1.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_hf_datasets-0.1.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_hf_datasets-0.1.0.tar.gz",
+        "sha256": "a84af6a93d195bfc334afec99db8e6ae0580046a62e9b486f6b163a906afd4a9",
+        "bytes": 23529
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_hf_datasets-0.1.0-py3-none-any.whl",
+        "sha256": "62a3717392d1b8cdb3e00aecbddbe64df5682c49db03f2c6a29a55d85a07eb9d",
+        "bytes": 19776
+      }
+    },
+    {
+      "distribution": "gymts-interaction",
+      "version": "0.1.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_interaction-0.1.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_interaction-0.1.0.tar.gz",
+        "sha256": "7c55ef1dc2b50c6382885d5675b968c1ff468765fa4a9fd9289e007db1e5794e",
+        "bytes": 17388
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_interaction-0.1.0-py3-none-any.whl",
+        "sha256": "b705a55b3e22e19abeb7c65229922b22c78e460465348b638e4d3791b83771e1",
+        "bytes": 16439
+      }
+    },
+    {
+      "distribution": "gymts-libraryts",
+      "version": "0.2.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_libraryts-0.2.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_libraryts-0.2.0.tar.gz",
+        "sha256": "e53d943c4bc33d811e6ebc336836758e68bb01c887513501007680b332f46ec5",
+        "bytes": 30809
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_libraryts-0.2.0-py3-none-any.whl",
+        "sha256": "4481d0ba953b2831fe75995310e67a67004ef048b25e0ddeeb41185994d673cd",
+        "bytes": 24352
+      }
+    },
+    {
+      "distribution": "gymts-openenv",
+      "version": "0.1.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_openenv-0.1.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_openenv-0.1.0.tar.gz",
+        "sha256": "27bddfa6a464fbd9af76d6d2c431b0412c4ab924a310f7146e0c754a7f6c3cb2",
+        "bytes": 18024
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_openenv-0.1.0-py3-none-any.whl",
+        "sha256": "505b019b79c0d7b960513df3c50609e722d73fd0355ae99355084333e5eb8f76",
+        "bytes": 11256
+      }
+    },
+    {
+      "distribution": "gymts-prometheus",
+      "version": "0.1.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_prometheus-0.1.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_prometheus-0.1.0.tar.gz",
+        "sha256": "3beb13103a5f06ec99e7b07b26fa20d99204d11041d2940760e712f81eada17c",
+        "bytes": 19238
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_prometheus-0.1.0-py3-none-any.whl",
+        "sha256": "2f081596a9e8cf7f0d2a555f69993bf0044f9773a2ef94fd84f1b736ef45862e",
+        "bytes": 13766
+      }
+    },
+    {
+      "distribution": "gymts-rl",
+      "version": "0.2.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_rl-0.2.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_rl-0.2.0.tar.gz",
+        "sha256": "6d38a2098d55b5cb5e964bcd30c8968acfadf7df8c002269c04a070db7e7a078",
+        "bytes": 87145
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_rl-0.2.0-py3-none-any.whl",
+        "sha256": "eeeb1420ab4128a93cb9fe8a8651e8c413c2f2ce21b8fb3ab41ca37c17ca0ace",
+        "bytes": 65457
+      }
+    },
+    {
+      "distribution": "gymts-timeseries",
+      "version": "0.2.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_timeseries-0.2.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_timeseries-0.2.0.tar.gz",
+        "sha256": "86c656ad53be3428ab73c7957fba49971852a58b172be11e957d320a51115382",
+        "bytes": 22801
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_timeseries-0.2.0-py3-none-any.whl",
+        "sha256": "4e0f4ca38a45d2e9e039e085f87ce273cc63a99fc238c1410bad59902b1baec3",
+        "bytes": 21101
+      }
+    },
+    {
+      "distribution": "gymts-timesigma",
+      "version": "0.2.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_timesigma-0.2.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_timesigma-0.2.0.tar.gz",
+        "sha256": "f8924533aa0af865ca3f8a67a037841a1d196e4435aaca30a4464e5a3aa1fdb3",
+        "bytes": 82056
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_timesigma-0.2.0-py3-none-any.whl",
+        "sha256": "b2670eff0bb69541758b49c52c82e579ad8d2df0e7390440494ac8ad1c122889",
+        "bytes": 60592
+      }
+    },
+    {
+      "distribution": "gymts-minimal-demo",
+      "version": "0.1.0",
+      "license": "MIT",
+      "wheel_license_path": "gymts_minimal_demo-0.1.0.dist-info/licenses/LICENSE",
+      "license_sha256": "3b5eb34c52449ca2449a18b4ec65c779e15a9fb6ce0908b153acdfc829cdcfed",
+      "sdist": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_minimal_demo-0.1.0.tar.gz",
+        "sha256": "294651081e21981c88f5a221585b956ee79033f9e1505a4ee86f4d25b73fcfc9",
+        "bytes": 11598
+      },
+      "wheel": {
+        "path": "output/mit-license-2026-10-20/distributions/gymts_minimal_demo-0.1.0-py3-none-any.whl",
+        "sha256": "22dc86f1b4c413788b14a434b361d43783bbd1b4565040fb53fd22c4b8a92a4d",
+        "bytes": 10426
+      }
+    }
+  ],
+  "metadata_compatibility": "setup.cfg License=MIT and License-File=LICENSE; tutorial PEP621 file table retains its existing setuptools>=61 minimum; wheel metadata can contain the full license body",
+  "core_change_rationale": {
+    "requirement": "Apply the user-selected license to the framework and every provided independent package",
+    "why_adapter_only_is_insufficient": "The core distribution itself must declare its license and carry the license text",
+    "runtime_python_files_unchanged": 38,
+    "public_contract_changed": false,
+    "metadata_changes": {
+      "metadata.license_files": [
+        null,
+        "LICENSE"
+      ],
+      "metadata.license": [
+        null,
+        "MIT"
+      ],
+      "metadata.classifiers": [
+        null,
+        "\nLicense :: OSI Approved :: MIT License"
+      ]
+    },
+    "previous_setup_cfg_sha256": "41921ace0b4d88cc76310d884d73e196f3c56797f150d572f15baa37f4ec4303",
+    "current_setup_cfg_sha256": "a9bd531775beecfacd97e70b76d5f28180c28601f69ddcccf3e28fce82c85bb0",
+    "compatibility": "Only permission/declaration and packaging metadata changed; runtime code, API, Python range and dependencies remain unchanged. Historical native wheel identities and reports are preserved."
+  },
+  "validation": {
+    "core_package_check": {
+      "path": "docs/reports/mit-core-package-check-2026-10-20.json",
+      "sha256": "153276749e07fd4a171f4c24466a6ea85f7d51eaa91bdd7f91ecd339609b37d4",
+      "installed_regressions": 160,
+      "skipped": 0,
+      "release_decisions": []
+    },
+    "adapter_package_check": {
+      "path": "docs/reports/mit-adapter-package-check-2026-10-20.json",
+      "sha256": "3610ed7765791466952cdacc390ac082c3d72bd91cfcc7f7da31430ba20c1046",
+      "projects": 11,
+      "tests_run": 319,
+      "skipped": 54,
+      "all_enabled_simultaneously": 11
+    },
+    "documentation": {
+      "external_links": 36,
+      "anchor_links": 0,
+      "repository_links": 419,
+      "site_links": 286,
+      "repository_fallback_links": 133,
+      "status": "passed",
+      "pages": 42,
+      "assets": 2,
+      "network_requests": 0,
+      "manifest": "docs/site-pages.json",
+      "html_pages": 43,
+      "local_html_links_checked": 3308,
+      "remote_script_stylesheets": 0,
+      "citation_license": "MIT",
+      "citation_official_schema": "passed",
+      "site_license_matches_source": true,
+      "all_staged_pages_match_current_sources": true
+    }
+  },
+  "site_archive": {
+    "path": "output/mit-license-2026-10-20/gymts-documentation-MIT.zip",
+    "sha256": "10051bfeca536a0464ae9f80daa61d23b7c91ca4eaae9f3741e12d3d1c12ef90",
+    "bytes": 1478262
+  },
+  "boundaries": [
+    "MIT covers GymTS-owned framework/adaptation/tutorial code and documentation",
+    "External upstream projects, data, model weights, binaries and user attachments retain their own licenses and usage policies",
+    "This is not a line-by-line third-party provenance/legal audit",
+    "No old evidence snapshots, license statements or wheel hashes were rewritten"
+  ],
+  "git": {
+    "head": "cffa38f223e64a75874936ad58ce53d9391e63a9",
+    "staged_changes": [],
+    "committed": false,
+    "pushed": false
+  },
+  "build_evidence": {
+    "path": "output/mit-license-2026-10-20/build-and-check-evidence.tar.gz",
+    "sha256": "5653417c9c169b5cd58f4a106c9e552a1764edacbaa9ef9dde11a8a8ecfb9382",
+    "bytes": 9969
+  }
+}

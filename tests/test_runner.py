@@ -105,8 +105,9 @@ class RunnerContracts(unittest.TestCase):
                     result["feedback"].extend([projected, copy.deepcopy(projected)])
                 return result
         class OnlineTask(CounterControlTask):
-            def describe(self):
-                result = super().describe()
+            @staticmethod
+            def describe_spec(spec):
+                result = CounterControlTask.describe_spec(spec)
                 result["plugin_ref"]["name"] = "online-task"
                 return result
             def bind(self, spec, binding, environment, execution):
@@ -172,8 +173,9 @@ class RunnerContracts(unittest.TestCase):
                         "variables": ["value"], "scope": {"start": "2026-01-01T00:00:00Z", "end": "2026-01-01T00:01:00Z"}}}]}
                 return super().interpret(task_input, output, output_id)
         class QueryTask(WindowForecastTask):
-            def describe(self):
-                result = super().describe()
+            @staticmethod
+            def describe_spec(spec):
+                result = WindowForecastTask.describe_spec(spec)
                 result["plugin_ref"]["name"] = "query-task"
                 return result
             def bind(self, spec, binding, environment, execution):
@@ -196,8 +198,9 @@ class RunnerContracts(unittest.TestCase):
     def test_attached_cleanup_only_detaches_own_session(self):
         business = {"running": True, "attaches": 0, "detaches": 0}
         class AttachedReplay(TimeSeriesReplay):
-            def describe(self):
-                result = super().describe()
+            @staticmethod
+            def describe_spec(spec):
+                result = TimeSeriesReplay.describe_spec(spec)
                 result["adapter_ref"]["name"] = "attached-replay"
                 result["capabilities"]["attach"] = True
                 return result

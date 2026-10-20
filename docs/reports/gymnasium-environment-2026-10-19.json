@@ -1,0 +1,316 @@
+{
+  "protocol_version": "gymts.gymnasium-integration-report/1",
+  "report_date": "2026-10-19",
+  "scope": "Independent project adapters only; no core changes",
+  "core_version": "0.5.0",
+  "core_code_tree_sha256": "8990de5a08378498c47853f238f7ae27c6f0072c1ea61bd29328294c6b8b9e20",
+  "core_wheel_sha256": "cea1ab0bdccf479820d9e9cf20cfc4a82c733978e7c722151601067e8925d226",
+  "installed_core_matches_frozen_python_files": true,
+  "repo_core_matches_all_frozen_files": true,
+  "native_versions": {
+    "gymts": "0.5.0",
+    "gymts-interaction": "0.1.0",
+    "gymts-gymnasium": "0.1.0",
+    "gymnasium": "1.2.1",
+    "numpy": "2.4.6"
+  },
+  "loaded_modules": {
+    "gymts": "/tmp/gymts-gymnasium-env/lib/python3.11/site-packages/gymts/__init__.py",
+    "gymts_interaction": "/tmp/gymts-gymnasium-env/lib/python3.11/site-packages/gymts_interaction/__init__.py",
+    "gymts_gymnasium": "/tmp/gymts-gymnasium-env/lib/python3.11/site-packages/gymts_gymnasium/__init__.py"
+  },
+  "source_outside_checkout": true,
+  "tests": {
+    "interaction": {
+      "run": 14,
+      "passed": 14,
+      "skipped": 0
+    },
+    "gymnasium": {
+      "run": 16,
+      "passed": 16,
+      "skipped": 0
+    }
+  },
+  "native_successful_runs": 6,
+  "rescore_model_or_environment_calls": 0,
+  "scenarios": [
+    {
+      "name": "frozenlake-terminal",
+      "run_ids": [
+        "run_8b8384ef5da04ac6aa3918a2e29ef615",
+        "run_424c5ecc92864e41b4165fe67a566141"
+      ],
+      "verdict": "pass",
+      "rescore_verdict": "pass",
+      "coverage": {
+        "expected_units": 2,
+        "succeeded_runs": 2,
+        "failed_runs": 0,
+        "cancelled_runs": 0,
+        "not_started_units": 0
+      },
+      "metrics": {
+        "episode_return": 1.0,
+        "episode_length": 6.0,
+        "terminated": 1.0,
+        "truncated": 0.0,
+        "scope_limited": 0.0
+      },
+      "run_hashes_before": {
+        "run_8b8384ef5da04ac6aa3918a2e29ef615": "b234cf0d232876ff1e0c547f29be833f821b718b481fbdbfb9297d931bcfbe3c",
+        "run_424c5ecc92864e41b4165fe67a566141": "13ec2bf57c9a1428f96216e3abfd04e836aba899fc1fdf33a02d3537ddd0a81e"
+      },
+      "run_hashes_after": {
+        "run_8b8384ef5da04ac6aa3918a2e29ef615": "b234cf0d232876ff1e0c547f29be833f821b718b481fbdbfb9297d931bcfbe3c",
+        "run_424c5ecc92864e41b4165fe67a566141": "13ec2bf57c9a1428f96216e3abfd04e836aba899fc1fdf33a02d3537ddd0a81e"
+      },
+      "sealed_runs_unchanged": true,
+      "pure_plan_without_backend_import": true,
+      "rescore_backend_calls": 0
+    },
+    {
+      "name": "cartpole-terminal",
+      "run_ids": [
+        "run_2b093fd9ad584fae834932735644f474",
+        "run_4613b07971604300ad4cb79a4776e4ba"
+      ],
+      "verdict": "pass",
+      "rescore_verdict": "pass",
+      "coverage": {
+        "expected_units": 2,
+        "succeeded_runs": 2,
+        "failed_runs": 0,
+        "cancelled_runs": 0,
+        "not_started_units": 0
+      },
+      "metrics": {
+        "episode_return": 9.0,
+        "episode_length": 9.0,
+        "terminated": 1.0,
+        "truncated": 0.0,
+        "scope_limited": 0.0
+      },
+      "run_hashes_before": {
+        "run_2b093fd9ad584fae834932735644f474": "bfb996b52febe7cbd0ae49eb061e5fc524789d68eb676de9ad70d2780771d0bc",
+        "run_4613b07971604300ad4cb79a4776e4ba": "5b7d770fa2aa28c4581c786f44c0efa0fc17d537f771e33c9f4bbf849193b542"
+      },
+      "run_hashes_after": {
+        "run_2b093fd9ad584fae834932735644f474": "bfb996b52febe7cbd0ae49eb061e5fc524789d68eb676de9ad70d2780771d0bc",
+        "run_4613b07971604300ad4cb79a4776e4ba": "5b7d770fa2aa28c4581c786f44c0efa0fc17d537f771e33c9f4bbf849193b542"
+      },
+      "sealed_runs_unchanged": true,
+      "pure_plan_without_backend_import": true,
+      "rescore_backend_calls": 0
+    },
+    {
+      "name": "cartpole-scope-boundary",
+      "run_ids": [
+        "run_091fe49c5177414f94bc63ef38c5d244",
+        "run_282440e1a8934e62b50b8d83c3fa74b6"
+      ],
+      "verdict": "pass",
+      "rescore_verdict": "pass",
+      "coverage": {
+        "expected_units": 2,
+        "succeeded_runs": 2,
+        "failed_runs": 0,
+        "cancelled_runs": 0,
+        "not_started_units": 0
+      },
+      "metrics": {
+        "episode_return": 2.0,
+        "episode_length": 2.0,
+        "terminated": 0.0,
+        "truncated": 0.0,
+        "scope_limited": 1.0
+      },
+      "run_hashes_before": {
+        "run_091fe49c5177414f94bc63ef38c5d244": "894e0d4f635e6585a318f12065efcd7c3a083f19c04fe2ed3ecbc6a69b276adb",
+        "run_282440e1a8934e62b50b8d83c3fa74b6": "3daa8f8bae4ac89ad71385e91bff77cebfa6c5370f1552f00afc6e561b787578"
+      },
+      "run_hashes_after": {
+        "run_091fe49c5177414f94bc63ef38c5d244": "894e0d4f635e6585a318f12065efcd7c3a083f19c04fe2ed3ecbc6a69b276adb",
+        "run_282440e1a8934e62b50b8d83c3fa74b6": "3daa8f8bae4ac89ad71385e91bff77cebfa6c5370f1552f00afc6e561b787578"
+      },
+      "sealed_runs_unchanged": true,
+      "pure_plan_without_backend_import": true,
+      "rescore_backend_calls": 0
+    }
+  ],
+  "terminal_reward_evidence": [
+    {
+      "scenario": "frozenlake-terminal",
+      "run_id": "run_8b8384ef5da04ac6aa3918a2e29ef615",
+      "seed_used": 19,
+      "transition_rewards": [
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "final_state": {
+        "episode_id": "episode-id_0128a406999344928dab2fbc3ba540f8",
+        "info": {},
+        "observation": 15,
+        "reward": 1,
+        "step": 6,
+        "terminated": true,
+        "truncated": false
+      }
+    },
+    {
+      "scenario": "frozenlake-terminal",
+      "run_id": "run_424c5ecc92864e41b4165fe67a566141",
+      "seed_used": 29,
+      "transition_rewards": [
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "final_state": {
+        "episode_id": "episode-id_633dbe6cba07439f98d9bcbbbaadff06",
+        "info": {},
+        "observation": 15,
+        "reward": 1,
+        "step": 6,
+        "terminated": true,
+        "truncated": false
+      }
+    },
+    {
+      "scenario": "cartpole-terminal",
+      "run_id": "run_2b093fd9ad584fae834932735644f474",
+      "seed_used": 19,
+      "transition_rewards": [
+        null,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "final_state": {
+        "episode_id": "episode-id_7ce7119d241940fe8e8a7dcdde39d37c",
+        "info": {},
+        "observation": [
+          0.1405724138021469,
+          1.805119276046753,
+          -0.2511756718158722,
+          -2.8920161724090576
+        ],
+        "reward": 1.0,
+        "step": 9,
+        "terminated": true,
+        "truncated": false
+      }
+    },
+    {
+      "scenario": "cartpole-terminal",
+      "run_id": "run_4613b07971604300ad4cb79a4776e4ba",
+      "seed_used": 29,
+      "transition_rewards": [
+        null,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "final_state": {
+        "episode_id": "episode-id_6830f90243ef484fb96ce6638bb2d386",
+        "info": {},
+        "observation": [
+          0.0957593321800232,
+          1.7609225511550903,
+          -0.21729004383087158,
+          -2.8007614612579346
+        ],
+        "reward": 1.0,
+        "step": 9,
+        "terminated": true,
+        "truncated": false
+      }
+    },
+    {
+      "scenario": "cartpole-scope-boundary",
+      "run_id": "run_091fe49c5177414f94bc63ef38c5d244",
+      "seed_used": 19,
+      "transition_rewards": [
+        null,
+        1.0,
+        1.0
+      ],
+      "final_state": {
+        "episode_id": "episode-id_e27d23a2d0934e9fb0fb1021758e28b1",
+        "info": {},
+        "observation": [
+          -0.0023498672526329756,
+          0.4334738850593567,
+          -0.030367424711585045,
+          -0.6437236070632935
+        ],
+        "reward": 1.0,
+        "step": 2,
+        "terminated": false,
+        "truncated": false
+      }
+    },
+    {
+      "scenario": "cartpole-scope-boundary",
+      "run_id": "run_282440e1a8934e62b50b8d83c3fa74b6",
+      "seed_used": 29,
+      "transition_rewards": [
+        null,
+        1.0,
+        1.0
+      ],
+      "final_state": {
+        "episode_id": "episode-id_ece279b27dd2468ca65d7f5cfc3d2946",
+        "info": {},
+        "observation": [
+          -0.04106812924146652,
+          0.3908277451992035,
+          -0.004857293330132961,
+          -0.6077792048454285
+        ],
+        "reward": 1.0,
+        "step": 2,
+        "terminated": false,
+        "truncated": false
+      }
+    }
+  ],
+  "wheels": {
+    "gymts_interaction-0.1.0-py3-none-any.whl": "db1d5f466055159f1ffd5a5d36550d7ff6259295d7bef10d22f55ba3f07e8e35",
+    "gymts_gymnasium-0.1.0-py3-none-any.whl": "2b36a781532685381af0f1d3bf36390147c7d196c34f0433b041a82c4e5291d0"
+  },
+  "evidence_archive": "output/environment-adapters-2026-10-19/gymnasium/evidence.tar.gz",
+  "evidence_archive_sha256": "6e46418bb1066c76ed05ecc005cdd5292bc50b5c36bbf6cae838438cf538a94b",
+  "command": "python adapters/gymnasium/examples/native_cpu.py --output /tmp/gymts-gymnasium-proof-new",
+  "limits": [
+    "Conformance sequence policies; no claim of trained Agent capability",
+    "Python 3.10+ for the pinned native Gymnasium 1.2.1 runtime",
+    "Single episode, owned instance, JSON supported spaces; vector and auto-reset wrappers not verified",
+    "Public info is an explicit allowlist; native package version is not full supply-chain attestation"
+  ],
+  "installed_adapter_python_files_match_exact_wheels": true,
+  "normative_environment_summary_keys_verified": true,
+  "endinfo_native_flags_preserved": true,
+  "scope_limitation_is_separate_metric": true
+}

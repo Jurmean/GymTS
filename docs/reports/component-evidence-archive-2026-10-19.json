@@ -1,0 +1,34 @@
+{
+  "archive": "evidence.tar.gz",
+  "sha256": "3c53cccb9f0e3fcac6f13084144c67e793670bc6545736ca4e76adba0d57155e",
+  "bytes": 653941,
+  "includes": [
+    "matrix CAS/SQLite and full summary",
+    "LibraryTS airline demo CAS/SQLite and output",
+    "native tests log/report",
+    "LibraryTS wheel/sdist"
+  ],
+  "excludes": [
+    "model weights",
+    "upstream checkout",
+    "credentials"
+  ],
+  "matrix_summary_ref": {
+    "artifact_id": "34d2df5746275e65a1eac3987c7284b86aea6bd9b78c196b84e2072a71401ca0",
+    "revision": "17e2544fde6d455caa367bfe052f68f1666a303109c40443e00c49359abc9033",
+    "uri": "gymts-artifact://34d2df5746275e65a1eac3987c7284b86aea6bd9b78c196b84e2072a71401ca0/17e2544fde6d455caa367bfe052f68f1666a303109c40443e00c49359abc9033",
+    "content_hash": "17e2544fde6d455caa367bfe052f68f1666a303109c40443e00c49359abc9033",
+    "media_type": "application/json",
+    "schema_ref": "gymts.json/1",
+    "size_bytes": 180865
+  },
+  "matrix_record_snapshot_ref": {
+    "artifact_id": "b40859a5b0ac9f59226843d29be9fafa2e540dc506fa0efd6fb5cfb7758c3dc7",
+    "revision": "5334f6675cb94635f74981685ffcf0a73c1ab433155ca37631a242e8c876d4ed",
+    "uri": "gymts-artifact://b40859a5b0ac9f59226843d29be9fafa2e540dc506fa0efd6fb5cfb7758c3dc7/5334f6675cb94635f74981685ffcf0a73c1ab433155ca37631a242e8c876d4ed",
+    "content_hash": "5334f6675cb94635f74981685ffcf0a73c1ab433155ca37631a242e8c876d4ed",
+    "media_type": "application/json",
+    "schema_ref": "gymts.record-snapshot/1",
+    "size_bytes": 5199
+  }
+}

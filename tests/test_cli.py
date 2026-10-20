@@ -3,7 +3,9 @@ import io
 import json
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 from gymts.cli import main
 
@@ -55,16 +57,23 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(report["coverage"]["expected_units"], 2)
 
     def test_optional_integration_is_explicit_in_plugin_listing(self):
-        with tempfile.TemporaryDirectory() as root:
+        def register(registries, schemas):
+            manifest = registries.candidates.resolve("last-value", "1.0.0")
+            manifest["component_ref"]["name"] = "external-cli-example"
+            registries.candidates.register(manifest, lambda spec: None)
+
+        entry = SimpleNamespace(name="external-cli", value="example:register", dist=None,
+                                load=lambda: register)
+        with patch("gymts.integrations.entry_points", return_value={"gymts.integrations": [entry]}), \
+                tempfile.TemporaryDirectory() as root:
             code, output, error = self.call(["--store", root, "plugins"])
             self.assertEqual(0, code, error)
             names = {item["component_ref"]["name"] for item in json.loads(output)["candidates"]}
-            self.assertNotIn("chatts-http", names)
-            code, output, error = self.call(["--store", root, "--integration", "chatts", "plugins"])
+            self.assertNotIn("external-cli-example", names)
+            code, output, error = self.call(["--store", root, "--integration", "external-cli", "plugins"])
             self.assertEqual(0, code, error)
             names = {item["component_ref"]["name"] for item in json.loads(output)["candidates"]}
-            self.assertIn("chatts-http", names)
-            self.assertIn("chatts-text-http", names)
+            self.assertIn("external-cli-example", names)
 
     def test_unknown_integration_returns_a_structured_error(self):
         with tempfile.TemporaryDirectory() as root:

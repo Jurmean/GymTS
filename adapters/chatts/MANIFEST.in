@@ -1,0 +1,10 @@
+include LICENSE
+include README.md pyproject.toml setup.cfg MANIFEST.in
+recursive-include src *.py
+recursive-include tests *.py *.json
+recursive-include examples *.json README.md
+include scripts/audit_chatts_http_experiment.py
+prune build
+prune dist
+global-exclude __pycache__ *.py[cod] .DS_Store
+global-exclude *.sqlite *.sqlite3 *.db *.key *.pem .env .env.*

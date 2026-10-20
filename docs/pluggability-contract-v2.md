@@ -1,6 +1,12 @@
 # GymTS 三端公共消息与调用协议草案
 
-状态：`2-draft.1`，设计与消息推演，尚未实现，不替代接口规范 1.0.0。本次只增加文档、JSON schema、输入文件和证据样例，没有修改运行代码。ChatTS 响应是明确标记的合成 fixture；独立方法的结果来自临时参考计算，均不表示新插件已安装或部署。
+状态：`2-draft.1`，完整消息与生命周期仍为设计推演，不替代现行[接口规范 1.2.0](feishu/GymTS接口规范/GymTS接口规范.md)。本文历史 ChatTS 响应是标记过的合成 fixture，独立方法是参考计算；它们不是模型运行证据。GymTS 0.5.0 未采用本文 `gymts.wire/2-draft.1` 或通用 Runtime。
+
+2026-10-20 实施状态：基于现行 `/1` 合同，已交付独立适配包、中立时序领域合同、真实八组合、纯 `plan/validate` 与运行打开分离、最小数据/benchmark 资源目录，以及 RL checkpoint 到新进程原生 evaluate/重复 seed/score 闭环。五份附件已 evaluation-only 导入，共 19,354 行；完整 746 行 first-public-choice 运行与重评仅是集成覆盖验收。见[当前设计状态](pluggability-design.md#0-用项目接入推动框架演进)、[资源验收](reports/bench-tsqa-full746-final-2026-10-20.json)和[RL 验收](reports/rl-checkpoint-loop-2026-10-20.json)。资源并发不可变性修复后的最终同版核心、六包及真实链路已完成验收，精确身份与范围见[本轮交付](framework-delivery-2026-10-20.md)；这不等于本文整个 v2 草案已经实施。
+
+工具集始终是可替换外部提供方，LibraryTS 只是一个例子。Agent 决策调用，外部 SDK/平台执行并返回结果；框架只提供公共接入与实验边界/轨迹。本文的 ToolBroker/ToolSpec 不能当作现行 core 已实现的工具分派服务，现有固定算法或 journal 验收也不能代替自主 Agent 工具循环，详见[工具与 Agent 职责](agent-toolsets.md)。
+
+当前 provider 扩展使用 `registry.register(..., describe=..., compatibility=...)` 或 factory 的纯静态 hook；`CandidateContext.execution_seed/rng` 提供每 Run 随机性。它们分阶段落实本文的边界要求，尚未实现下文 SourceProvider/MethodHandle 的整套新消息、RPC handle、通用 worker/cancellation。下列 schema 与 walkthrough 保留原 draft 身份和字段，不用当前 `/1` 验收冒充该 wire 协议已部署。
 
 三端的稳定连接是：Source 交付来源数据，Binding 生成任务数据视图，Task 交付公共任务输入，Method 把输入适配成原生调用。Runtime 承载 Method 会话，不解释任务。方法替换不能要求数据端生成另一种 model_input，也不能要求 Task 根据模型名称分支。
 
@@ -279,7 +285,7 @@ Binding 将 cpu_pct 对应为 signal。预测任务使用 6 点窗口，目标�
 
 ### ChatTS 路径
 
-配置选择 `method.chatts@1.0.0` 与 `chatts.structured-ts@1.0.0`。本例选择[现有适配代码](../gymts/integrations/chatts/candidate.py)支持的 `chatts-timeseries/v1` dialect：Method 生成文本指令和 `<ts><ts/>`，并把原数值放在顶层 timeseries 数组。TaskInput 中不出现这些 wire 字段。
+配置选择 `method.chatts@1.0.0` 与 `chatts.structured-ts@1.0.0`。本例选择[现有适配代码](../adapters/chatts/src/gymts_chatts/candidate.py)支持的 `chatts-timeseries/v1` dialect：Method 生成文本指令和 `<ts><ts/>`，并把原数值放在顶层 timeseries 数组。TaskInput 中不出现这些 wire 字段。
 
 ```json
 {
@@ -351,4 +357,4 @@ Outcome 通过 alignment 对齐标准结果，包含 outcome_id、available_at�
 
 在这两个任务和所选方法的消息层，三端有独立替换路径；没有发现必须把 ChatTS 特殊字段加入 Source 或公共 TaskInput 的地方。推演同时要求将旧接入的数据 model_input 拆开、区分解码与任务合法性、分配清晰的 ID 所有权，并在最后一批上保持输入处理顺序。
 
-尚未证明的内容是外部插件的独立安装与卸载、真实 ChatTS 服务对此公共输入的运行结果、实际 SDK 生命周期，以及 worker 的状态与取消。这些需要在规格审阅后实施并验收，不能用本轮 schema 通过替代。针对本版的下一项验收应是一个无 ChatTS 依赖的外部 OLS 插件与独立来源插件，严格使用这些公共合同运行。
+对本文 `2-draft.1` 整套消息，尚未证明其真实 ChatTS 服务执行、端到端 SDK 生命周期、worker 状态与取消。现行 `/1` SDK 已有独立安装/移除、真实来源/方法组合、纯装配和 RL 新进程评价证据，但这些没有使用本文 wire schema，不能代替 v2 部署验收。后续若实施此协议，应以独立来源与无 ChatTS 依赖方法严格按该 wire 运行，再完成同一方法的第二 Runtime 替换；不再把现行 SDK 的已实施事项写成整个框架尚未支持。

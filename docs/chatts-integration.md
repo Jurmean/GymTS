@@ -1,6 +1,14 @@
 # ChatTS 合成数据与实验 Pipeline
 
-本接入使用 GymTS `/1` 消息合同，当前随 GymTS 0.3.1 提供。数据导入需要另外取得兼容的 ChatTS 生成器仓库或已有 profile；这些材料不随 GymTS 分发。运行时不依赖源仓库的 Python 模块。生成阶段通过子进程调用源生成器，保留其配置、seed、文件摘要、代码摘要和 Git 工作区状态。
+本接入使用 GymTS `/1` 消息合同，以独立的 `gymts-chatts==0.2.0` 适配包发布，依赖 `gymts>=0.5,<0.6`。核心不包含本包，安装本包也不会自动注册组件。数据导入需要另外取得兼容的 ChatTS 生成器仓库或已有 profile；这些材料不随 GymTS 分发。运行时不依赖源仓库的 Python 模块。生成阶段通过子进程调用源生成器，保留其配置、seed、文件摘要、代码摘要和 Git 工作区状态。
+
+主仓库根目录先安装核心、共享领域合同和项目适配包：
+
+```bash
+python3 -m pip install . ./adapters/timeseries ./adapters/chatts
+```
+
+也可以分别安装构建好的 wheel，在任意目录使用命令。适配器使用顶层 `gymts_chatts` 模块，通过 `gymts.integrations` entry point 发现；旧 Python 路径 `gymts.integrations.chatts` 已移除。组件 ID、组件版本、任务协议与数据 schema 保持原值，旧 Run 无需转换即可在启用适配器后继续评分。适配器代码身份单独记录 `adapter_distribution`、`adapter_version` 和源文件摘要。
 
 已完成数据生成/导入、按 bundle 划分训练与评价集、原生时序 SFT 源数据导出、Environment、Task、原生 ChatTS 与普通文本 LLM 两类 HTTP Candidate、数值基线、Scorer、AutoBenchTS 评价、标签追加、旧 Run 重评分和固定快照的 QA 轨迹导出。真实 ChatTS 权重实验需要一个可连通的原生时序推理服务；普通文本 LLM 使用独立的 `chatts-text-http` 接口。训练器与 GPU 训练不在这条默认流水线中。
 
@@ -9,7 +17,7 @@
 在 GymTS 项目根目录执行：
 
 ```bash
-python3 -B -m gymts.integrations.chatts.pipeline \
+python3 -B -m gymts_chatts.pipeline \
   --source-repo /path/to/ChatTS-Bench-new \
   --output .gymts/chatts-experiment-001
 ```
@@ -18,12 +26,12 @@ python3 -B -m gymts.integrations.chatts.pipeline \
 
 默认 Candidate 是 `chatts-signal-baseline`，使用公开数值信号计算趋势、异常、预测及其他任务答案。这是接口集成验收基线，报告中的分数属于该算法，不代表 ChatTS 模型能力。默认仅评价 bundle 留出的 `eval` split。
 
-连接模型时修改 [Candidate 配置](../examples/chatts_http_candidate.json) 中的服务地址、模型、部署版本和可用的 `expected_system_fingerprint`，再执行：
+连接模型时修改 [Candidate 配置](../adapters/chatts/examples/chatts_http_candidate.json) 中的服务地址、模型、部署版本和可用的 `expected_system_fingerprint`，再执行：
 
 ```bash
-python3 -B -m gymts.integrations.chatts.pipeline \
+python3 -B -m gymts_chatts.pipeline \
   --source-repo /path/to/ChatTS-Bench-new \
-  --candidate-config examples/chatts_http_candidate.json \
+  --candidate-config adapters/chatts/examples/chatts_http_candidate.json \
   --output .gymts/chatts-model-001
 ```
 
@@ -31,15 +39,15 @@ python3 -B -m gymts.integrations.chatts.pipeline \
 
 ## 使用普通文本 LLM（DeepSeek）
 
-[deepseek_candidate.json](../examples/deepseek_candidate.json) 使用独立注册的 `chatts-text-http@1.0.0`，复用同一公开 TaskInput、严格解析、评价与重评分流程。运行前通过本地密钥管理方式在当前进程环境中设置 `DEEPSEEK_API_KEY`；配置只保存变量名，不保存密钥。示例选择 `deepseek-flash` 服务别名，`thinking_mode=disabled`、`json_object=true`，实际请求带 `thinking={"type":"disabled"}` 和 `response_format={"type":"json_object"}`。
+[deepseek_candidate.json](../adapters/chatts/examples/deepseek_candidate.json) 使用独立注册的 `chatts-text-http@1.0.0`，复用同一公开 TaskInput、严格解析、评价与重评分流程。运行前通过本地密钥管理方式在当前进程环境中设置 `DEEPSEEK_API_KEY`；配置只保存变量名，不保存密钥。示例选择 `deepseek-flash` 服务别名，`thinking_mode=disabled`、`json_object=true`，实际请求带 `thinking={"type":"disabled"}` 和 `response_format={"type":"json_object"}`。
 
 优先复用已生成的两个 profile，在项目根目录先运行每任务一个留出样本的连接验收：
 
 ```bash
-python3 -B -m gymts.integrations.chatts.pipeline \
+python3 -B -m gymts_chatts.pipeline \
   --profile-dir /path/to/profiles/native \
   --profile-dir /path/to/profiles/classical \
-  --candidate-config examples/deepseek_candidate.json \
+  --candidate-config adapters/chatts/examples/deepseek_candidate.json \
   --no-baseline --max-per-task 1 \
   --output .gymts/deepseek-text-smoke-001
 ```
@@ -65,12 +73,12 @@ python3 -B -m gymts.integrations.chatts.pipeline \
 
 ```bash
 # 使用已经生成的两个 profile，不再运行生成器
-python3 -B -m gymts.integrations.chatts.pipeline \
+python3 -B -m gymts_chatts.pipeline \
   --profile-dir /path/to/native --profile-dir /path/to/classical \
   --output .gymts/chatts-import-001
 
 # 小规模重复实验；限定 task 也可加 --tasks pattern.trend_direction
-python3 -B -m gymts.integrations.chatts.pipeline \
+python3 -B -m gymts_chatts.pipeline \
   --source-repo /path/to/ChatTS-Bench-new \
   --max-per-task 2 --repetitions 2 --output .gymts/chatts-smoke-001
 ```
@@ -93,13 +101,13 @@ python3 -B -m gymts.integrations.chatts.pipeline \
 
 | 角色 | adapter / plugin | 实现 |
 | --- | --- | --- |
-| Environment | `chatts-synthetic-snapshot` | [environment.py](../gymts/integrations/chatts/environment.py) |
-| Task | `chatts-synthetic-qa` | [task.py](../gymts/integrations/chatts/task.py) |
-| Candidate | `chatts-http`、`chatts-signal-baseline` | [candidate.py](../gymts/integrations/chatts/candidate.py) |
-| 文本 LLM Candidate | `chatts-text-http` | [text_candidate.py](../gymts/integrations/chatts/text_candidate.py) |
-| Scorer | `chatts-qa-scorer` | [scoring.py](../gymts/integrations/chatts/scoring.py) |
-| 导入/导出 | `import_profiles`、`generate_profiles`、`export_sft` | [data.py](../gymts/integrations/chatts/data.py) |
-| 编排 | `run_pipeline` | [pipeline.py](../gymts/integrations/chatts/pipeline.py) |
+| Environment | `chatts-synthetic-snapshot` | [environment.py](../adapters/chatts/src/gymts_chatts/environment.py) |
+| Task | `chatts-synthetic-qa` | [task.py](../adapters/chatts/src/gymts_chatts/task.py) |
+| Candidate | `chatts-http`、`chatts-signal-baseline` | [candidate.py](../adapters/chatts/src/gymts_chatts/candidate.py) |
+| 文本 LLM Candidate | `chatts-text-http` | [text_candidate.py](../adapters/chatts/src/gymts_chatts/text_candidate.py) |
+| Scorer | `chatts-qa-scorer` | [scoring.py](../adapters/chatts/src/gymts_chatts/scoring.py) |
+| 导入/导出 | `import_profiles`、`generate_profiles`、`export_sft` | [data.py](../adapters/chatts/src/gymts_chatts/data.py) |
+| 编排 | `run_pipeline` | [pipeline.py](../adapters/chatts/src/gymts_chatts/pipeline.py) |
 
 所有任务使用协议 `gymts.task/chatts-qa/1`；每份评价报告固定一个源 Task/版本。异质任务不合成单一总分。Forecast 的总分是逐样本 MAE/RMSE 的平均，各 horizon 样本等权。
 
@@ -195,7 +203,7 @@ python3 -B -m gymts --integration chatts --store /path/to/output_dir/records \
 可用只读审计脚本独立核对已有实验，不读取凭证、不调用 API：
 
 ```bash
-python3 -B scripts/audit_chatts_http_experiment.py \
+python3 -B adapters/chatts/scripts/audit_chatts_http_experiment.py \
   output/experiments/deepseek-eval-2026-10-12 \
   --output .gymts/deepseek-evidence-audit-001.json
 ```
@@ -205,7 +213,7 @@ python3 -B scripts/audit_chatts_http_experiment.py \
 ## 验证
 
 ```bash
-python3 -B -m unittest discover -s tests -v
+python3 -B -m unittest discover -s adapters/chatts/tests -v
 ```
 
 新增测试覆盖导入完整性与白名单、bundle 隔离、真实 Task/Runner 边界、原生与普通文本 HTTP wire、数值精度、凭证脱敏、原始文本保留、严格解析、评分分母、多候选与重复标签关联、旧 Run 不变及固定快照导出。HTTP 测试使用明确标记的 fixture，真实模型成绩必须由实际服务调用产生。

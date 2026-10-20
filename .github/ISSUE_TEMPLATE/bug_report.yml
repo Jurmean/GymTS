@@ -1,0 +1,51 @@
+name: Bug 报告
+description: 报告可复现的运行、评价、存储或适配器问题。
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先搜索已有 Issue，并使用小型可分享数据复现。
+        不要填写密钥、私有参考答案、个人信息或完整生产日志。疑似漏洞请按 SECURITY.md 私密报告。
+  - type: input
+    id: versions
+    attributes:
+      label: 版本与环境
+      description: GymTS/适配包版本或源码提交，Python 版本、操作系统；使用本地文件系统还是挂载盘。
+      placeholder: "gymts 0.5.0；Python 3.12；Linux；integration=..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 最小复现
+      description: 粘贴执行命令和最小配置，注明需要的集成与可选依赖；不要粘贴含凭证的命令。
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为与错误
+      description: 提供脱敏错误码、堆栈或事件片段。若有条件跳过，注明依赖是否已安装。
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 证据与影响范围
+      description: 可选：Run/Evaluation ID、结果/事件哈希、首次出现的版本、是否可用 quickstart 复现。ID 不会自动提供存储访问权。
+  - type: checkboxes
+    id: disclosure
+    attributes:
+      label: 分享检查
+      options:
+        - label: 我已移除凭证、私有数据和敏感端点；本报告不包含可利用的安全漏洞详情。
+          required: true

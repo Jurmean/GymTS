@@ -1,0 +1,34 @@
+site_name: GymTS
+site_description: 时序实验执行、证据与独立评价框架
+repo_url: https://github.com/Jurmean/GymTS
+repo_name: GitHub
+# Paths and navigation are overridden by scripts/docs.py from the explicit
+# docs/site-pages.json allowlist. Never point docs_dir at the whole repository.
+docs_dir: .gymts-docs/source
+site_dir: .gymts-docs/site
+edit_uri: ""
+use_directory_urls: true
+strict: true
+theme:
+  name: mkdocs
+  highlightjs: false
+  navigation_depth: 3
+plugins:
+  - search
+markdown_extensions:
+  - fenced_code
+  - tables
+  - admonition
+  - attr_list
+  - toc:
+      permalink: true
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+    unrecognized_links: warn

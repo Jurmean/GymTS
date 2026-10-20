@@ -44,17 +44,23 @@ def check_descriptions(env, task, schemas):
             schemas.resolve(env[key])
 
 
-def resolved_defaults(spec: dict, artifacts) -> dict:
+def resolved_defaults(spec: dict, artifacts=None) -> dict:
     value = copy.deepcopy(spec)
     if not isinstance(value, dict):
         raise GymTSError("invalid_config", "ExperimentSpec must be an object")
     if "scene_ref" in value:
         if "scene" in value:
             raise GymTSError("invalid_config", "scene and scene_ref are mutually exclusive")
+        if artifacts is None:
+            raise GymTSError("unsupported_capability", "Offline planning requires an inline scene; scene_ref is resolved only for execution")
         value["scene"] = artifacts.read_json(value.pop("scene_ref"))
     value.setdefault("name", None)
     value.setdefault("purpose", "development")
     value.setdefault("extensions", {})
+    value.setdefault("provenance", {})
+    if isinstance(value["provenance"], dict):
+        for key, default in (("source_refs", []), ("usage_policy_ref", None), ("benchmark_definition_ref", None)):
+            value["provenance"].setdefault(key, default)
     if isinstance(value.get("candidate"), dict):
         value["candidate"].setdefault("inherited_state", [])
     execution = value.get("execution", {})
@@ -195,14 +201,39 @@ def check_compatibility(spec, env, task, manifests, schemas, artifacts, store_re
         if view is not None:
             ensure(view["purpose"] == "prepare", "Training view purpose must be prepare", "permission_denied")
             schemas.validate("gymts.view/1", view)
-            artifacts.read_view(view)
+            # Planning checks the view declaration, not the underlying data.
     for ref in [spec["candidate"]["artifact"]] + spec["candidate"]["inherited_state"]:
         if ref is not None:
-            artifacts.resolve(ref)
+            schemas.validate("gymts.artifact/1", ref)
     recording = spec["recording"]
     ensure(recording["store_ref"] in store_refs, "Unknown recording store_ref")
-    ensure(recording["model_calls"] == "none", "No LLM capture adapter installed", "unsupported_capability")
+    ensure(recording["model_calls"] == "none" or recording["model_calls"] in cm["capture_profiles"],
+           "Candidate does not declare the requested model-call capture profile", "unsupported_capability")
     ensure(recording["redaction_policy_ref"] is None, "No redaction adapter installed", "unsupported_capability")
     ensure(not recording["extra_event_kinds"], "No extension event schemas installed", "unsupported_capability")
     return sorted(set(variables)), sorted(set(operations)), compile_read_scope(spec["execution"], env, task)
 
+
+def check_execution_resources(spec, artifacts, schemas):
+    """Resolve actual bytes only after the execution Run has begun."""
+    refs = spec["scene"]["environment"]["source"].get("connection", {}).get("artifact_refs", [])
+    for ref in refs:
+        artifacts.resolve(ref)
+    learning = spec["execution"]["learning"]
+    for key in ("training_view", "training_targets"):
+        if learning[key] is not None:
+            artifacts.read_view(learning[key])
+    for ref in [spec["candidate"]["artifact"]] + spec["candidate"]["inherited_state"]:
+        if ref is not None:
+            artifacts.resolve(ref)
+    provenance = spec.get("provenance", {})
+    for ref in list(provenance.get("source_refs", [])) + [provenance.get("usage_policy_ref"), provenance.get("benchmark_definition_ref")]:
+        if ref is not None:
+            artifacts.resolve(ref)
+    policy_ref = provenance.get("usage_policy_ref")
+    if policy_ref is not None:
+        ensure(policy_ref["schema_ref"] == "gymts.source-usage-policy/1", "Source usage policy has an unsupported schema", "schema_mismatch")
+        policy = artifacts.read_json(policy_ref)
+        schemas.validate("gymts.source-usage-policy/1", policy)
+        if spec["purpose"] == "training_collection":
+            ensure(policy["training_allowed"] and bool(set(policy["allowed_uses"]) & {"training", "prepare", "dataset_build"}), "Source policy does not authorize collection for training", "permission_denied")
