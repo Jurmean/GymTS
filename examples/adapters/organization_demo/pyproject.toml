@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gymts-organization-demo"
+version = "0.1.0"
+description = "Independent ETT CSV ingestion and staged GymTS experiment example"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.9"
+dependencies = ["gymts>=0.6,<0.7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

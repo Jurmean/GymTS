@@ -210,6 +210,8 @@ VIEW = obj({"view_id": STRING, "revision": STRING, "source_refs": array(ARTIFACT
 def register_core_schemas(schemas: SchemaRegistry) -> None:
     from .resources import PROVENANCE, register_resource_schemas, resource_schemas
     register_resource_schemas(schemas)
+    from .organization import register_organization_schemas
+    register_organization_schemas(schemas)
     source = obj({"kind": {"enum": ["dataset", "generator", "simulator", "live"]},
                   "locator": STRING, "revision": nullable(STRING), "connection": OBJECT,
                   "credential_ref": nullable(STRING)})

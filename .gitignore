@@ -75,3 +75,6 @@ service-account*.json
 /docs/reports/oss-documentation-2026-10-19.json
 /docs/reports/resource-publication-s3fs-2026-10-20.json
 /docs/reports/timesigma-design-alignment-package-check-2026-10-19.json
+
+# Detailed per-row reference audit is private; publish only its aggregate summary.
+/docs/reports/bench-tsqa-reference-repair-2026-10-21.json

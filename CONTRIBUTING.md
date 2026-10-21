@@ -6,23 +6,23 @@
 
 ## 先确定改动放在哪里
 
-GymTS 交付的是框架。EnvironmentTS 管运行和证据，AutoBenchTS 管独立评价；具体项目的
+GymTS 的主线是存储数据、接入数据、组织实验、记录实验。EnvironmentTS 管通用数据、运行和证据，核心组织协议关联阶段与 attempt，AutoBenchTS 管独立评价；具体项目的
 数据格式、模型后端、任务语义、训练算法和领域评分放在独立适配包中。同仓库维护不意味着
 项目实现可以进入 `gymts` 核心发行包。
 
 | 需求 | 优先位置 |
 | --- | --- |
-| 新数据格式、HF 视图、仿真或 testbed | 独立 Environment 适配器 |
+| 新数据格式、HF 视图、仿真或 testbed | 独立 Environment、DatasetReader 或连接适配器 |
 | 新任务、模型、评分器或 benchmark 解析器 | 独立领域适配包及其 schema |
 | 新工具集或 Agent SDK | 外部工具/Agent 适配器；由 Agent 决定工具调用 |
 | TRL、LibraryTS 等训练能力 | 独立训练或工具适配包，优先复用上游实现 |
 | 所有项目都需要的执行、访问边界、封存或评价机制 | 提供复现证据后讨论核心协议 |
 
-现行接口见[框架指南](docs/framework.md)和[接口规范 1.2.0](docs/feishu/GymTS接口规范/GymTS接口规范.md)。
+现行接口见[框架指南](docs/framework.md)和[接口规范 1.4.0](docs/feishu/GymTS接口规范/GymTS接口规范.md)。
 [下一版可插拔协议](docs/pluggability-contract-v2.md)是草案，不应当作已实施合同。
-新增适配包按[适配包指南](adapters/README.md)和[环境接入指南](docs/environment-adapters.md)操作。
+新增适配包按[适配包指南](adapters/README.md)和[环境接入指南](docs/environment-adapters.md)操作。固定数据/产物输入、阶段依赖、attempt 和失败续接见[实验组织指南](docs/experiment-organization.md)。
 
-当前 0.5.0 核心处于冻结验证基线。提出核心修改时，在 Issue 或 PR 中写清楚：
+当前 0.6.0 / 规范 1.4.0 以 F2.1 为冻结验证基线；[当前验收](docs/reports/experiment-organization-2026-10-21.json)验证独立接入与卸载后重评，旧 23 个 schema 摘要保持不变。历史 F0/F1 的版本与证据保留。提出核心修改时，在 Issue 或 PR 中写清楚：
 
 1. 哪个真实项目的哪个需求无法用现有接口表达，附最小配置和实际失败证据。
 2. 为什么独立适配器或已有扩展点不能解决，而不是只因实现方便。
@@ -38,7 +38,7 @@ GymTS 交付的是框架。EnvironmentTS 管运行和证据，AutoBenchTS 管独
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install "setuptools>=64" wheel
+python -m pip install "setuptools>=64" wheel packaging
 python -m pip install --no-build-isolation -e .
 python -B examples/quickstart.py --root /tmp/gymts-contribution-demo
 ```
@@ -79,7 +79,7 @@ python -B scripts/check_release.py --output /tmp/gymts-release-check.json
 python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
 ```
 
-两个打包脚本需要当前解释器已有 `setuptools>=58`、`wheel`，并能用 `venv` 创建带 pip 的环境。
+两个打包脚本需要当前解释器已有 `setuptools>=58`、`wheel`，并能用 `venv` 创建带 pip 的环境；`check_adapters.py` 另需 `packaging`。
 它们在临时目录构建，并通过 `--no-index` 从本地制品安装。报告写到指定路径；临时发行包会在结束时删除。
 GitHub Actions 的[工作流](.github/workflows/ci.yml)配置了 Python 3.9、3.12 和 3.13；配置存在不等于本次分支已通过远端 CI。
 

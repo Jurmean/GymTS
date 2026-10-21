@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "wheel": "/zzr/zmx/GymTS/Jurmean-GymTS/output/tsqa-reference-repair-20261021/distributions/gymts_bench_tsqa-0.2.0-py3-none-any.whl",
+  "sha256": "b671d889fb9a965c697f3a1f8a8c24601d0b92cf1d321cb6aa25839bd3c5c99d",
+  "imported_from_wheel": true,
+  "source_python_and_cards_match_wheel": true,
+  "upstream_license_in_wheel": true,
+  "structured_partial_credit_verified": true,
+  "registration_verified": true,
+  "adapter_tests": {
+    "passed": 15,
+    "subtests": 6,
+    "model_calls": 0
+  }
+}

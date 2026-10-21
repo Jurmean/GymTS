@@ -5,7 +5,7 @@
   "languages": {
     "zh": {
       "name": "中文",
-      "description": "GymTS 文档：时序实验、环境执行、可追溯证据与独立评价。",
+      "description": "GymTS 文档：时序数据存储、接入、实验组织、记录与独立评价。",
       "labels": {
         "skip": "跳转到正文",
         "menu": "打开导航",
@@ -14,7 +14,7 @@
         "navigation": "文档导航",
         "home": "文档首页",
         "documentation": "文档",
-        "framework": "时序实验与评价框架",
+        "framework": "时序数据与实验组织框架",
         "other_language": "English",
         "theme": "切换深浅色",
         "local_first": "本地构建 · 开放接口",
@@ -34,7 +34,7 @@
     },
     "en": {
       "name": "English",
-      "description": "GymTS documentation: time-series experiments, environments, traceable evidence, and independent evaluation.",
+      "description": "GymTS documentation: time-series data storage, data access, experiment organization, records and independent evaluation.",
       "labels": {
         "skip": "Skip to content",
         "menu": "Open navigation",
@@ -43,7 +43,7 @@
         "navigation": "Documentation navigation",
         "home": "Documentation home",
         "documentation": "Documentation",
-        "framework": "Time-series experiments and evaluation",
+        "framework": "Time-series data and experiments",
         "other_language": "中文",
         "theme": "Toggle light and dark mode",
         "local_first": "Local builds · Open interfaces",
@@ -82,7 +82,7 @@
       "translations": {
         "en": "docs/site/en/index.md"
       },
-      "translated_source_sha256": "5de2d4f0a85544b62d8b1708343a1f2b30a997c90545ab6c33324667584df110"
+      "translated_source_sha256": "34b78d077258e4c2639e553923283bc0e423c6394c8c828b0333ac4baf33f05a"
     },
     {
       "source": "docs/quickstart.md",
@@ -98,7 +98,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/quickstart.md"
       },
-      "translated_source_sha256": "b411780c1ea861a5a4d9a70fec19ce1f6b313cce7e9bb9821798b93bb797677e"
+      "translated_source_sha256": "87c52c2ae17f5911411c7e044067b1e092bbf59d9d29b1a740241c2a80608ccf"
     },
     {
       "source": "docs/overview.md",
@@ -114,7 +114,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/overview.md"
       },
-      "translated_source_sha256": "f0299d98f4db25f01ea30f1c668b1969b6af4c7aa9bea365b9396bb8f9adee29"
+      "translated_source_sha256": "82983e524dc38323a2dcde350693c2910275482f86cd7fa6a4c7402f2d50a13e"
     },
     {
       "source": "docs/README.md",
@@ -130,7 +130,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/README.md"
       },
-      "translated_source_sha256": "7e3cd6d7e025e17df20dc6ea8e57cf6dbd10373471cd712530fa7279aba54b50"
+      "translated_source_sha256": "7ce21ad65cdab44131edf6dc3ba0180f991f42febf54c4f3610cf5dedb286159"
     },
     {
       "source": "docs/user-guide.md",
@@ -146,7 +146,23 @@
       "translations": {
         "en": "docs/i18n/en/docs/user-guide.md"
       },
-      "translated_source_sha256": "9973cd88fb5964b7bd9f012b1dba8f6221e7a7de2a0276fcde4d69adc34c8776"
+      "translated_source_sha256": "ac661c3110a8880fb002a7f42b815ef4b7997cd9ec4ca155cc055d05f4453437"
+    },
+    {
+      "source": "docs/experiment-organization.md",
+      "destination": "guide/experiment-organization.md",
+      "section": {
+        "zh": "开始",
+        "en": "Getting started"
+      },
+      "title": {
+        "zh": "实验组织与记录",
+        "en": "Experiment organization"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/experiment-organization.md"
+      },
+      "translated_source_sha256": "172f2cdbae94ba38a6eb1aec713691cc5b8916b27cc5ca5146aaaf5b42e6d49f"
     },
     {
       "source": "docs/faq.md",
@@ -194,7 +210,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/reference.md"
       },
-      "translated_source_sha256": "24e214b45ddf26bf6c3bb1fe1dec61e01e55d6ee9a9240dadb09ae13bf99bb16"
+      "translated_source_sha256": "90f97e3867e58ccac6c4b6409ec0153926946e98f9477a0de6a0ec4790b3f443"
     },
     {
       "source": "docs/framework.md",
@@ -210,7 +226,39 @@
       "translations": {
         "en": "docs/i18n/en/docs/framework.md"
       },
-      "translated_source_sha256": "11de44863b71ca561c686f6afcea66bfbba290bd1281b18afc9a9e916b207671"
+      "translated_source_sha256": "26e755e77721f16cd9547fd9012f21e7be76e51e156b2ca6fd48ab2e373592db"
+    },
+    {
+      "source": "docs/adr/0001-core-data-source-catalog.md",
+      "destination": "reference/adr-core-data.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "ADR：四类核心数据组织",
+        "en": "ADR: core data organization"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/adr/0001-core-data-source-catalog.md"
+      },
+      "translated_source_sha256": "49a5d30754b3ccfdfbf92c8c60520d00049b8680f52ab10b99dfc42ed5a0d9c8"
+    },
+    {
+      "source": "docs/adr/0002-experiment-organization.md",
+      "destination": "reference/adr-experiment-organization.md",
+      "section": {
+        "zh": "架构与接口",
+        "en": "Architecture and API"
+      },
+      "title": {
+        "zh": "ADR：实验组织与数据回库",
+        "en": "ADR: experiment organization"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/adr/0002-experiment-organization.md"
+      },
+      "translated_source_sha256": "27ac087f64d34d3914b5368cb1b50639e6d3ffc0fb8ddca4f1be83bf20c28683"
     },
     {
       "source": "docs/feishu/GymTS接口规范/GymTS接口规范.md",
@@ -220,13 +268,13 @@
         "en": "Architecture and API"
       },
       "title": {
-        "zh": "正式合同 1.2.0",
-        "en": "Public contract 1.2.0"
+        "zh": "正式合同 1.4.0",
+        "en": "Public contract 1.4.0"
       },
       "translations": {
         "en": "docs/i18n/en/docs/feishu/GymTS接口规范/GymTS接口规范.md"
       },
-      "translated_source_sha256": "27dc3219760ebc8261b8fc31a65d4cd338e91fcc61946a17f7a76fe14ce1c316"
+      "translated_source_sha256": "68b48d5824a041eca8b10cf36c159390814d8bd65e6f3580a2461b8c4f9cadc7"
     },
     {
       "source": "docs/environment-adapters.md",
@@ -242,7 +290,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/environment-adapters.md"
       },
-      "translated_source_sha256": "8664a50c2324b72de8e84eb561efa2bd633fef14d54d64c7248dcfe0a7d27bf6"
+      "translated_source_sha256": "98b220c3fb3c84dd787ddca0914fa35a27213e64d667e922e83037ab497c2129"
     },
     {
       "source": "docs/agent-toolsets.md",
@@ -274,7 +322,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/dataset-benchmark-catalog-design.md"
       },
-      "translated_source_sha256": "381d333e8d4e977d07bc41ddb4e5c539cf2ea8479daf643ed2a683d7bb1c2f57"
+      "translated_source_sha256": "8f40c434e24df81040f62f20d88654c905375f6da27c44f0a58ef22741a51a4e"
     },
     {
       "source": "docs/adapter-development.md",
@@ -290,7 +338,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/adapter-development.md"
       },
-      "translated_source_sha256": "58d0ea35c85434b26ef6f466e29d0304a09e69293bb5f455fb1eda32562c1229"
+      "translated_source_sha256": "904960873cb422eaccfbd7e42ffc268b98436c4b0b9e68c0f0fe76ac441e456c"
     },
     {
       "source": "examples/adapters/minimal_demo/README.md",
@@ -322,7 +370,7 @@
       "translations": {
         "en": "docs/i18n/en/CONTRIBUTING.md"
       },
-      "translated_source_sha256": "cd17620129f417e31607e3f892f650bb2946b8917b59aaf0622df9dd6004a4a8"
+      "translated_source_sha256": "9135454e00a63a8d08a2d5eb01aa1f9893ae03e544838ac617fdc80234d80d28"
     },
     {
       "source": "docs/maintainer-guide.md",
@@ -338,7 +386,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/maintainer-guide.md"
       },
-      "translated_source_sha256": "30233e982fa5cbac18bb96415bc7d6e64509f2a858b3660d59c701f679b41417"
+      "translated_source_sha256": "578588ae6accf0ffd3104759268d5e009a8e1a582a8d1aa5ecc5f753facf734e"
     },
     {
       "source": "docs/documentation.md",
@@ -370,7 +418,7 @@
       "translations": {
         "en": "docs/i18n/en/adapters/README.md"
       },
-      "translated_source_sha256": "32e583df255803195d26d0087624ba325744ce442c7f2cf374a99957222d3361"
+      "translated_source_sha256": "efdb29f43e4cb74f46ea2da7a0873c2b4fb1f29ff0b81b728b5179aaeba3b39d"
     },
     {
       "source": "adapters/timeseries/README.md",
@@ -466,7 +514,7 @@
       "translations": {
         "en": "docs/i18n/en/adapters/bench_tsqa/README.md"
       },
-      "translated_source_sha256": "7b1dbd39f16597ef77265c95860d170a8b8a1834e88625a4a9d962248850f253"
+      "translated_source_sha256": "a71689d16172d0631905af45f044f8500c054797149131b647b2e88e10aef0fe"
     },
     {
       "source": "adapters/hf_datasets/README.md",
@@ -597,6 +645,22 @@
       "translated_source_sha256": "5de660d868317dec3ff0338a0740b60e6a72c14d285cd27f77e6c3d5f2b29ecd"
     },
     {
+      "source": "docs/five-project-integration-acceptance-2026-10-21.md",
+      "destination": "projects/five-project-acceptance.md",
+      "section": {
+        "zh": "项目工作流",
+        "en": "Workflows"
+      },
+      "title": {
+        "zh": "五项目接入与验收",
+        "en": "Five-project acceptance"
+      },
+      "translations": {
+        "en": "docs/i18n/en/docs/five-project-integration-acceptance-2026-10-21.md"
+      },
+      "translated_source_sha256": "089169aab7ba01ce0b7ad3f64e446c8e8550ae057098e2272543e9e45762bf91"
+    },
+    {
       "source": "docs/project-status.md",
       "destination": "project/status.md",
       "section": {
@@ -610,7 +674,7 @@
       "translations": {
         "en": "docs/i18n/en/docs/project-status.md"
       },
-      "translated_source_sha256": "66793b39f111faf6bf8f5e5564a50cd2304e5355f80092bdf0a0bedbc57c4911"
+      "translated_source_sha256": "8b3eb1ba9471aaa4e02b111e103925de2ca617827fb6f3a303e2b97be57a0426"
     },
     {
       "source": "docs/roadmap.md",
@@ -642,7 +706,7 @@
       "translations": {
         "en": "docs/i18n/en/CHANGELOG.md"
       },
-      "translated_source_sha256": "4689e49feb7ffea4c4cb4dacfc2329d877d5aa1c1f33bbfb7338a59747b273bc"
+      "translated_source_sha256": "06b6ebdccf78809c703c9bb91bcf3997e986d6af17540249134f0cddf0a5a41d"
     },
     {
       "source": "SUPPORT.md",
@@ -674,7 +738,7 @@
       "translations": {
         "en": "docs/i18n/en/SECURITY.md"
       },
-      "translated_source_sha256": "dcceeb7e8fb2620caa13d84de5a0ef30de7c985d74884cdfc0b4dd7556e407a0"
+      "translated_source_sha256": "18b656bc8f2a3c7d025b6998a4128455c26b5ebdf8b4e410e54253c86b236afc"
     },
     {
       "source": "CODE_OF_CONDUCT.md",
@@ -749,6 +813,26 @@
     {
       "source": "LICENSE",
       "destination": "LICENSE"
+    },
+    {
+      "source": "docs/reports/experiment-organization-2026-10-21.json",
+      "destination": "evidence/experiment-organization-2026-10-21.json"
+    },
+    {
+      "source": "docs/reports/core-data-organization-2026-10-21.json",
+      "destination": "evidence/core-data-organization-2026-10-21.json"
+    },
+    {
+      "source": "examples/adapters/organization_demo/README.md",
+      "destination": "downloads/organization-demo-readme.txt"
+    },
+    {
+      "source": "docs/reports/bench-tsqa-reference-repair-summary-2026-10-21.json",
+      "destination": "evidence/bench-tsqa-reference-repair-summary-2026-10-21.json"
     }
-  ]
+  ],
+  "display_versions": {
+    "core": "0.6.0",
+    "contract": "1.4.0"
+  }
 }

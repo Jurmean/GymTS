@@ -1,12 +1,14 @@
 # GymTS user guide
 
-This guide is for users installing, running, and comparing methods with **GymTS 0.5.0 / interface specification 1.2.0**. Run commands from the repository root unless stated otherwise. The minimal workflow uses only Python's standard library and local deterministic data, without GPUs, model accounts, or external services.
+This guide is for users installing, running, and comparing methods with **GymTS 0.6.0 / interface specification 1.4.0**. Run commands from the repository root unless stated otherwise. The minimal workflow uses only Python's standard library and local deterministic data, without GPUs, model accounts, or external services.
 
 The [formal specification](feishu/GymTS接口规范/GymTS接口规范.md) is authoritative for interface fields. See the [reference](reference.md) for CLI options and Python methods, the [developer guide](adapter-development.md) for new project adapters, and the [adapter directory](../adapters/README.md) for native dependencies and package-specific commands.
 
 ## 1. What GymTS does
 
-GymTS separates an experiment into independently replaceable data environments, tasks, and tested methods, and stores execution facts separately from evaluation references.
+GymTS focuses on **storing data, connecting data sources, organizing experiments, and recording experiments**. Core manages sources and dataset revisions, organizes fixed inputs and stage dependencies, and records actual attempts and Runs. Adapters provide domain formats and execution; evaluation references remain separate.
+
+Current F2.1 technical acceptance passed. See the [experiment organization guide](experiment-organization.md) for stages, failure recovery, data-based queries, and build publication, and the [current acceptance report](reports/experiment-organization-2026-10-21.json) for fixed identities, verified scope, and limitations.
 
 | Object | Role | Examples |
 | --- | --- | --- |
@@ -17,9 +19,9 @@ GymTS separates an experiment into independently replaceable data environments, 
 | Dataset | Reusable fixed data resource | Public questions, private references, usage policies |
 | Benchmark | Recipe fixing data, tasks, and evaluation rules | Candidate comparison on a fixed test set |
 
-**EnvironmentTS owns execution and evidence; AutoBenchTS owns evaluation and rescoring.** Core does not embed LibraryTS, ChatTS, TimeSigma, or their models, formats, and domain scoring. Independent adapters provide these capabilities. The tested Agent chooses tools; its SDK/adapter executes calls while the framework records associations and evidence. See [Agent and tool responsibilities](agent-toolsets.md).
+**EnvironmentTS owns data organization, storage, execution and evidence in core; AutoBenchTS owns benchmarks, evaluation and rescoring.** Core does not embed LibraryTS, ChatTS, TimeSigma, or their models, formats, and domain scoring. Independent adapters provide these capabilities. The tested Agent chooses tools; its SDK/adapter executes calls while the framework records associations and evidence. See [Agent and tool responsibilities](agent-toolsets.md).
 
-`run` creates a new experiment, `evaluate` creates and evaluates a fixed set of new experiments, and `score` evaluates specified old outputs only. Rerunning a model and rescoring its original results are different operations.
+`run` creates a Run, `gym.experiments` organizes stages, `evaluate` creates and evaluates a fixed set of new Runs, and `score` evaluates specified old outputs only. Rerunning a model and rescoring its original results are different operations.
 
 ## 2. Installation and checks
 
@@ -126,7 +128,7 @@ One `GymTS` instance may execute multiple Runs. Use `with` to close the records 
 
 | Field | Controls | When changing it |
 | --- | --- | --- |
-| `protocol_version` | Message contract, currently `gymts.experiment/1` | Distinct from distribution version 0.5.0 |
+| `protocol_version` | Message contract, currently `gymts.experiment/1` | Distinct from distribution version 0.6.0 |
 | `name`, `purpose` | Name and intended use | Purpose affects prepare/training authorization |
 | `scene.environment` | Source, field mapping, clocks, and operation capabilities | `source.kind` is a source category; the adapter defines its semantics |
 | `scene.task` | Task plugin and parameters | Task defines windows, inputs, and result meaning |
@@ -371,6 +373,80 @@ with GymTS(root="/tmp/gymts-benchmark-runs", data_home="/path/to/imported/resour
 
 The five user QA datasets are evaluation-only, are not distributed with core, and do not authorize training. The `local/` namespace does not imply an official dataset release. One existing resource catalog can serve several independent Run stores, provided each process installs and enables the required reader/resolver.
 
+### 6.5 Four source kinds, actual snapshots and feedback
+
+Core manages `static`, `synthetic`, `simulation` and `live_testbed` sources. A definition describes recipe/configuration; a dataset revision fixes actual obtained data. Synthetic sources may be seedable generators or LLM generation whose actual results can only be recorded; generators need not all be deterministic. Episodes/collection windows, Runs and derived data enter the catalog, while project providers retain native formats/calls. Historical F1 real four-source and model-free rescoring technical acceptance passed; see the [report](reports/core-data-organization-2026-10-21.json). Its historical identity is not relabeled as current F2.1.
+
+This example registers the existing ramp experiment as a synthetic source, runs the real last-value Candidate, saves actual environment events as a `/2` dataset, and registers a derived view retaining observation-event identities. It then reads the same catalog from another Run root. This is an executed standard-library teaching example; see the [independent data-organization example](../examples/data_organization/README.md) for real external four-source workflows and installation-outside-source commands.
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+from gymts import GymTS
+
+work = Path('/tmp/gymts-guide-data-v2')
+work.mkdir(parents=True, exist_ok=True)
+spec = json.loads(Path('examples/forecast_experiment.json').read_text())
+environment = spec['scene']['environment']
+definition = {
+    'protocol_version': 'gymts.data-source/1',
+    'source_id': 'local/guide-ramp', 'config': 'default', 'revision': None,
+    'kind': 'synthetic',
+    'provider_ref': {'name': environment['adapter'], 'version': environment['version'], 'origin_ref': None},
+    'configuration': {key: environment[key] for key in ('source', 'mapping', 'options')},
+    'recipe': environment['source']['connection']['generator'],
+    'reproducibility': {'mode': 'seeded', 'seed': spec['execution']['seed']},
+    'usage_policy': {'allowed_uses': ['runtime', 'evaluation'], 'training_allowed': False},
+    'parent_datasets': [], 'card_ref': None,
+}
+with GymTS(work/'runs', data_home=work/'data', cache_home=work/'cache') as gym:
+    catalog = gym.environment_ts.datasets
+    source = catalog.register_source(definition, aliases=('1.0.0',))
+    result = gym.run_data(spec, source_id=source['source_id'], revision=source['revision'],
+                          dataset_id='local/guide-ramp-recorded')
+    manifest = result['dataset']
+    ds = catalog.load_dataset(manifest['dataset_id'], revision=manifest['revision'], split='recorded')
+    capture = ds.read_capture()
+    print(result['run']['status'], ds.info['kind'], capture['observation_count'])
+    same = catalog.capture_run(result['run']['run_id'], source_id=source['source_id'],
+                               revision=source['revision'], dataset_id=manifest['dataset_id'])
+    assert same['revision'] == manifest['revision']
+    (work/'source.json').write_text(json.dumps(definition, indent=2)+'\n')
+    (work/'run-data.json').write_text(json.dumps(result, indent=2)+'\n')
+    # A deliberately simple derived view of actual captured observation metadata.
+    observation_rows = [row for row in ds if row['kind']=='observation']
+    derived = catalog.register_snapshot(
+        [{'sample_id': row['event_id'], 'parent_event_seq': row['seq']} for row in observation_rows],
+        dataset_id='local/guide-ramp-derived',
+        source_ref={key: source[key] for key in ('source_id','config','revision')},
+        split='derived', parents=({'dataset_id':manifest['dataset_id'], 'config':'default',
+                                 'revision':manifest['revision'], 'split':'recorded'},),
+        features={'projection':'observation-event-identity/1'},
+    )
+    assert len(derived['lineage']['parents'])==1
+    print('derived', derived['splits']['derived']['row_count'])
+with GymTS(work/'other-runs', data_home=work/'data', cache_home=work/'other-cache') as gym:
+    ds = gym.environment_ts.datasets.load_dataset(manifest['dataset_id'],revision=manifest['revision'],split='recorded')
+    assert ds.read_capture()['run_id']==result['run']['run_id']
+    print('shared_catalog',len(ds))
+PY
+```
+
+Expected output is `succeeded synthetic 10`, `derived 10`, `shared_catalog 21`. `run_data` composes `bind_source → run → capture_run`, preserving the complete ExperimentSpec's original Task/Candidate. `register_snapshot` directly registers already obtained data without executing generators/models. A sealed Run can be captured again; identical arguments yield the same dataset revision.
+
+The CLI uses the same source and original experiment file:
+
+```bash
+gymts --store /tmp/gymts-guide-data-v2/runs --data-home /tmp/gymts-guide-data-v2/data sources list
+gymts --store /tmp/gymts-guide-data-v2/runs --data-home /tmp/gymts-guide-data-v2/data sources info local/guide-ramp --revision 1.0.0
+gymts --store /tmp/gymts-guide-data-v2/runs --data-home /tmp/gymts-guide-data-v2/data run-data examples/forecast_experiment.json \
+  --source local/guide-ramp --source-revision 1.0.0 --dataset-id local/guide-ramp-cli \
+  --output /tmp/gymts-guide-data-v2/cli-run-data.json
+```
+
+`ds.read_capture()` returns actual status, scope, session seed, clocks, ownership and cleanup metadata. `resolve_payload` / `read_asset` read public artifacts from catalog attachments without requiring the original Run CAS to stay online. The Run remains execution evidence; a dataset snapshot does not replace it. BenchmarkDefinition can fix v1/v2 datasets, with evaluation still handled by AutoBenchTS. See the [reference](reference.md) and [core-change ADR](adr/0001-core-data-source-catalog.md) for fields and entry points.
+
 ## 7. Traces, artifacts, and reproducible evidence
 
 ### 7.1 Inspect Runs and events
@@ -453,7 +529,7 @@ Packages install independently and require explicit enablement. Their own README
 
 Offline data supports fixed-content replay. Live world state cannot be restored from configuration alone, and sequentially running Candidates does not inherently compare them on the same data. Explicitly freeze common observations, or use a scenario with recoverable sessions and controlled experimental design. Reject unsupported seed/reset requests; do not record an ineffective seed as applied.
 
-Training dataset construction uses public `gymts.training.build_dataset(spec, records, artifacts)` with fixed RecordSnapshot input. Independent DatasetBuilder providers own formats, rewards, token/mask semantics, and backends. Core embeds neither TRL nor verl. The current RL package reuses TRL; verl, multi-turn RL, and distributed training are not adapted. `gymts.source-dataset/1` is a source resource manifest, while `gymts.dataset/1` is a training export result; they are not interchangeable.
+Training dataset construction uses public `gymts.training.build_dataset(spec, records, artifacts)` with fixed RecordSnapshot input. Independent DatasetBuilder providers own formats, rewards, token/mask semantics, and backends. Training backends remain external: the RL package reuses TRL, while the [AReaL adapter](../adapters/areal/README.md) provides its native multi-turn rollout and training interfaces, with verified scope recorded separately. `gymts.source-dataset/1` and `gymts.source-dataset/2` are source resource manifests; `gymts.dataset/1` is a training export. Explicit publication through `gym.environment_ts.datasets.publish_build(...)` preserves the original reader/schema, lineage, and uses without merging these protocols.
 
 ## 9. Common issues and troubleshooting
 
@@ -477,8 +553,8 @@ A reproducible issue should include version, platform, minimal configuration, re
 
 ## 10. Current implementation boundaries
 
-0.5.0 is a synchronous local SDK/CLI, not a hosted HF Hub, enterprise multi-tenant platform, distributed scheduler, or general Agent engine. Plugins run as trusted in-process Python code. Restricted services form contractual access boundaries, **not an operating-system sandbox for malicious plugins**. Core has no ToolRegistry/ToolBroker for automatically injecting arbitrary toolsets. A complete autonomous Agent tool loop still needs independent integration and acceptance.
+0.6.0 is a synchronous local SDK/CLI, not a hosted HF Hub, enterprise multi-tenant platform, distributed scheduler, or general Agent engine. Plugins run as trusted in-process Python code. Restricted services form contractual access boundaries, **not an operating-system sandbox for malicious plugins**. Core has no ToolRegistry/ToolBroker for automatically injecting arbitrary toolsets. Independent adapters execute Agent tools; see the [adapter directory](../adapters/README.md) for verified scope.
 
-See the [environment integration guide](environment-adapters.md) for HF, Gymnasium, OpenEnv, and Prometheus acceptance scope and archived evidence. Working localhost services do not prove a user's production testbed is accepted. Tiny-model updates, fixed algorithms, and known-constant fixtures do not demonstrate improved model capability.
+See the [environment integration guide](environment-adapters.md) for historical HF, Gymnasium, OpenEnv, and Prometheus acceptance scope and archived evidence. Working localhost services do not prove a user's production testbed is accepted. Tiny-model updates, fixed algorithms, and known-constant fixtures do not demonstrate improved model capability.
 
 The current specification and guide take precedence. The [v2 contract](pluggability-contract-v2.md) and [enterprise platform roadmap](enterprise-platform-roadmap.md) are designs, not implemented APIs to call.

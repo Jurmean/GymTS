@@ -80,6 +80,8 @@ def _immutable_write(path, data):
 
 
 class ResourceStore:
+    _DIRECTORIES = {"dataset": "datasets", "benchmark": "autobench/benchmarks", "source": "sources"}
+    _KEYS = {"dataset": "dataset_id", "benchmark": "benchmark_id", "source": "source_id"}
     def __init__(self, data_home, cache_home, schemas):
         self.root, self.cache = Path(data_home).expanduser(), Path(cache_home).expanduser()
         self.schemas = schemas
@@ -118,7 +120,7 @@ class ResourceStore:
         return path
 
     def _directory(self, kind, identity, config=None):
-        base = self.root / ("datasets" if kind == "dataset" else "autobench/benchmarks") / _identity(identity)
+        base = self.root / self._DIRECTORIES[kind] / _identity(identity)
         return base / _identity(config) if config is not None else base
 
     def publish_definition(self, kind, definition, schema, *, aliases=()):
@@ -128,7 +130,7 @@ class ResourceStore:
             raise resource_error("Definition revision differs from its canonical content", "conflict")
         value["revision"] = revision
         self.schemas.validate(schema, value)
-        key = "dataset_id" if kind == "dataset" else "benchmark_id"
+        key = self._KEYS[kind]
         directory = self._directory(kind, value[key], value.get("config"))
         if isinstance(aliases, str):
             raise resource_error("Release labels must be supplied as a sequence")
@@ -170,22 +172,28 @@ class ResourceStore:
             value = json.loads((directory / "revisions" / resolved[7:] / "manifest.json").read_bytes())
         except (OSError, ValueError) as error:
             raise resource_error("Resource revision is unavailable", "artifact_unavailable") from error
-        self.schemas.validate(schema, value)
-        key = "dataset_id" if kind == "dataset" else "benchmark_id"
+        if isinstance(schema, (tuple, list)):
+            schema_ref = value.get("protocol_version")
+            if schema_ref not in schema:
+                raise resource_error("Unsupported resource definition version", "schema_mismatch")
+        else:
+            schema_ref = schema
+        self.schemas.validate(schema_ref, value)
+        key = self._KEYS[kind]
         if (value[key] != identity or value.get("config") != config
                 or value["revision"] != resolved or content_revision(value) != resolved):
             raise resource_error("Resource manifest does not match its fixed identity", "artifact_integrity")
         return value
 
     def definitions(self, kind, schema):
-        directory = self.root / ("datasets" if kind == "dataset" else "autobench/benchmarks")
+        directory = self.root / self._DIRECTORIES[kind]
         result = []
         if not directory.exists():
             return result
         for path in sorted(directory.glob("**/revisions/*/manifest.json")):
             try:
                 item = json.loads(path.read_bytes())
-                key = "dataset_id" if kind == "dataset" else "benchmark_id"
+                key = self._KEYS[kind]
                 result.append(self.load_definition(kind, item[key], item["revision"], schema,
                                                    config=item.get("config")))
             except (ValueError, KeyError) as error:

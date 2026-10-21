@@ -28,7 +28,7 @@
         <svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true"><rect x="1" y="1" width="34" height="34" rx="9" fill="currentColor"/><path d="M7 20h5l3-9 5 16 3-10h6" fill="none" stroke="var(--brand-mark)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
         <span>GymTS<span class="brand-subtitle">{{ config.extra.labels.documentation }}</span></span>
       </a>
-      <div class="version-line"><span class="version">v0.5.0</span><span>{{ config.extra.labels.framework }}</span></div>
+      <div class="version-line"><span class="version">v{{ config.extra.versions.core }}</span><span>{{ config.extra.labels.framework }}</span></div>
       <button class="search-button search-open"><span class="search-icon" aria-hidden="true">⌕</span><span>{{ config.extra.labels.search }}</span><kbd>/</kbd></button>
       <div class="sidebar-controls">
         <a class="language-switch" data-language-switch="{{ config.extra.other_locale }}" href="{{ page.meta.alternate_url }}" lang="{{ config.extra.other_locale }}" hreflang="{{ config.extra.other_locale }}"><span aria-hidden="true">文 A</span> {{ config.extra.labels.other_language }}</a>
@@ -50,7 +50,7 @@
   <div class="document-shell">
     <main id="main-content" class="main-content {% if page.meta.home %}home-page{% endif %}" tabindex="-1">
       <div class="page-toolbar"><span>{{ page.parent.title }}</span><a href="{{ page.meta.source_url }}">{{ config.extra.labels.edit }} <span aria-hidden="true">↗</span></a></div>
-      {% if page.meta.normative_translation and config.extra.locale == 'en' %}<p class="note-line">English translation of public contract 1.2.0. The <a href="{{ page.meta.alternate_url }}">Chinese source</a> is the normative specification.</p>{% endif %}
+      {% if page.meta.normative_translation and config.extra.locale == 'en' %}<p class="note-line">English translation of public contract {{ config.extra.versions.contract }}. The <a href="{{ page.meta.alternate_url }}">Chinese source</a> is the normative specification.</p>{% endif %}
       <article class="document">{{ page.content }}</article>
       <nav class="page-pagination" aria-label="{{ config.extra.labels.pagination }}">
         {% if page.previous_page %}<a class="previous" href="{{ page.previous_page.url | url }}"><span>← {{ config.extra.labels.previous }}</span><strong>{{ page.previous_page.title }}</strong></a>{% else %}<span></span>{% endif %}

@@ -1,12 +1,12 @@
 # 适配器开发指南
 
-本指南面向为 GymTS 接入新项目、数据源、任务、算法、模型或 Agent 的开发者。对应当前 `gymts==0.5.0` 和正式接口规范 `1.2.0`。完整的消息字段以[接口规范](feishu/GymTS接口规范/GymTS接口规范.md)与[公共 Python 协议](../gymts/contracts/protocols.py)为准；下文的生命周期表使用当前实现的签名。
+本指南面向为 GymTS 接入新项目、数据源、任务、算法、模型或 Agent 的开发者。对应当前 `gymts==0.6.0` 和正式接口规范 `1.4.0`。完整的消息字段以[接口规范](feishu/GymTS接口规范/GymTS接口规范.md)与[公共 Python 协议](../gymts/contracts/protocols.py)为准；下文的生命周期表使用当前实现的签名。
 
 交付目标是一个单向依赖 GymTS 公共接口的独立包。核心无需导入你的项目，无需增加项目名称分支；调用方选择兼容的来源、任务、方法和评分器。仓库的 `adapters/` 只是独立包的源码位置，不意味着这些项目成为框架内置模块。
 
 ## 1. 先决定接入什么角色
 
-EnvironmentTS 管执行与证据，AutoBenchTS 管独立评价。具体数据格式、原生后端调用与领域评分留在适配包。
+框架主线是存储数据、接入数据、组织实验、记录实验。EnvironmentTS 管四类来源的数据组织与存储、执行与证据，AutoBenchTS 管 benchmark 与独立评价。具体数据格式、生成器与服务连接、原生后端调用及领域评分留在适配包。多阶段定义、固定输入输出、依赖与 attempt 使用[实验组织指南](experiment-organization.md)中的公共接口；外部 executor 调用现有运行/评价 API，不另建调度器。当前 [F2.1 验收](reports/experiment-organization-2026-10-21.json)保留旧 23 个 schema 的内容摘要，验证独立接入、记录查询和卸载适配包后的重评。
 
 | 需求 | 实现位置 | 应复用的边界 |
 | --- | --- | --- |

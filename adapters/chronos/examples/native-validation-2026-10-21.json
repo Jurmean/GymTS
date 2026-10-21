@@ -1,0 +1,313 @@
+{
+  "status": "native-engineering-loop-completed",
+  "core_changes": 0,
+  "core_wheel_sha256": "8883e708dbfcc46301939335f594884b40239ddd8bbe201a66e6af2f18e012cf",
+  "core_verified_files": 39,
+  "profile": {
+    "dataset": "official ETTh1 pinned chronological view",
+    "targets": [
+      "OT",
+      "HULL"
+    ],
+    "channels": 7,
+    "calendar_covariates": 2,
+    "context": 128,
+    "horizon": 24,
+    "test_windows": 16
+  },
+  "upstream": {
+    "project": "amazon-science/chronos-forecasting",
+    "revision": "1224fafa91e1ecd6674f5204066b159e40b5e4a1"
+  },
+  "base": {
+    "run_ids": [
+      "run_e640c27f381c47c7b79928447b8c8486",
+      "run_d6a2566f18eb433f815a398040c9737a",
+      "run_643a4f005b944caeb4aecaf9fe4659a3",
+      "run_52831801331d4f76802ff26a141e7eac",
+      "run_0032bc717594400da004fdce1017e1ff",
+      "run_03609d075cf740bdb9152d3ef575e4e7",
+      "run_a8981144a0fc444c9eb6a60e33d818af",
+      "run_0bc64067f8f047fc86c5dfec2518ad48",
+      "run_9d634c9aed304b25b1b7b269d30b43d9",
+      "run_d37679b3671e4ae7b23315f53501634d",
+      "run_794c17da3e4246a089431001312c8e6b",
+      "run_dd1802502e2f4d679746a266525b6b16",
+      "run_8bf9f5d8402c4d2394aa173d84ba585b",
+      "run_1480a3e3651644a6ac14d999834311f1",
+      "run_1abe1adcb3504e278a00a477f22c9a69",
+      "run_50507663e30d4d0db15d53c1df288e93"
+    ],
+    "evaluation_id": "evaluation_0dfcd60d61224c53be77150284e6d476"
+  },
+  "training": {
+    "run_ids": [
+      "run_508b298211354d21a174757c57f9bde3"
+    ],
+    "evaluation_id": "evaluation_108f18871972414aab67f4d10f2caf95",
+    "checkpoint_ref": {
+      "artifact_id": "624cf1a5751f7e598d3e433ce82062842b30509f679b6f9c32b9f1cec0b49837",
+      "content_hash": "01f727716dac8a7e67b0c8e99215810b26f0fb3b5b7dc8efcbd9fcd302f05b10",
+      "media_type": "application/zip",
+      "revision": "01f727716dac8a7e67b0c8e99215810b26f0fb3b5b7dc8efcbd9fcd302f05b10",
+      "schema_ref": "gymts.chronos/checkpoint-archive/1",
+      "size_bytes": 477935919,
+      "uri": "gymts-artifact://624cf1a5751f7e598d3e433ce82062842b30509f679b6f9c32b9f1cec0b49837/01f727716dac8a7e67b0c8e99215810b26f0fb3b5b7dc8efcbd9fcd302f05b10"
+    }
+  },
+  "reloaded": {
+    "run_ids": [
+      "run_566ae669624e46aab2e4e12884157323",
+      "run_ac378072fa1c42fc9629fea6639daa89",
+      "run_4767af9d79d34880b8291575bb067445",
+      "run_6ebac11090e646478211765d7642419b",
+      "run_6e17cc7f31c742e6b4d38f2edd1ec00c",
+      "run_f5973b2f9360454abf549a754885b6c7",
+      "run_ba2c25b3265d4e25b894c622d64bd884",
+      "run_f4bee7d3029b47df83fb8edc26c00ec8",
+      "run_401169eba0504cc5b7d818920ae388f3",
+      "run_54304e1d6605440f9fc94a118c657a9a",
+      "run_32838f16956747b0b0a27a169b8ef1cd",
+      "run_f9d743eb0088422cbbc5a266a5a4d6fa",
+      "run_688164bafb934c08aba747f1191b1878",
+      "run_50f91d45280d49c1a5bccc34dca951f3",
+      "run_82b0eabe9ed24ffc909c5bd58b33bbed",
+      "run_358eebc8dc204c42a7b2f9c66fff2d5f"
+    ],
+    "evaluation_id": "evaluation_334191dce7e24616beac8a3c08338657",
+    "rescore_id": "evaluation_4d99686833a743d5828c4efb4c350a67"
+  },
+  "scores": {
+    "base-fixed-rescore": [
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "mae",
+        "result": {
+          "value": 1.1235232855348536,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "rmse",
+        "result": {
+          "value": 1.4479391914412385,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "pinball",
+        "result": {
+          "value": 0.36475068674578015,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "coverage_80",
+        "result": {
+          "value": 0.6927083333333333,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "width_80",
+        "result": {
+          "value": 2.7135988894539578,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      }
+    ],
+    "trained-rescore": [
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "mae",
+        "result": {
+          "value": 1.0884078330515574,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "rmse",
+        "result": {
+          "value": 1.3950889680177345,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "pinball",
+        "result": {
+          "value": 0.34006790189952074,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "coverage_80",
+        "result": {
+          "value": 0.7304687500000001,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      {
+        "level": "aggregate",
+        "candidate_id": "chronos2",
+        "group_key": {},
+        "unit_id": null,
+        "repetition": null,
+        "metric_id": "width_80",
+        "result": {
+          "value": 2.904031491838395,
+          "status": "ready",
+          "counts": {
+            "eligible": 16,
+            "scored": 16,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      }
+    ]
+  },
+  "rescore": {
+    "rescore_native_forbidden": true,
+    "science_imports_absent": true,
+    "sealed_results_unchanged": true,
+    "sealed_events_unchanged": true,
+    "run_count": 16
+  },
+  "quality_verdict": "insufficient_evidence",
+  "quality_claim": "Small engineering profile only; no predeclared quality gate or paper reproduction",
+  "point_statistic": "median (native field named mean)",
+  "tests": 12,
+  "environment_limits": "Application venv is lightweight; native venv inherits preexisting torch2.6.0+cu124 system packages. No original environment mutated.",
+  "retained_failures": [
+    "initial scorer assumed object instead of framework list; sealed outputs rescored after adapter correction",
+    "run_17a39973b1c045e7b945d8bf004f971a failed before fit because adapter did not unwrap training Payload; corrected with actual ArtifactStore regression",
+    "retry outcome draft initially changed availability; immutable existing revision now reused, changed gold fails"
+  ],
+  "base_model": {
+    "repository": "amazon/chronos-2",
+    "revision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
+    "license": "apache-2.0"
+  },
+  "dataset_source": {
+    "revision": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+    "url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTh1.csv"
+  },
+  "evidence_note": "Compact identity and result index only. Original CAS/checkpoint/store remain local; source repository contains neither raw data nor model weights."
+}

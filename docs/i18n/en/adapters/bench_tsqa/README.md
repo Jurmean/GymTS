@@ -18,10 +18,10 @@ with GymTS('/tmp/tsqa-runs', data_home='/path/to/persistent/resources',
     imported = import_attachments(gym, '/path/to/attachments')
     print(gym.environment_ts.datasets.list_datasets())
     ds = gym.environment_ts.datasets.load_dataset(
-        'local/tsexam-mcq', revision='1.0.0', split='test')
+        'local/tsexam-mcq', revision='2.0.0', split='test')
     print(len(ds), ds[0]['question_original'])
     # Public ds includes no answers, attributes, raw-file/target references.
-    spec = gym.autobench.resolve_benchmark('local/tsexam-mcq', revision='1.0.0',
+    spec = gym.autobench.resolve_benchmark('local/tsexam-mcq', revision='2.0.0',
         candidates=[first_choice_candidate()], purpose='regression')
     report = gym.autobench.evaluate(spec)
 ```
@@ -42,7 +42,7 @@ Runs, independent scores, coverage and EvaluationReport. The resolver adds no
 benchmark execution engine or alternative report hierarchy. Definition params must
 contain exactly `scope`, `metrics`, `parser_ref`, `coverage_policy`, and
 `question_policy`. This resolver supports full source rows, both accuracy and
-format validity, `all_source_rows_eligible` coverage, and
+format validity (or structured `task_score` plus format validity), `all_source_rows_eligible` coverage, and
 `complete-original-lossless-projection/1` questions. Unsupported values, missing
 fields or extra selection/scorer/prompt fields are rejected before resource
 reading; they never silently change or get ignored by this definition.
@@ -64,40 +64,74 @@ All five datasets are `test / user_declared_evaluation`, `training_allowed=false
 training/prepare/dataset-build access is denied by the resource service. The name
 `dataset_a_rlvr` never authorizes training or grants a verifier.
 
-Reference rules are versioned in `tsqa.single-answer/1`: uppercase public choice
-labels, exact `True`/`False`, or a unique public text choice. For `mcq2`, leading
-`1.` is a question number, never a choice index; outer whitespace and terminal
-full stops are ignored for exact text matching. No fuzzy match, synonyms or
-numerical tolerance is invented. Responses must be one public token/text or a
-single standalone `\answer{...}`. Multiple tags or extra reasoning around a tag
-are invalid; invalid predictions are not silently scored as correct.
+Reference rules are versioned in `tsqa.single-answer/2`. Choice/Boolean/text
+questions retain exact matching and standalone answer-tag rules. For `mcq2`,
+leading `1.` is a question number, never a choice index; outer whitespace and
+terminal full stops are ignored. No fuzzy option matching is introduced.
 
-All 19,354 source rows and duplicates remain eligible. The reviewed import finds:
+Dataset A RLVR uses the existing deterministic task evaluators derived from
+ChatTS and the pinned local RLVR implementation. Its 10 abilities cover noise,
+trend, seasonality, local features, correlations, clusters and reasoning.
+Structured `attributes`, not the prose `answer`, are the scoring authority.
+The native metric is `task_score`: the upstream mean of category/numeric/reason
+means, including numeric partial credit and cluster F1. It is not MCQ accuracy.
+Answer wrappers follow the existing RLVR extraction behavior. No judge, RAGAS,
+API or model is loaded. Source revisions, license and transformation differences
+are recorded in [UPSTREAM.md](UPSTREAM.md).
 
-| Dataset | Rows | Known references | Unknown references |
-|---|---:|---:|---:|
-| local/tsexam-mcq | 746 | 746 | 0 |
-| local/bedtime | 394 | 394 | 0 |
-| local/mcq2 | 100 | 100 | 0 |
-| local/timemqa-full | 17,703 | 16,983 | 720 |
-| local/dataset-a-rlvr | 411 | 0 | 411 |
+The corrected all-row audit distinguishes available references from input issues:
 
-Unknown references yield `eligible=1,missing=1` for accuracy, including when the
-output is invalid, and prevent full-coverage readiness. The coverage Gate can fail
-while accuracy is `insufficient_evidence`; this reports reference coverage, not a
-model-quality failure. `format_valid` is a
-separate reference-free metric. Neither unknown nor invalid rows are excluded or
-turned into zero accuracy. Timemqa's 720 consists of 683 unresolved public choice
-formats and 37 source answers outside parsed public choices. These are parser
-review flags, not human-confirmed label errors. Structured RLVR scoring awaits an
-original verifier or separately approved task-specific rules. Raw annotations
-remain available only through explicit evaluation provenance for future review.
+| Dataset | Rows | References read | Evaluable references | Input review |
+|---|---:|---:|---:|---:|
+| local/tsexam-mcq | 746 | 746 | 746 | 0 |
+| local/bedtime | 394 | 394 | 394 | 0 |
+| local/mcq2 | 100 | 100 | 100 | 0 |
+| local/timemqa-full | 17,703 | 17,703 | 16,983 | 720 |
+| local/dataset-a-rlvr | 411 | 411 | 411 | 0 |
 
-Dataset/card identities use `local/` because official origin/license were not
-provided. Publishing or redistributing the uploaded data is outside this package's
-import operation. Source content revisions and preserved raw bytes support review;
-this package does not assert official benchmark equivalence beyond preserving
-question/observation content and explicitly declaring its own response rules.
+All 19,354 rows have readable references. TimeMQA's declared A/B/C/D response
+alphabet is parsed independently of visible option text. Of its 720 input review
+rows, 683 have no complete uniquely parsed option block and 37 have answer labels
+outside the visible options. The original text, arrays and answer labels remain
+unchanged; no option is fabricated and no label is repaired. These rows stay
+eligible, yield missing/insufficient accuracy evidence, and prevent the complete
+coverage Gate from passing. This is not a missing-answer or model-error claim.
+`format_valid` remains reference-free. Unknown/unsupported future references are
+also kept eligible/missing; rows are never silently dropped.
+
+New imports use alias `2.0.0`; old `1.0.0` datasets, definitions, Run outputs and
+frozen reports are preserved. The scorer accepts saved v1 result payloads for
+re-evaluation. New definitions fix parser v2; an old definition is not silently
+upgraded. The unchanged TSExam first-choice baseline remains 332/746, a wiring
+check with zero model calls, not a model-quality result.
+
+The uploaded Dataset A content has been matched exactly to the official 411
+ChatTS Dataset A subquestions by arrays, columns, attributes and normalized
+ability names. This does not establish the distributor/license of the converted
+upload. Other uploaded transformations retain `local/` identities; no official
+benchmark equivalence is asserted. Evaluation-only use remains enforced.
+
+Reproduce the all-row audit without model calls:
+
+```bash
+PYTHONPATH=.:adapters/bench_tsqa/src python adapters/bench_tsqa/scripts/audit_references.py \
+  --source-data-home output/resources-20261020 \
+  --output docs/reports/bench-tsqa-reference-repair-2026-10-21.json
+```
+
+This command creates a local detailed report with per-row question/reference
+excerpts; that exact output path is ignored by Git. The
+[public aggregate summary](../../docs/reports/bench-tsqa-reference-repair-summary-2026-10-21.json)
+omits questions, answers and row diagnostics, retaining counts, source/rule
+identities and the unchanged original report SHA-256.
+
+Optional `--parity-source /path/to/open_r1/reward_qa.py` checks the reviewed source
+hash and 1,233 deterministic parity vectors. Optional `--official-dataset-a`
+checks the official file MD5 and all 411 subquestion identities. The report keeps
+source row numbers/reasons, reference-text self-checks and the explicit statement
+that these checks are not model results. Some stored prose answers are rounded
+or only say Yes, while structured labels require additional details; they need
+not score 1 against the original evaluator.
 
 ## License
 

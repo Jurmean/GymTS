@@ -12,7 +12,7 @@ time-series placeholders are reversibly projected to ordered neutral references;
 all named ragged observations are stored in Float64 without truncation. Original
 JSONL bytes, answers, attributes and unreviewed source metadata are private.
 
-The versioned `tsqa.single-answer/1` rules identify 394 known references and
+The versioned `tsqa.single-answer/2` rules identify 394 known references and
 0 unknown references on these exact reviewed bytes. Unknown cases stay
 eligible and report missing/insufficient evidence; they are never auto-excluded.
 The immutable quality report records actual task kinds, source hashes, duplicate

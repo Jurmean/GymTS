@@ -14,7 +14,7 @@ from .capture import RunTraceCollector
 from .validation import check_compatibility, check_execution_resources, ensure, resolved_defaults
 
 
-PRODUCER = {"name": "gymts.runner", "version": "0.5.0", "origin_ref": None}
+PRODUCER = {"name": "gymts.runner", "version": "0.5.1", "origin_ref": None}
 
 
 def keys(value, required, optional=(), label="message"):
@@ -90,6 +90,8 @@ class EnvironmentTS:
 
     def run(self, spec):
         try:
+            from .experiments import inherit_organization_inputs
+            spec = inherit_organization_inputs(spec, self.records, self.artifacts)
             # A historical scene_ref is configuration and can be expanded for
             # execution. Offline planning deliberately requires its inline form.
             assembled = self._assemble(resolved_defaults(spec, self.artifacts))
@@ -98,6 +100,20 @@ class EnvironmentTS:
         except (KeyError, TypeError, ValueError) as error:
             raise GymTSError("invalid_config", "Invalid component declaration") from error
         return Runner(self, assembled).run()
+
+    def run_data(self, spec, *, source_id, revision, dataset_id, source_config="default",
+                 config="default", split="recorded"):
+        """Run with a fixed data source, then publish a portable environment snapshot.
+
+        The original Run remains sealed, including failures. Dataset publication
+        is a separate immutable resource operation and never rewrites that Run.
+        """
+        bound = self.datasets.bind_source(spec, source_id, revision=revision, config=source_config)
+        result = self.run(bound)
+        dataset = self.datasets.capture_run(result["run_id"], source_id=source_id,
+            revision=revision, dataset_id=dataset_id, source_config=source_config,
+            config=config, split=split)
+        return {"run": result, "dataset": dataset}
 
 
 class _Stop(Exception):

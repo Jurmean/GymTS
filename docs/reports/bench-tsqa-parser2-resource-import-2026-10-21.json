@@ -1,0 +1,339 @@
+{
+  "passed": true,
+  "parser_alias": "2.0.0",
+  "data_home": "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261021-parser2-final",
+  "old_data_home_unchanged": "output/resources-20261020",
+  "preliminary_import_preserved": "output/resources-20261021-parser2",
+  "datasets": [
+    {
+      "dataset_id": "local/bedtime",
+      "dataset_revision": "sha256:33d28b1ffc4cf140864005b16bfc10f98f5fb195c00a46049d215f98183fdba9",
+      "benchmark_revision": "sha256:cc8234dabb1444ae95ff891e683c57d6882792188f6ac36d46e8f285e671fa0a",
+      "row_count": 394,
+      "quality": {
+        "dataset_id": "local/bedtime",
+        "source_sha256": "33184d62aa56bb84320d1083743ff429733fd1f9200a739a695c04fbf86c3a99",
+        "row_count": 394,
+        "task_kinds": {
+          "boolean": 197,
+          "mcq_label": 197
+        },
+        "reference_status": {
+          "known": 394
+        },
+        "unknown_reference_reasons": {},
+        "input_review_rows": 0,
+        "input_review_reasons": {},
+        "evaluable_reference_rows": 394,
+        "duplicate_public_input_groups": 0,
+        "additional_duplicate_rows": 0,
+        "different_raw_reference_groups": 0,
+        "rows_excluded": 0,
+        "unknown_reference_policy": "eligible_missing_no_answer_repair",
+        "split_origin": "user_declared_evaluation",
+        "parser_ref": "tsqa.single-answer/2",
+        "projection_ref": "tsqa.literal-series-reference/1",
+        "question_policy": "original question complete; only literal attachment markers projected reversibly",
+        "license_status": "not_supplied",
+        "training_allowed": false
+      },
+      "assets": {
+        "raw": {
+          "uri": "gymts-data://sha256/33184d62aa56bb84320d1083743ff429733fd1f9200a739a695c04fbf86c3a99",
+          "sha256": "33184d62aa56bb84320d1083743ff429733fd1f9200a739a695c04fbf86c3a99",
+          "size_bytes": 5195600,
+          "media_type": "application/x-ndjson"
+        },
+        "inputs": {
+          "uri": "gymts-data://sha256/994d1744922e20964f2beb81c96c76118694a308db82d78fbfed72a867b4cf62",
+          "sha256": "994d1744922e20964f2beb81c96c76118694a308db82d78fbfed72a867b4cf62",
+          "size_bytes": 3220275,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "targets": {
+          "uri": "gymts-data://sha256/45f8f6b82156775eaeab35875e222e99bff5e61a1268bf2ae46a751a4039a9b5",
+          "sha256": "45f8f6b82156775eaeab35875e222e99bff5e61a1268bf2ae46a751a4039a9b5",
+          "size_bytes": 18152,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "quality": {
+          "uri": "gymts-data://sha256/a566f4eb4a889976ba324e6fa335dc7fcfb0336a6cc04db372008276a0f20690",
+          "sha256": "a566f4eb4a889976ba324e6fa335dc7fcfb0336a6cc04db372008276a0f20690",
+          "size_bytes": 784,
+          "media_type": "application/json"
+        },
+        "card": {
+          "uri": "gymts-data://sha256/72fc6a328dad4c89b4bbcb6d28cb7f6342fbc8448f6c06839c326e665df3b482",
+          "sha256": "72fc6a328dad4c89b4bbcb6d28cb7f6342fbc8448f6c06839c326e665df3b482",
+          "size_bytes": 1428,
+          "media_type": "text/markdown"
+        }
+      },
+      "public_read_verified": true
+    },
+    {
+      "dataset_id": "local/dataset-a-rlvr",
+      "dataset_revision": "sha256:5c463720352356e20bb8a209e1ed0c40c30568966db7fc8b50817c018ecc0b57",
+      "benchmark_revision": "sha256:11f270900b4fec9fc906623932ae8ec97a5b01a014ba5a3604af49504052c1a5",
+      "row_count": 411,
+      "quality": {
+        "dataset_id": "local/dataset-a-rlvr",
+        "source_sha256": "76250827aa9c7e37337048d682eb0bd966700265c3b6ee9720823c2b824da0f3",
+        "row_count": 411,
+        "task_kinds": {
+          "structured": 411
+        },
+        "reference_status": {
+          "known": 411
+        },
+        "unknown_reference_reasons": {},
+        "input_review_rows": 0,
+        "input_review_reasons": {},
+        "evaluable_reference_rows": 411,
+        "duplicate_public_input_groups": 22,
+        "additional_duplicate_rows": 22,
+        "different_raw_reference_groups": 9,
+        "rows_excluded": 0,
+        "unknown_reference_policy": "eligible_missing_no_answer_repair",
+        "split_origin": "user_declared_evaluation",
+        "parser_ref": "tsqa.single-answer/2",
+        "projection_ref": "tsqa.literal-series-reference/1",
+        "question_policy": "original question complete; only literal attachment markers projected reversibly",
+        "license_status": "not_supplied",
+        "training_allowed": false
+      },
+      "assets": {
+        "raw": {
+          "uri": "gymts-data://sha256/76250827aa9c7e37337048d682eb0bd966700265c3b6ee9720823c2b824da0f3",
+          "sha256": "76250827aa9c7e37337048d682eb0bd966700265c3b6ee9720823c2b824da0f3",
+          "size_bytes": 6471437,
+          "media_type": "application/x-ndjson"
+        },
+        "inputs": {
+          "uri": "gymts-data://sha256/0ab2d311506753acbfa74f3781164b8ba68a66c134f3684c6bc2a0e51d5c30c3",
+          "sha256": "0ab2d311506753acbfa74f3781164b8ba68a66c134f3684c6bc2a0e51d5c30c3",
+          "size_bytes": 761175,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "targets": {
+          "uri": "gymts-data://sha256/e72c8540de146aa8cfd47281c15f595c9dbad81d098a8828b7460dc0fa827836",
+          "sha256": "e72c8540de146aa8cfd47281c15f595c9dbad81d098a8828b7460dc0fa827836",
+          "size_bytes": 91975,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "quality": {
+          "uri": "gymts-data://sha256/cb1d2117c02b0373cb66b79451ab51d21455031b23db12519e34caa3712ce1a4",
+          "sha256": "cb1d2117c02b0373cb66b79451ab51d21455031b23db12519e34caa3712ce1a4",
+          "size_bytes": 780,
+          "media_type": "application/json"
+        },
+        "card": {
+          "uri": "gymts-data://sha256/ec1cff5643f1d27d8ab1c96bb4b0de6c8ab1225178393abdc0502a914f6f35b3",
+          "sha256": "ec1cff5643f1d27d8ab1c96bb4b0de6c8ab1225178393abdc0502a914f6f35b3",
+          "size_bytes": 1495,
+          "media_type": "text/markdown"
+        }
+      },
+      "public_read_verified": true
+    },
+    {
+      "dataset_id": "local/mcq2",
+      "dataset_revision": "sha256:5c44ead8131b53bf9a01d798092565e8ac0999d7ebd44363282bf2b0d19c453b",
+      "benchmark_revision": "sha256:a0829ccda9d4b05341934a42ce683f2d0646bb89ea41f456d14ffa794f941772",
+      "row_count": 100,
+      "quality": {
+        "dataset_id": "local/mcq2",
+        "source_sha256": "b67358a0cf2947584b5e7514678fd715957a775257f77ac808d588fa7643c66d",
+        "row_count": 100,
+        "task_kinds": {
+          "text_choice": 100
+        },
+        "reference_status": {
+          "known": 100
+        },
+        "unknown_reference_reasons": {},
+        "input_review_rows": 0,
+        "input_review_reasons": {},
+        "evaluable_reference_rows": 100,
+        "duplicate_public_input_groups": 0,
+        "additional_duplicate_rows": 0,
+        "different_raw_reference_groups": 0,
+        "rows_excluded": 0,
+        "unknown_reference_policy": "eligible_missing_no_answer_repair",
+        "split_origin": "user_declared_evaluation",
+        "parser_ref": "tsqa.single-answer/2",
+        "projection_ref": "tsqa.literal-series-reference/1",
+        "question_policy": "original question complete; only literal attachment markers projected reversibly",
+        "license_status": "not_supplied",
+        "training_allowed": false
+      },
+      "assets": {
+        "raw": {
+          "uri": "gymts-data://sha256/b67358a0cf2947584b5e7514678fd715957a775257f77ac808d588fa7643c66d",
+          "sha256": "b67358a0cf2947584b5e7514678fd715957a775257f77ac808d588fa7643c66d",
+          "size_bytes": 1197211,
+          "media_type": "application/x-ndjson"
+        },
+        "inputs": {
+          "uri": "gymts-data://sha256/23a3c63137153c28607973747df8621e15e50a42f3121a3e401a0d5ce1476557",
+          "sha256": "23a3c63137153c28607973747df8621e15e50a42f3121a3e401a0d5ce1476557",
+          "size_bytes": 540402,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "targets": {
+          "uri": "gymts-data://sha256/44b2ad2f154493db17e95c8f222418266ce6048f3a257fb865de77a9f6ba1738",
+          "sha256": "44b2ad2f154493db17e95c8f222418266ce6048f3a257fb865de77a9f6ba1738",
+          "size_bytes": 13810,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "quality": {
+          "uri": "gymts-data://sha256/5863678a7691b0ee36002f28ebdf191b9a65b245ea6617b3f5c17e331e7b81c6",
+          "sha256": "5863678a7691b0ee36002f28ebdf191b9a65b245ea6617b3f5c17e331e7b81c6",
+          "size_bytes": 769,
+          "media_type": "application/json"
+        },
+        "card": {
+          "uri": "gymts-data://sha256/ca4450be431ac6b0aa94f1f95ff4aed643a212e11cfb68dd5422f83269841a8b",
+          "sha256": "ca4450be431ac6b0aa94f1f95ff4aed643a212e11cfb68dd5422f83269841a8b",
+          "size_bytes": 1425,
+          "media_type": "text/markdown"
+        }
+      },
+      "public_read_verified": true
+    },
+    {
+      "dataset_id": "local/timemqa-full",
+      "dataset_revision": "sha256:de666e81f980377d63ca7a91e9508bedef49b68721532e55b04037750c4b1c86",
+      "benchmark_revision": "sha256:cc1fbdc5490af8540cc86ad69c2ef46c265ed013a64b3299a688764d41854cc2",
+      "row_count": 17703,
+      "quality": {
+        "dataset_id": "local/timemqa-full",
+        "source_sha256": "958fe1cba75b573a5723f38ea80d82bfeb2d2f1ede377c0f8bf81983aca405f2",
+        "row_count": 17703,
+        "task_kinds": {
+          "boolean": 6904,
+          "mcq_label": 10799
+        },
+        "reference_status": {
+          "known": 17703
+        },
+        "unknown_reference_reasons": {},
+        "input_review_rows": 720,
+        "input_review_reasons": {
+          "public_choice_text_unresolved": 683,
+          "reference_outside_visible_choices": 37
+        },
+        "evaluable_reference_rows": 16983,
+        "duplicate_public_input_groups": 0,
+        "additional_duplicate_rows": 0,
+        "different_raw_reference_groups": 0,
+        "rows_excluded": 0,
+        "unknown_reference_policy": "eligible_missing_no_answer_repair",
+        "split_origin": "user_declared_evaluation",
+        "parser_ref": "tsqa.single-answer/2",
+        "projection_ref": "tsqa.literal-series-reference/1",
+        "question_policy": "original question complete; only literal attachment markers projected reversibly",
+        "license_status": "not_supplied",
+        "training_allowed": false
+      },
+      "assets": {
+        "raw": {
+          "uri": "gymts-data://sha256/958fe1cba75b573a5723f38ea80d82bfeb2d2f1ede377c0f8bf81983aca405f2",
+          "sha256": "958fe1cba75b573a5723f38ea80d82bfeb2d2f1ede377c0f8bf81983aca405f2",
+          "size_bytes": 13921342,
+          "media_type": "application/x-ndjson"
+        },
+        "inputs": {
+          "uri": "gymts-data://sha256/6129595d3ef2f6a9ae0116461343b93b22e6b17ac4b03fd7f54041e6839b6c63",
+          "sha256": "6129595d3ef2f6a9ae0116461343b93b22e6b17ac4b03fd7f54041e6839b6c63",
+          "size_bytes": 3537945,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "targets": {
+          "uri": "gymts-data://sha256/7511d0f96ccd3a9b53ae341a638dc96e195f967dbf7fa51561a054eabb76e498",
+          "sha256": "7511d0f96ccd3a9b53ae341a638dc96e195f967dbf7fa51561a054eabb76e498",
+          "size_bytes": 692297,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "quality": {
+          "uri": "gymts-data://sha256/f9e0a60854d3d205215c62c72465fecf342d8150c7d4544882b5fc1713920126",
+          "sha256": "f9e0a60854d3d205215c62c72465fecf342d8150c7d4544882b5fc1713920126",
+          "size_bytes": 874,
+          "media_type": "application/json"
+        },
+        "card": {
+          "uri": "gymts-data://sha256/367b877567f4811fb0681e0cf787b8930b46962fd6630163000d3318b87653be",
+          "sha256": "367b877567f4811fb0681e0cf787b8930b46962fd6630163000d3318b87653be",
+          "size_bytes": 1431,
+          "media_type": "text/markdown"
+        }
+      },
+      "public_read_verified": true
+    },
+    {
+      "dataset_id": "local/tsexam-mcq",
+      "dataset_revision": "sha256:c1da1a88f69952163b6816b13347bbda0ac0bf2af1a4f07503865274d262875a",
+      "benchmark_revision": "sha256:9d83817cc9592be2f80149aa850b91d89ab110c036b1707a9a5ca61eb7033e70",
+      "row_count": 746,
+      "quality": {
+        "dataset_id": "local/tsexam-mcq",
+        "source_sha256": "4bf0e416b8e66771686a0f12b167da3a8af9e5e453f5fb95665b0004b1f8f5c7",
+        "row_count": 746,
+        "task_kinds": {
+          "mcq_label": 746
+        },
+        "reference_status": {
+          "known": 746
+        },
+        "unknown_reference_reasons": {},
+        "input_review_rows": 0,
+        "input_review_reasons": {},
+        "evaluable_reference_rows": 746,
+        "duplicate_public_input_groups": 4,
+        "additional_duplicate_rows": 5,
+        "different_raw_reference_groups": 0,
+        "rows_excluded": 0,
+        "unknown_reference_policy": "eligible_missing_no_answer_repair",
+        "split_origin": "user_declared_evaluation",
+        "parser_ref": "tsqa.single-answer/2",
+        "projection_ref": "tsqa.literal-series-reference/1",
+        "question_policy": "original question complete; only literal attachment markers projected reversibly",
+        "license_status": "not_supplied",
+        "training_allowed": false
+      },
+      "assets": {
+        "raw": {
+          "uri": "gymts-data://sha256/4bf0e416b8e66771686a0f12b167da3a8af9e5e453f5fb95665b0004b1f8f5c7",
+          "sha256": "4bf0e416b8e66771686a0f12b167da3a8af9e5e453f5fb95665b0004b1f8f5c7",
+          "size_bytes": 8984435,
+          "media_type": "application/x-ndjson"
+        },
+        "inputs": {
+          "uri": "gymts-data://sha256/e6e3ca3c31e187f8ff90548c4e1fed0e531b9e4ceefd0d849592d38068ad6225",
+          "sha256": "e6e3ca3c31e187f8ff90548c4e1fed0e531b9e4ceefd0d849592d38068ad6225",
+          "size_bytes": 5462552,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "targets": {
+          "uri": "gymts-data://sha256/369027ac0d6e2fe1197b13e26199d2d1497bcd7c1ab3f6707e8410f5200f502b",
+          "sha256": "369027ac0d6e2fe1197b13e26199d2d1497bcd7c1ab3f6707e8410f5200f502b",
+          "size_bytes": 30181,
+          "media_type": "application/vnd.apache.parquet"
+        },
+        "quality": {
+          "uri": "gymts-data://sha256/71a4a36e45b0ece261e7fc0d6213071051a60b839c8cc19dc3b44bc130e66153",
+          "sha256": "71a4a36e45b0ece261e7fc0d6213071051a60b839c8cc19dc3b44bc130e66153",
+          "size_bytes": 773,
+          "media_type": "application/json"
+        },
+        "card": {
+          "uri": "gymts-data://sha256/8e1029a7155a8495b971e9cf02b00da5836900dbe180be887dc2f1ea069239c8",
+          "sha256": "8e1029a7155a8495b971e9cf02b00da5836900dbe180be887dc2f1ea069239c8",
+          "size_bytes": 1431,
+          "media_type": "text/markdown"
+        }
+      },
+      "public_read_verified": true
+    }
+  ]
+}

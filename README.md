@@ -2,33 +2,37 @@
 
 [中文文档](https://gymts-docs.zrr9392.chatgpt.site/zh/) · [English docs](https://gymts-docs.zrr9392.chatgpt.site/en/)
 
-**时序实验、环境执行与独立评价框架。**
+**时序数据存储、统一接口与实验管理框架。**
 
-中文 · [English](README.en.md) · [完整使用手册](docs/user-guide.md) · [API / CLI](docs/reference.md) · [适配开发](docs/adapter-development.md)
+中文 · [English](README.en.md) · [完整使用手册](docs/user-guide.md) · [实验组织](docs/experiment-organization.md) · [API / CLI](docs/reference.md) · [适配开发](docs/adapter-development.md)
 
-GymTS 把一次实验中“看到了什么、运行了什么、发生了什么、依据什么评分”关联起来。
-你可以替换数据来源、任务、算法、模型或 Agent，保存实际轨迹，再用新增或修订的参考
-对原有输出重评。最终交付是可扩展的框架；接入项目以独立适配包提供。
+GymTS 统一管理静态、合成、仿真和 live testbed 数据的来源、存储、版本与血缘，提供一致的
+读取和实验接口。你可以替换数据来源、任务、算法、模型或 Agent，运行实验并保存实际轨迹，
+再由 AutoBenchTS 使用独立参考评价或重评原有输出。最终交付是可扩展的框架；接入项目
+以独立适配包提供。
 
-当前实现版本为 **0.5.0**，公共合同为 **1.2.0**。核心使用 Python **3.9+**，默认
+当前实现版本为 **0.6.0**，公共合同为 **1.4.0**。核心使用 Python **3.9+**，默认
 JSON 工作流没有第三方运行依赖；本地存储后端面向 **Linux / macOS**。原生模型、
 仿真和服务适配器各有依赖与平台要求。下文使用源码安装，不假定 PyPI 已发布此版本。
 
 ## 为什么使用 GymTS
 
+主线是**存储数据、接入数据、组织实验、记录实验**。新增[实验组织协议与可运行示例](docs/experiment-organization.md)：固定数据引用和阶段清单，记录每次尝试、产物依赖、失败续接与独立评价，并将构建数据显式发布回长期目录。
+
 - **实验可解释。** 固定组件版本、数据视图、任务、seed 与执行限制，保留输入、输出、操作和失败证据。
-- **执行与评价分开。** EnvironmentTS 管执行和证据，AutoBenchTS 管评价计划、Scorer、比较和 Gate。
+- **数据与执行统一管理。** EnvironmentTS 管四类数据的来源目录、快照、血缘、执行和证据；AutoBenchTS 管 benchmark、评价计划、Scorer、比较和 Gate。
 - **来源和方法可替换。** 合成、静态、仿真和 live 来源通过相同生命周期接入；任务、Candidate 和 Scorer 分别注册。
 - **旧输出可以重评。** 后到标签或新评分规则创建新报告，保持原 Run 与原始输出不变。
 - **项目独立交付。** 框架不导入具体项目实现，也不要求安装某个工具集或模型。
 
 适合离线回放、方法比较、时序问答、受控仿真、Agent 实验取证，以及为外部训练后端
-准备可追溯数据。多租户控制台、通用远程 worker、进程隔离和自主 Agent 工具循环
-仍需独立实现与验收；当前能力表见[项目状态](docs/project-status.md)。
+准备可追溯数据。外置 TimeCopilot 已完成原生 Agent 工具闭环；多租户控制台、通用远程
+worker、进程隔离和跨项目通用 Agent Runtime 仍需独立实现与验收；当前能力表见
+[项目状态](docs/project-status.md)。
 
 ## 五分钟运行完整实验
 
-以下命令在包含 0.5.0 代码的完整源码检出中运行。首次使用建议独立虚拟环境：
+以下命令在包含 0.6.0 代码的完整源码检出中运行。首次使用建议独立虚拟环境：
 
 ```bash
 git clone https://github.com/Jurmean/GymTS.git
@@ -67,7 +71,7 @@ python examples/quickstart.py --root /tmp/gymts-quickstart
 ```mermaid
 flowchart LR
     SPEC[固定实验与评价配置] --> AB[AutoBenchTS\n计划 / 独立评价 / 比较 / 重评]
-    SPEC --> ET[EnvironmentTS\n执行 / 授权边界 / 生命周期 / 证据]
+    SPEC --> ET[EnvironmentTS\n数据组织 / 执行 / 生命周期 / 证据]
     AB -->|组织新 Run| ET
     ET <--> ENV[外部 Environment 适配器]
     ET <--> TASK[外部 Task]
@@ -83,8 +87,9 @@ Source 声明数据来源；Environment 适配器实现读取、推进和操作�
 不因为被多个项目使用就进入核心。
 
 工具由 Agent 选择，适配器负责调用转换与取证。新增环境读写必须经过 Task 和 Runner
-检查。当前固定算法、工具包装及 Research 父轨迹分别有验收，但不能据此宣称已有
-通用自主工具选择循环，详见[Agent 与工具集](docs/agent-toolsets.md)。
+检查。TimeCopilot 的真实原生循环已记录 6 次模型请求、四种工具调用及独立重评，
+详见[五项目验收](docs/five-project-integration-acceptance-2026-10-21.md)。它不等于跨项目
+通用 Agent Runtime；工具接入边界见[Agent 与工具集](docs/agent-toolsets.md)。
 
 ## 命令行与 Python
 
@@ -123,15 +128,17 @@ JSON 为默认格式。YAML 需额外安装 `python -m pip install '.[yaml]'`，
 
 ## 数据集、benchmark 与存放
 
-数据目录属于 **EnvironmentTS**，可复用 benchmark 的登记、解析与评价属于
-**AutoBenchTS**。资源以不可变资产、版本化清单、Dataset Card / BenchmarkDefinition
-组织；同名别名不能被静默改指到另一份内容。
+数据的通用组织与存储属于 **EnvironmentTS 核心**，包括 `static`、`synthetic`、
+`simulation`、`live_testbed` 四类来源、实际数据修订与来源→dataset→Run→回流血缘。
+可复用 benchmark 的登记、解析与评价属于 **AutoBenchTS**。项目的格式、生成器、
+仿真/服务 API 与 codec 仍由独立适配器提供。
 
 ```python
 from gymts import GymTS
 
 with GymTS("/tmp/gymts-runs", data_home="/tmp/gymts-data",
            cache_home="/tmp/gymts-cache") as gym:
+    print(gym.environment_ts.datasets.list_sources())
     print(gym.environment_ts.datasets.list_datasets())
     print(gym.autobench.list_benchmarks())
 ```
@@ -139,6 +146,11 @@ with GymTS("/tmp/gymts-runs", data_home="/tmp/gymts-data",
 登记后，公开 DatasetHandle 提供索引、`select`、`filter`、`iter_batches`；私有参考由
 评价角色读取。`data_home` 保存长期资源，`cache_home` 保存可重建缓存，Run root 保存
 本次执行的 SQLite / CAS。生产数据与凭证不会因安装适配器自动导入。
+
+`register_source` 登记来源，`register_snapshot` 登记已取得的数据；`run_data` 保留真实
+Task/Candidate，组合来源绑定、原实验执行和运行后快照。`gymts.source-dataset/2` 新增
+来源、父清单、采集元数据与附件；旧 `/1` 数据、benchmark 和 Run 不回写。核心扩展理由
+与 F1 验证口径见 [ADR 0001](docs/adr/0001-core-data-source-catalog.md)。历史 F1 的四类真实来源、可移植读取和零模型重评已通过技术验收；旧十六包兼容检查 407 项发现、346 项执行通过、61 项可选依赖跳过，含该轮 AReaL V13 CPU 草案，不改写其留出评价状态。见[报告](docs/reports/core-data-organization-2026-10-21.json)。
 
 参见[资源管理](docs/user-guide.md)、[目录设计](docs/dataset-benchmark-catalog-design.md)
 和[HF 静态来源](adapters/hf_datasets/README.md)。五份既有问答附件按测评资源登记，
@@ -176,10 +188,19 @@ with GymTS("/tmp/gymts-chatts", integrations=("chatts",)) as gym:
 | `gymts-gymnasium` / `gymnasium` | 原生 Gymnasium 仿真实例 | [README](adapters/gymnasium/README.md) |
 | `gymts-openenv` / `openenv` | 官方 OpenEnv 持久 WebSocket 会话 | [README](adapters/openenv/README.md) |
 | `gymts-prometheus` / `prometheus` | 只读实时数值指标、接收时间、历史缓存 | [README](adapters/prometheus/README.md) |
+| `gymts-timecopilot` / `timecopilot` | 原生 Agent 工具选择、返回续推、预算与独立评价 | [README](adapters/timecopilot/README.md) |
+| `gymts-itformer` / `itformer` | 官方 EngineMT-QA 派生视图、严格原生推理与私有答案评分 | [README](adapters/itformer/README.md) |
+| `gymts-chronos` / `chronos` | Chronos-2 多变量/日历协变量、分位数、原生 fit 与检查点重载 | [README](adapters/chronos/README.md) |
+| `gymts-datajuicer` / `datajuicer` | 原生过滤/去重/QA、血缘、质量评价与派生数据登记 | [README](adapters/datajuicer/README.md) |
+| `gymts-areal` / `areal` | 外部 TIR 多轮 rollout、PPOTrainer/GRPO 与检查点接口；训练/发布已验证，留出评价与重评 pending | [README](adapters/areal/README.md) |
 
 Gymnasium / OpenEnv 示例同时启用 `interaction`。HF 当前支持有限一维数值预测视图；
 OpenEnv / Prometheus 已验证本机真实服务。更多安装命令、时钟、所有权和支持范围见
 [环境接入](docs/environment-adapters.md)与[全部适配包](adapters/README.md)。
+
+上一轮新增五包保持核心 F0 的 39 个文件不变。TimeCopilot、ITFormer、Chronos-2 与
+Data-Juicer 已完成所列真实工程闭环，AReaL 已完成真实训练/发布，留出评价与重评待最终证据；详见
+[五项目接入与验收](docs/five-project-integration-acceptance-2026-10-21.md)。
 
 ## 轨迹、独立评价与训练
 
@@ -193,8 +214,10 @@ Outcome 可以后到或修订；新评分使用固定视图创建新报告，不
 计数单位和指标由外置 Scorer 定义。
 
 需要训练时，公开 DatasetBuilder 接口把固定快照导出为版本化训练制品，具体
-reward、token / mask 和数据用途由外部 provider 校验；当前 RL 适配复用 TRL，
-不是另写训练框架。[RL 指南](docs/rl-integration.md)列出实际后端、单轮 profile 和限制。
+reward、token / mask 和数据用途由外部 provider 校验。外置 `gymts-rl` 复用 TRL，
+`gymts-areal` 接入 AReaL 原生多轮 TIR / PPOTrainer，后者已取得真实参数更新与检查点发布，留出评价/重评仍 pending；
+Chronos-2 另已完成原生 60 步 fit、检查点重载及留出评价。GymTS 不内化这些训练后端。
+[RL 指南](docs/rl-integration.md)与各包 README 列出实际 profile 和限制。
 
 ## 文档与示例
 
@@ -202,19 +225,22 @@ reward、token / mask 和数据用途由外部 provider 校验；当前 RL 适�
 | --- | --- |
 | 第一次使用、完整实验、后到标签和重评 | [使用手册](docs/user-guide.md) |
 | CLI、Python 入口、配置字段与退出码 | [接口参考](docs/reference.md) |
+| 固定数据、阶段依赖、失败续接与数据回库 | [实验组织指南](docs/experiment-organization.md) |
 | 了解项目目标、架构和已实现边界 | [项目说明](docs/overview.md)、[框架指南](docs/framework.md)、[项目状态](docs/project-status.md) |
 | 接入自己的项目、数据、方法或工具 | [适配开发](docs/adapter-development.md) |
 | 运行不同来源与外部服务 | [环境接入](docs/environment-adapters.md) |
 | 找到可运行配置 | [示例目录](examples/README.md) |
 | 排查依赖、权限、存储和指标问题 | [FAQ](docs/faq.md) |
-| 查看正式字段或设计来源 | [文档总目录](docs/README.md)、[合同 1.2.0](docs/feishu/GymTS接口规范/GymTS接口规范.md) |
+| 查看正式字段或设计来源 | [文档总目录](docs/README.md)、[合同 1.4.0](docs/feishu/GymTS接口规范/GymTS接口规范.md) |
 | 本地构建文档 | [文档维护](docs/documentation.md) |
 
 ## 开发、验证与贡献
 
+当前 **F2.1 / 0.6.0 / 合同 1.4.0** 技术验收已通过：196 项核心测试全部通过，十六包兼容检查为 356 项通过、61 项可选依赖跳过；独立 ETTh1 32 行视图完成数据持久化、实验执行、独立评价及卸载适配包后的零模型重评。固定身份、覆盖范围与限制见[当前机读验收报告](docs/reports/experiment-organization-2026-10-21.json)。
+
 ```bash
 python -m pip install -e .
-python -m pip install 'setuptools>=58' wheel
+python -m pip install 'setuptools>=58' wheel packaging
 python -B -m unittest discover -s tests -v
 python -B scripts/check_release.py --output /tmp/gymts-core-check.json
 python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
@@ -222,9 +248,11 @@ python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
 
 构建工具准备完成后，两个发行检查脚本离线运行，覆盖 wheel / sdist、源包重建、源码
 目录外安装、显式注册和旧 Run 重评。适配器科学依赖单独准备，最小环境的跳过项不能
-冒充原生验收。现有[环境验收](docs/reports/environment-acceptance-2026-10-19.json)
-记录了十一包构建与共存、新环境原生调用、失败轨迹和同 Run 重评；这些结果不是模型
-质量或生产服务规模的结论。
+冒充原生验收。较早的[环境验收](docs/reports/environment-acceptance-2026-10-19.json)
+记录十一包构建与共存、新环境原生调用、失败轨迹和同 Run 重评。较早的
+[五项目验收](docs/five-project-integration-acceptance-2026-10-21.md)另记录十六包离线发行
+检查的 V2 + V11 组合（404 项发现、343 项执行通过、61 项条件跳过），以及六个跨项目 CPU Run、三次零模型
+重评和两类非法组合拒绝。这些是对应冻结环境的工程证据，不是模型质量或生产规模结论。
 
 新增项目优先适配，修改核心时需说明具体未满足需求、适配器不能解决的原因和旧项目
 兼容证据。贡献、Issue / PR、发布与安全流程分别见

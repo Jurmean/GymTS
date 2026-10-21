@@ -72,6 +72,63 @@ class BenchmarkDatasetRef(TypedDict):
     split: str
 
 
+class DataSourceRef(TypedDict):
+    source_id: str
+    config: str
+    revision: str
+
+
+class DataSourceDefinition(TypedDict):
+    protocol_version: str
+    source_id: str
+    config: str
+    revision: str
+    kind: str
+    provider_ref: ComponentRef
+    configuration: dict
+    recipe: Optional[dict]
+    reproducibility: dict
+    usage_policy: SourceUsagePolicy
+    parent_datasets: List[BenchmarkDatasetRef]
+    card_ref: Optional[DatasetAssetRef]
+
+
+class SourceDatasetRevisionV2(SourceDatasetRevision):
+    kind: str
+    origin: dict
+    lineage: dict
+    attachments: List[DatasetAssetRef]
+
+
+class PortableDataPayload(TypedDict):
+    dataset_asset_ref: DatasetAssetRef
+    source_artifact_identity: dict
+
+
+class DataCaptureSummary(TypedDict):
+    protocol_version: str
+    run_id: str
+    source_ref: DataSourceRef
+    source_trace_identity: dict
+    through_seq: int
+    event_kinds: List[str]
+    status: str
+    completion: str
+    started_at: str
+    ended_at: str
+    requested_scope: dict
+    session: Optional[dict]
+    actual_scope: Optional[dict]
+    seed_used: Optional[int]
+    ownership: Optional[str]
+    initial_clock: Optional[dict]
+    last_observation_clock: Optional[dict]
+    observation_count: int
+    environment_end: Optional[dict]
+    environment_cleanup: Optional[dict]
+    evidence_status: str
+
+
 class BenchmarkDefinition(TypedDict):
     protocol_version: str
     benchmark_id: str
@@ -406,3 +463,63 @@ EvaluationSpec = Dict[str, Any]
 ScoreSpec = Dict[str, Any]
 EvaluationReport = Dict[str, Any]
 ScoreResult = Dict[str, Any]
+
+
+class ExperimentStage(TypedDict):
+    stage_id: str
+    executor_ref: ComponentRef
+    spec: Dict[str, Any]
+    purpose: str
+    depends_on: List[str]
+    inputs: Dict[str, Dict[str, Any]]
+    bindings: Dict[str, str]
+    outputs: Dict[str, str]
+
+
+class ExperimentGroup(TypedDict):
+    protocol_version: str
+    group_id: str
+    revision: str
+    name: str
+    stages: List[ExperimentStage]
+
+
+class StageAttempt(TypedDict):
+    protocol_version: str
+    attempt_id: str
+    group_id: str
+    revision: str
+    stage_id: str
+    ordinal: int
+    status: str
+    started_at: str
+    ended_at: Optional[str]
+    definition_ref: ArtifactRef
+    request_ref: ArtifactRef
+    dependencies: Dict[str, str]
+    result_ref: Optional[ArtifactRef]
+    outputs: Dict[str, Any]
+    error: Optional[Dict[str, Any]]
+
+
+class StageRequest(TypedDict):
+    protocol_version: str
+    executor_ref: ComponentRef
+    purpose: str
+    binding_status: str
+    inputs: Dict[str, Any]
+    spec: Dict[str, Any]
+    datasets: List[Dict[str, str]]
+    provenance: Dict[str, Any]
+
+
+class ExperimentEvent(TypedDict):
+    protocol_version: str
+    group_id: str
+    revision: str
+    seq: int
+    event_id: str
+    recorded_at: str
+    kind: str
+    attempt_id: Optional[str]
+    record_ref: ArtifactRef

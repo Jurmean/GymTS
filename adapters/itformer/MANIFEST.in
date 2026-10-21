@@ -1,0 +1,3 @@
+include README.md LICENSE UPSTREAM_LICENSE
+recursive-include tests *.py
+recursive-include examples *.json

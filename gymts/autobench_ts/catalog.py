@@ -2,7 +2,7 @@
 import copy
 
 from gymts.contracts import canonical_json
-from gymts.contracts.resources import BENCHMARK, DATASET, POLICY
+from gymts.contracts.resources import BENCHMARK, POLICY
 from gymts.environment_ts.datasets import EvaluationDatasets
 from gymts.storage.resources import resource_error
 
@@ -35,8 +35,8 @@ class BenchmarkCatalog:
         item = copy.deepcopy(definition)
         # Release labels resolve once, before a reusable definition is frozen.
         for reference in item["datasets"]:
-            source = self.store.load_definition("dataset", reference["dataset_id"], reference["revision"],
-                                                DATASET, config=reference["config"])
+            source = self.datasets.load_manifest(reference["dataset_id"], revision=reference["revision"],
+                                                 config=reference["config"])
             if reference["split"] not in source["splits"]:
                 raise resource_error("Benchmark definition references an absent split")
             if "evaluation" not in source["usage_policy"]["allowed_uses"]:
@@ -63,9 +63,9 @@ class BenchmarkCatalog:
         definition_ref = self.artifacts.save_json(definition, BENCHMARK)
         sources, policies = [], []
         for reference in definition["datasets"]:
-            manifest = self.store.load_definition("dataset", reference["dataset_id"], reference["revision"],
-                                                   DATASET, config=reference["config"])
-            sources.append(self.artifacts.save_json(manifest, DATASET))
+            manifest = self.datasets.load_manifest(reference["dataset_id"], revision=reference["revision"],
+                                                   config=reference["config"])
+            sources.append(self.artifacts.save_json(manifest, manifest["protocol_version"]))
             policies.append(manifest["usage_policy"])
         resources = BenchmarkResources(_SelectedDatasets(self.datasets, definition["datasets"]),
                                        self.artifacts, sources, definition_ref)

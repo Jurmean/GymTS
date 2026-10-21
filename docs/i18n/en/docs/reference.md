@@ -1,6 +1,6 @@
 # GymTS CLI and public API reference
 
-Applies to GymTS **0.5.0**, formal contract **1.2.0**. This reference lists public entry points in the current implementation, without presenting design drafts as callable APIs. See the [user guide](user-guide.md) for complete workflows and the [formal specification](feishu/GymTS接口规范/GymTS接口规范.md) for fields and plugin lifecycles.
+Applies to the unreleased GymTS **0.6.0** working tree, formal contract **1.4.0**. This reference lists public entry points in the current implementation, without presenting design drafts as callable APIs. See the [user guide](user-guide.md) for complete workflows and the [formal specification](feishu/GymTS接口规范/GymTS接口规范.md) for fields and plugin lifecycles.
 
 ## 1. CLI
 
@@ -18,7 +18,7 @@ Global arguments must precede the subcommand. Repeat `--integration` as needed, 
 | Argument | Default | Meaning |
 | --- | --- | --- |
 | `--store PATH` | `.gymts` | Active Run SQLite/CAS root, requiring local POSIX semantics |
-| `--data-home PATH` | Environment variable or XDG data directory | Fixed data resources and benchmark manifests |
+| `--data-home PATH` | Environment variable or XDG data directory | Four-kind source definitions, fixed data resources and benchmark manifests |
 | `--cache-home PATH` | Environment variable or XDG cache directory | Rebuildable verified resource cache |
 | `--integration NAME` | None | Explicitly enable an installed trusted integration; repeatable |
 | `--help` | — | Show help; subcommands also support `--help` |
@@ -33,9 +33,22 @@ Global arguments must precede the subcommand. Repeat `--integration` as needed, 
 | `attach-outcomes SPEC` | `--run-id ID [--output FILE]` | SPEC is an **array** of OutcomeRecord; append it and return fixed OutcomeSnapshotRef |
 | `inspect RUN_ID` | `[--events]` | Read persisted RunRecord; omit events/event_refs by default |
 | `plugins` | None | Exact Environment/Task/Candidate/Scorer Manifests currently enabled |
+| `run-data SPEC` | `--source ID --source-revision REV --dataset-id ID [--source-config default] [--config default] [--split recorded] [--output FILE]` | Bind source, execute original ExperimentSpec and capture a dataset; returns run/dataset |
+| `sources list` | None | List source definitions in data_home |
+| `sources register SPEC` | `[--alias LABEL ...] [--output FILE]` | Register DataSourceDefinition without starting a backend |
+| `sources info SOURCE_ID` | `--revision REV [--config default] [--output FILE]` | Read a fixed source definition |
+| `datasets capture RUN_ID` | `--source ID --source-revision REV --dataset-id ID [--source-config default] [--config default] [--split recorded] [--output FILE]` | Register actual environment data from a sealed Run as dataset v2 |
 | `datasets list` | None | Fixed dataset manifests in the current data_home |
 | `datasets info DATASET_ID` | `--revision REV [--config default] [--split test] [--output FILE]` | Public DatasetHandle.info, without private references |
 | `datasets register SPEC` | `[--alias LABEL ...] [--output FILE]` | Register SourceDatasetRevision; referenced resource bytes must already exist |
+| `experiments register SPEC` | `[--output FILE]` | Register an immutable group definition; return defaults and fixed revision |
+| `experiments run GROUP_ID` | `--revision REV [--retry-failed] [--rerun STAGE_ID ...] [--output FILE]` | Execute ready stages; retry and rerun require explicit selection |
+| `experiments info GROUP_ID` | `--revision REV [--output FILE]` | Derived stage states, all attempts and associated Runs |
+| `experiments list` | `[--group-id ID] [--dataset-id ID] [--dataset-revision REV] [--status STATUS] [--output FILE]` | Query group revisions by experiment or dataset |
+| `experiments events GROUP_ID` | `--revision REV [--after-seq N] [--output FILE]` | Ordered organization events |
+| `experiments recover ATTEMPT_ID` | `--reason TEXT [--adopt-run] [--output FILE]` | Explicitly recover an open attempt after confirming previous work stopped |
+| `runs` | `[--group-id ID] [--revision REV] [--attempt-id ID] [--dataset-id ID] [--dataset-revision REV] [--status STATUS] [--output FILE]` | Run summaries retaining original organization and all associations |
+| `datasets publish-build SPEC` | `[--output FILE]` | SPEC includes manifest, reader_ref and options; publish fixed build data to the persistent catalog |
 | `autobench list` | None | Benchmark definitions in the current data_home |
 | `autobench register SPEC` | `[--alias LABEL ...] [--output FILE]` | Register BenchmarkDefinition, resolving and fixing data revisions |
 | `autobench resolve BENCHMARK_ID` | `--revision REV --candidate FILE ... [--purpose regression] [--output FILE]` | Invoke an installed resolver and return native EvaluationSpec |
@@ -139,6 +152,23 @@ gym.autobench.resolve_benchmark(benchmark_id, *, revision, candidates,
 
 `resolve_benchmark` materializes fixed selected source manifests, usage policies, and BenchmarkDefinition into CAS evidence, then validates the derived EvaluationSpec. It is not the I/O-free `gym.plan`. Resolvers receive a separate evaluation resource service, not Runner/Candidate execution entry points.
 
+### 2.4 Experiment organization
+
+`gym.experiments` organizes the existing execution and data services:
+
+```python
+org.register(definition)  # Normalized group definition with fixed revision
+org.get(group_id, revision=revision)
+org.execute(group_id, revision=revision, retry_failed=False, rerun=())
+org.inspect(group_id, revision=revision)
+org.events(group_id, revision=revision, after_seq=0)
+org.query(group_id=None, dataset_id=None, dataset_revision=None, status=None)
+org.recover(attempt_id, reason=reason, adopt_run=False)
+org.register_executor(component_ref, executor)  # executor(spec, gym) -> dict
+```
+
+Here `org = gym.experiments`. Protocols are `gymts.experiment-group/1`, `gymts.stage-request/1`, `gymts.stage-attempt/1` and `gymts.experiment-event/1`. By default, failed/cancelled/interrupted stages are not retried. retry_failed retries the first two; rerun explicitly repeats selected stages. Recovery occurs at stage boundaries; only gymts.run can adopt its single sealed Run. See the [experiment organization guide](experiment-organization.md) for inputs, JSON Pointers and a complete local example.
+
 ## 3. Configuration and message index
 
 Public messages use serializable dict/list/scalar values, not NumPy objects, NaN, or Infinity posing as JSON. Versions must be exact registered versions; `latest/main/master` cannot replace fixed components. Schemas/formal specification define all required fields and defaults.
@@ -185,12 +215,15 @@ There is no disable-all-tracing mode. Commit failures for observations, raw outp
 | `snapshot(run_ids, query=None)` | RecordSnapshot envelope with snapshot_ref, captured_at, runs, and outcome_refs |
 | `get_snapshot(ref)` | Validate/read formal RecordSnapshot |
 | `list_outcome_refs(run_id)` | Currently available OutcomeRefs; use snapshot when freezing is required |
+| `list_runs(*, group_id=None, revision=None, attempt_id=None, status=None, dataset_id=None, dataset_revision=None)` | Query Run summaries retaining original organization and all associations |
 
 `read_events` query supports `after_seq` (default 0), `limit` (1..1000, default 100), `kinds` (null=all, []=none), and `snapshot_ref`. Pass `next_after_seq` to continue; null ends pagination.
 
 `read_outcomes` query supports `run_ids`, `outcomes_as_of` (compatibility alias `as_of`; choose one), `outcome_refs`, `purpose`, and `snapshot_ref`. A cutoff and explicit revisions are mutually exclusive. With snapshot_ref, do not supply another dynamic cutoff or revision list. Unauthorized purposes raise rather than silently leaking data.
 
 `snapshot` query supports only `through_seq` (run_id→seq), `outcomes_as_of`, and `outcome_refs`: **there is no purpose field**. Defaults capture current committed boundaries and available Outcomes. Prefix snapshots do not expose a final RunResult sealed later.
+
+`gym.experiments.events(group_id, revision=revision, after_seq=0)` reads ordered organization events. Scoring an existing Run adds an association without changing original ownership or sealed evidence.
 
 `begin_run`, `append`, and `end_run` are backend/Runner integration protocols. Ordinary users generate execution records through `run/evaluate/score`, rather than manually fabricating additional execution events for sealed Runs.
 
@@ -271,6 +304,48 @@ Fields are `{protocol_version, benchmark_id, revision, resolver_ref, datasets, p
 
 Registration resolves dataset release labels into precise content revisions. Execution resolution fixes source manifests, policies, and definitions in CAS and propagates them into Run metadata/reports. Changes to data, prompts, selection, scoring rules, or resolver versions require a new definition revision.
 
+### 5.4 Four source kinds and dataset v2
+
+This is an entry-point reference template with caller-supplied variables. See the [user guide](user-guide.md#65-四类来源实际快照与回流) for an executable example. Core public interfaces are implemented and passed frozen-F1 real four-source, portable-read and model-free-rescoring acceptance.
+
+```python
+catalog = gym.environment_ts.datasets
+source = catalog.register_source(definition, aliases=("1.0.0",))
+source = catalog.load_source(source_id, revision=revision, config="default")
+sources = catalog.list_sources()
+manifest = catalog.load_manifest(dataset_id, revision=revision, config="default")
+manifest = catalog.register_snapshot(
+    rows, dataset_id=dataset_id, source_ref=source_ref, split="test", config="default",
+    schema_ref="gymts.json/1", targets=None, parents=(), usage_policy=None,
+    features=None, split_origin="explicit", attachments=(), capture=None, aliases=(), kind=None,
+)
+bound = catalog.bind_source(spec, source_id, revision=revision, config="default")
+manifest = catalog.capture_run(
+    run_id, source_id=source_id, revision=revision, dataset_id=dataset_id,
+    config="default", source_config="default", split="recorded", event_kinds=None,
+    usage_policy=None, aliases=(),
+)
+result = gym.run_data(spec, source_id=source_id, revision=revision, dataset_id=dataset_id,
+                      source_config="default", config="default", split="recorded")
+```
+
+`definition` uses `gymts.data-source/1`; `source_ref` is `{source_id,config,revision}` and each `parents` entry is `{dataset_id,config,revision,split}`. Snapshot registration resolves labels to exact content digests. Source kinds are static/synthetic/simulation/live_testbed. Synthetic sources have a recipe and can be seeded (requiring a seed) or recorded. Declared and actual session seeds remain separate records.
+
+`register_snapshot` returns `gymts.source-dataset/2`, retaining v1 public/private shard fields and adding kind/origin/lineage/attachments. `load_manifest` reads complete v1/v2 manifests. The public `load_dataset` handle additionally offers `read_capture()`, `read_asset(asset_ref)` and `resolve_payload(value)`. Capture metadata uses `gymts.data-capture/1`; environment-event rows use `gymts.data-capture-row/1`.
+
+`bind_source` accepts a complete ExperimentSpec, checks its existing Environment provider/configuration and returns a copy with fixed source, parents and common usage policy in provenance. It does not modify the input spec. `run_data` returns `{"run": RunResult, "dataset": manifest}` and preserves the real Task/Candidate. `capture_run` accepts a sealed Run; by default it records environment session/request/observation/operation/receipt/feedback with failed/partial results, excluding model conversations and private Outcomes. Actual JSON/binary attachments enter data_home, so snapshot reads do not depend on the original Run CAS.
+
+Data services add no alternate executor or scorer. Benchmark `/1` can fix v1/v2 datasets, with evaluation still handled by AutoBenchTS. See [ADR 0001](adr/0001-core-data-source-catalog.md) for rationale and existing-contract compatibility.
+
+### 5.5 Explicit build-data publication
+
+```python
+catalog.publish_build(build, reader_ref=reader_ref, dataset_id=None,
+                      config="default", usage_policy=None, parents=(), aliases=())
+```
+
+Publish an original `gymts.dataset/1` Manifest, a return object with manifest_ref, or its ArtifactRef as a persistent `gymts.source-dataset/1`. Preserve original shard bytes and private portable build evidence without inventing a source. Adapters provide readers. Default training usage may only narrow, without automatically adding runtime/evaluation. See the [publication workflow](experiment-organization.md).
+
 ## 6. Training dataset construction extensions
 
 ```python
@@ -304,7 +379,7 @@ Common codes include `invalid_config`, `schema_mismatch`, `unsupported_capabilit
 
 ## 8. Versions, trust, and interface stability
 
-Distribution versions, message schema versions, project component versions, and data content revisions are different identities. Core 0.5.0 implements formal specification 1.2.0, while individual messages remain `/1`. The more granular [v2 contract](pluggability-contract-v2.md) is not implemented.
+Distribution versions, message schema versions, project component versions, and data content revisions are different identities. Historical F1 core 0.5.1 corresponds to specification 1.3.0. This round's 0.6.0 / 1.4.0 working tree adds four organization protocols while retaining existing execution and data-resource identities. This does not mean the complete [v2 Runtime contract](pluggability-contract-v2.md) is implemented.
 
 User entry points are this reference's SDK/CLI, `gymts.contracts`, public Protocols, Registry, schemas, and training extensions. Project-private helpers do not promise public compatibility. New adapters depend one way on public SDKs, without importing Runner private state. See the [developer guide](adapter-development.md) for extensions and migration.
 

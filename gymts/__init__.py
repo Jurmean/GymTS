@@ -3,7 +3,7 @@ from .contracts import GymTSError
 from .environment_ts import EnvironmentTS
 from .autobench_ts import AutoBenchTS
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 
 class GymTS:
@@ -41,10 +41,14 @@ class GymTS:
         cache_home = cache_home or os.environ.get("GYMTS_CACHE_HOME") or str(
             Path(os.environ.get("XDG_CACHE_HOME", "~/.cache")).expanduser() / "gymts")
         self.environment_ts.datasets = DatasetCatalog(
-            ResourceStore(data_home, cache_home, self.schemas), self.registries.datasets, self.schemas)
+            ResourceStore(data_home, cache_home, self.schemas), self.registries.datasets, self.schemas,
+            artifacts=self.artifacts, records=self.records)
         self.autobench = AutoBenchTS(self.environment_ts, self.registries.scorers, self.schemas,
                                      self.records, self.artifacts)
         self.autobench_ts = self.autobench
+        from .environment_ts.experiments import ExperimentOrganization
+        self.experiments = ExperimentOrganization(self)
+        self.environment_ts.experiments = self.experiments
 
     @staticmethod
     def available_integrations():
@@ -68,6 +72,12 @@ class GymTS:
 
     def run(self, spec):
         return self.environment_ts.run(spec)
+
+    def run_data(self, spec, *, source_id, revision, dataset_id, source_config="default",
+                 config="default", split="recorded"):
+        """Execute an experiment and persist its environment data in the catalog."""
+        return self.environment_ts.run_data(spec, source_id=source_id, revision=revision,
+            dataset_id=dataset_id, source_config=source_config, config=config, split=split)
 
     def close(self):
         self.records.close()

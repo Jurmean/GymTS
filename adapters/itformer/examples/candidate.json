@@ -1,0 +1,7 @@
+{
+  "source_path": "/tmp/gymts-itformer/upstream",
+  "checkpoint_path": "/path/to/ITFormer-7B",
+  "base_model_path": "/path/to/Qwen2.5-7B-Instruct",
+  "device": "cuda:0",
+  "max_new_tokens": 128
+}

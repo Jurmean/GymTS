@@ -25,8 +25,8 @@ class TSQABenchmarkResolver:
             fail('unsupported_capability','TSQA resolver supports only complete source rows, its fixed parser and lossless original question policy')
         if (not isinstance(params['metrics'],list) or len(params['metrics'])!=2
                 or not all(isinstance(metric,str) for metric in params['metrics'])
-                or set(params['metrics'])!={'accuracy','format_valid'}):
-            fail('unsupported_capability','TSQA full definition requires accuracy and format_valid with its fixed coverage Gate')
+                or set(params['metrics']) not in ({'accuracy','format_valid'}, {'task_score','format_valid'})):
+            fail('unsupported_capability','TSQA full definition requires its task metric and format_valid with the fixed coverage Gate')
         reference=definition['datasets'][0]
         dataset=resources.datasets.load_dataset(**reference,purpose='evaluation')
         targets=dataset.read_targets()
@@ -35,6 +35,10 @@ class TSQABenchmarkResolver:
                 or {t['sample_id'] for t in targets}!=set(public_ids)):
             fail('artifact_integrity','TSQA source and private references do not align exactly')
         targets_by_id={t['sample_id']:t for t in targets}
+        structured = {row['task_kind']=='structured' for row in dataset}
+        primary = 'task_score' if structured == {True} else 'accuracy'
+        if len(structured)!=1 or set(params['metrics'])!={primary,'format_valid'}:
+            fail('unsupported_capability','Dataset task kinds and requested scoring metric do not match')
         target_ref=resources.artifacts.save_json({'dataset_revision':reference['revision'],'targets':targets},'gymts.json/1')
         cases,outcomes=[],[]
         available=utc_now()
@@ -59,6 +63,8 @@ class TSQABenchmarkResolver:
                     'model_calls':'none','on_capture_failure':'fail_run','redaction_policy_ref':None,'extra_event_kinds':[]},
                 'tags':{'dataset':reference['dataset_id'],'task_kind':kind,'source_row':str(row['source_row'])}})
             gold={key:target[key] for key in ('reference_status','reference_answer','reference_kind','reason')}
+            if 'input_issue' in target:
+                gold['input_issue']=target['input_issue']
             outcomes.append({'outcome_id':'tsqa-gold-'+digest({'revision':reference['revision'],'sample_id':token}),
                 'revision':'1','alignment_key':{'dataset_revision':reference['revision'],'sample_id':token},
                 'payload':inline(gold,OUTCOME),'event_time':0,'available_at':available,'recorded_at':available,
@@ -80,6 +86,6 @@ class TSQABenchmarkResolver:
                 'repetition_aggregation':'mean','aggregation':'macro_mean','baseline_method':'difference',
                 'gates':[{'metric':'run_failure_rate','target':'absolute','candidate_ids':None,'for_metric':None,
                     'operator':'le','threshold':0,'scope':'aggregate'},
-                    {'metric':'scored_coverage','target':'absolute','candidate_ids':None,'for_metric':'accuracy',
+                    {'metric':'scored_coverage','target':'absolute','candidate_ids':None,'for_metric':primary,
                         'operator':'ge','threshold':1,'scope':'aggregate'}]},
             'failure_policy':{'partial_results':'include','invalid_result_policy':'report'}}

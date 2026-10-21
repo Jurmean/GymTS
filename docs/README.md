@@ -1,6 +1,6 @@
 # GymTS 文档
 
-当前源码实现 **0.5.0**，公共合同 **1.2.0**。文档以 EnvironmentTS 执行/证据、
+当前源码为未发行的 **0.6.0** 工作树，公共合同 **1.4.0**，F2.1 组织层技术验收已通过。文档以 EnvironmentTS 数据组织/执行/证据、
 AutoBenchTS 评价两个稳定职责组织。设计草案和历史实验记录与当前使用文档分别列出。
 
 ## 开始使用
@@ -9,6 +9,7 @@ AutoBenchTS 评价两个稳定职责组织。设计草案和历史实验记录�
 | --- | --- |
 | 了解项目目标、角色、实验边界与系统位置 | [完整项目说明](overview.md) |
 | 安装、第一次运行、评价和原 Run 重评 | [使用手册](user-guide.md) |
+| 固定数据引用、阶段依赖、失败续接与数据回库 | [实验组织指南](experiment-organization.md) |
 | 查命令、参数、API 和配置结构 | [API / CLI 参考](reference.md) |
 | 找能直接运行的脚本和配置 | [示例目录](../examples/README.md) |
 | 排查常见错误 | [FAQ](faq.md) |
@@ -20,8 +21,11 @@ AutoBenchTS 评价两个稳定职责组织。设计草案和历史实验记录�
 - [框架实现指南](framework.md)：公开 SDK、组件生命周期、装配、访问边界、记录、独立评价与训练扩展。
 - [环境接入](environment-adapters.md)：合成、HF 静态、Gymnasium、OpenEnv 和 Prometheus；调用、时钟、所有权与真实验收范围。
 - [数据与 benchmark 目录](dataset-benchmark-catalog-design.md)：EnvironmentTS 数据读取、公开/私有资源、AutoBenchTS 基准解析与长期存放。
+- [实验组织与数据回库](experiment-organization.md)：固定数据引用、阶段依赖、attempt、显式重试/恢复与全链查询。
+- [ADR 0002：实验组织协议](adr/0002-experiment-organization.md)：本轮核心改动理由、适配器边界与历史兼容。
+- [ADR 0001：四类核心数据组织](adr/0001-core-data-source-catalog.md)：真实缺口、核心职责修正、旧协议兼容与 F1 冻结验证。
 - [Agent 与外部工具集](agent-toolsets.md)：Agent 决策、工具执行、环境读写与私有评分的边界，以及当前尚未验收的通用工具循环。
-- [正式接口规范 1.2.0](feishu/GymTS接口规范/GymTS接口规范.md)：字段、状态、顺序、错误、轨迹和接入合同。
+- [正式接口规范 1.4.0](feishu/GymTS接口规范/GymTS接口规范.md)：字段、状态、顺序、错误、轨迹和接入合同；第 21 节定义本轮组织合同，第 20 节保留历史 F1 数据层验收范围。
 
 ## 项目与领域适配器
 
@@ -49,6 +53,9 @@ AutoBenchTS 评价两个稳定职责组织。设计草案和历史实验记录�
 - [变更记录](../CHANGELOG.md)、[路线图](roadmap.md)、[引用](citing.md)、[MIT 许可说明](licensing.md)、[许可原文](../LICENSE)、[第三方来源](../THIRD_PARTY.md)。
 
 ## 当前验收与工程证据
+
+- [0.6.0 / 合同 1.4.0 实验组织验收](reports/experiment-organization-2026-10-21.json)：F2.1 冻结身份；196 项核心测试通过；十六包兼容为 356 项通过、61 项可选依赖跳过；独立 ETTh1 32 行视图完成运行、独立评价和适配包卸载后重评。
+- [历史 0.5.1 核心四类数据层验收](reports/core-data-organization-2026-10-21.json)：固定 F1 的真实来源、目录/可移植附件、独立评价与零模型重评。
 
 报告记录特定源码、运行依赖和数据的事实，不是实时 CI 状态、完整 benchmark 排名或
 生产可用性证明。部分历史报告文件名使用较早环境的日期；按内部版本、提交、摘要和

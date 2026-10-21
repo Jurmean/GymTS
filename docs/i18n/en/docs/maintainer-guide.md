@@ -1,12 +1,12 @@
 # Maintenance and release preparation
 
-This guide describes the repository's currently runnable maintenance workflow. It does not imply a PyPI publication, a formal release/tag, or passing remote CI. See [Contributing](../CONTRIBUTING.md) for development rules and the [security policy](../SECURITY.md) for vulnerabilities. Core is version 0.5.0, with specification baseline 1.2.0. The project uses the [MIT License](../LICENSE); third-party code, models, and data retain their own provenance and license conditions.
+This guide describes the repository's currently runnable maintenance workflow. It does not imply a PyPI publication, a formal release/tag, or passing remote CI. See [Contributing](../CONTRIBUTING.md) for development rules and the [security policy](../SECURITY.md) for vulnerabilities. Core is version 0.6.0, with specification baseline 1.4.0. The project uses the [MIT License](../LICENSE); third-party code, models, and data retain their own provenance and license conditions.
 
 ## Maintenance boundaries
 
-Core contains only general execution, resource/evidence interfaces, and evaluation. Projects belong in independent distributions. Neutral domain contracts can also be shared as independent packages; reuse by multiple projects does not automatically move them into core. Review domain semantics, access authorization, failure evidence, and the rescoring loop before considering a shared abstraction. The [environment guide](environment-adapters.md) records actual zero-core-change cases.
+Maintenance centers on storing data, connecting data, organizing experiments, and recording experiments. Core contains general data organization and storage, experiment groups/stages/attempts, execution, resource/evidence interfaces, and evaluation. Projects belong in independent distributions. Neutral domain contracts can also be shared as independent packages; reuse by multiple projects does not automatically move them into core. Review domain semantics, access authorization, failure evidence, and the rescoring loop before considering a shared abstraction. The [environment guide](environment-adapters.md) records actual zero-core-change cases.
 
-Core changes require a real unexpressible need, reasons adapters cannot solve it, public contract changes, and compatibility for existing projects. Periodically freeze `gymts/**/*.py` and `setup.cfg`, fix wheel and source-tree identities, and let an independent project run, seal evidence, evaluate, and rescore original Runs without modifying core. A freeze is an acceptance baseline for a round, not a permanent ban on corrections. If broken, establish a new baseline and preserve old evidence; do not overwrite Runs or represent a new implementation as an old revision.
+Core changes require a real unexpressible need, reasons adapters cannot solve it, public contract changes, and compatibility for existing projects. Periodically freeze `gymts/**/*.py` and `setup.cfg`, fix wheel and source-tree identities, and let an independent project run, seal evidence, evaluate, and rescore original Runs without modifying core. A freeze is an acceptance baseline for a round, not a permanent ban on corrections. If broken, establish a new baseline and preserve old evidence; do not overwrite Runs or represent a new implementation as an old revision. Current F2.1 verifies independent integration, data/Run/stage queries, and post-uninstall rescoring; see the [experiment organization guide](experiment-organization.md) and [current acceptance report](reports/experiment-organization-2026-10-21.json). All 23 existing schema hashes remain unchanged.
 
 ## Sources for documentation and facts
 
@@ -17,7 +17,7 @@ Core changes require a real unexpressible need, reasons adapters cannot solve it
 | Available integrations, dependencies, and commands | Each `adapters/*/setup.cfg` and README |
 | Core distribution contents | `MANIFEST.in`, [core check script](../scripts/check_release.py) |
 | Independent adapter contents and coexistence | Each adapter MANIFEST, [adapter check script](../scripts/check_adapters.py) |
-| Performed verification and its limitations | [Acceptance report](reports/environment-acceptance-2026-10-19.json) and associated logs/hashes |
+| Performed verification and its limitations | [Current organization acceptance](reports/experiment-organization-2026-10-21.json), [historical environment acceptance](reports/environment-acceptance-2026-10-19.json), and their respective logs/hashes |
 | CI configuration | [GitHub Actions workflow](../.github/workflows/ci.yml); actual outcomes are the runs for the relevant commit |
 
 Some earlier environment reports use 2026-10-20, preserving the host timezone's naming when generated. Do not rewrite historical material merely to align current documentation dates. Assess applicability by version, source identity, and report contents. Adopting MIT does not rewrite the license status or hashes recorded historically. Distinguish design drafts, roadmaps, implemented interfaces, and native acceptance scope.
@@ -28,14 +28,14 @@ There is currently no public long-term support or stable 1.x compatibility commi
 
 - During 0.x, bump the minor version for changes that break public configurations, protocols, imports, or persistent evidence reading, and provide migration notes.
 - Use patch versions for compatible fixes and documentation clarification. Protocol messages and component revisions keep their own identities; a distribution-version change must not hide content changes.
-- Version adapters independently and declare the actually verified `gymts` compatibility range, without forcing every project onto one release schedule.
+- Version adapters independently and declare the actually verified `gymts` compatibility range, without forcing every project onto one release schedule. The sixteen adapters and existing minimal tutorial declare `gymts>=0.5,<0.7`; the four-source data tutorial declares `gymts>=0.5.1,<0.7`, and the dedicated organization tutorial declares `gymts>=0.6,<0.7`. Read 0.5.x/0.6.0 compatibility regressions within each report's scope rather than extending them to unverified environments.
 - Fix ComponentRef, data revisions, model implementations, and reference snapshots. Published immutable content must not be overwritten.
 - Preserve old Run/CAS evidence; rescoring creates a new evaluation. New Scorers or labels must not modify original results in place.
 - If a new scoring contract is incompatible with old messages, retain the old scoring adapter or provide an explicit conversion. Do not silently replace a schema ID's meaning.
 
 See the root [README](../README.md) for import/installation changes from 0.3.x to independent project packages. Environment integration acceptance for 0.5.0 uses the existing frozen tree and wheel; new adapters are accepted separately. Do not change core semantics simply for documentation release convenience.
 
-The MIT synchronization updates only license texts, documentation, and packaging metadata. The `setup.cfg` hash and newly built wheel identity change, but core Python implementation and public contracts do not. Retain old frozen wheels, source identities, and experiment reports. New artifacts must record their own hashes instead of impersonating the wheel used in earlier acceptance.
+The historical MIT-only synchronization updates only license texts, documentation, and packaging metadata. The `setup.cfg` hash and newly built wheel identity change, but core Python implementation and public contracts do not. Retain old frozen wheels, source identities, and experiment reports. New artifacts must record their own hashes instead of impersonating the wheel used in earlier acceptance.
 
 ## Checks for every PR
 
@@ -44,7 +44,7 @@ Read the actual diff and related requirements. Ensure it contains no local exper
 Select verification by impact. For documentation, check links, commands, versions, fences, and claims; do not run training to increase a test count. After core or packaging changes, run the following checks. New backends additionally require bounded native acceptance according to their README.
 
 ```bash
-# 环境预先具备 setuptools>=58、wheel、venv/pip；以下检查不访问包索引。
+# 环境预先具备 setuptools>=58、wheel、packaging、venv/pip；以下检查不访问包索引。
 python -B -m unittest discover -s tests -v
 python -B scripts/check_release.py --output /tmp/gymts-release-check.json
 python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
@@ -52,7 +52,7 @@ python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
 
 `check_release.py` builds core sdist, direct wheel, and an sdist-rebuilt wheel; installs outside the source tree into clean environments; runs core regressions and a temporary external plugin; and checks archive paths, contents, and known key patterns. `check_adapters.py` discovers `adapters/*/pyproject.toml`, builds/rebuilds/installs each independently, checks discovery without imports, explicit activation, regressions, core behavior and old-output rescoring after removal, then coexistence of all packages. Shared domain dependencies resolve only from the local wheelhouse. The scripts remove temporary distributions when finished; `--output` retains only the JSON report.
 
-Existing baselines are 160 core tests with no skips, and 319 tests for 11 independent packages: 265 passed and 54 skipped for missing optional dependencies. New environment adapters have a further 58 tests in complete native runtimes; see [acceptance](reports/environment-acceptance-2026-10-19.json). Record actual results, not skips as passes. Existing counts are not invariants that new tests must preserve. The workflow configures Python 3.9/3.12/3.13; local syntax parsing or one interpreter passing does not mean this matrix passed remotely.
+See the [organization report](reports/experiment-organization-2026-10-21.json) for current F2.1 acceptance and independent-adapter compatibility scope. Historical baselines are 160 core tests with no skips, and 319 tests for 11 independent packages: 265 passed and 54 skipped for missing optional dependencies. New environment adapters have a further 58 tests in complete native runtimes; see [acceptance](reports/environment-acceptance-2026-10-19.json). Record actual results, not skips as passes. Existing counts are not invariants that new tests must preserve. The workflow configures Python 3.9/3.12/3.13; local syntax parsing or one interpreter passing does not mean this matrix passed remotely.
 
 ## Evidence, credentials, and third-party material
 

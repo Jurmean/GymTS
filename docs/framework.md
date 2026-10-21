@@ -1,6 +1,10 @@
-# GymTS 0.5.0 框架实现与任务接入指南
+# GymTS 0.6.0 框架实现与任务接入指南
 
-本文说明已经实现的本地框架及接入方法；本轮环境接入验证日期为 2026-10-19。字段合同以[接口规范 1.2.0](feishu/GymTS接口规范/GymTS接口规范.md)为准。0.5 增加声明式装配、执行 seed 与数据/benchmark 资源服务，既有 Environment/Task/Candidate 的 `/1` 方法消息保留；缺少纯描述的旧插件需显式迁移。完整 v2 消息及通用 Runtime 仍为草案。
+本文说明本地框架及接入方法。当前核心为未发行的 0.6.0 工作树，字段合同以[接口规范 1.4.0](feishu/GymTS接口规范/GymTS接口规范.md)为准；四类核心数据层 F1 已冻结，并完成独立外部四源、可移植读取与重评技术验收。2026-10-19 环境记录与 0.5.0/F0 报告保留各自原验证范围。0.5 增加声明式装配、执行 seed 与数据/benchmark 资源服务，既有 Environment/Task/Candidate 的 `/1` 方法消息保留；缺少纯描述的旧插件需显式迁移。完整 v2 消息及通用 Runtime 仍为草案。
+
+0.5.1 将四类数据的来源定义、实际快照、存储和来源→dataset→Run→回流血缘纳入核心。`DataSourceDefinition`、dataset `/2`、`register_snapshot`、`bind_source`、`capture_run` 与 `run_data` 已实现，继续复用已有 Environment provider；不内化项目格式，也不新建另一套执行器。`run_data` 保留真实 Task/Candidate，静态/已生成快照可以直接登记。公共调用见[使用指南](user-guide.md#65-四类来源实际快照与回流)，核心变更理由及 F1 口径见 [ADR 0001](adr/0001-core-data-source-catalog.md)。dataset `/2` 不等于完整 v2 Runtime 已实现。
+
+0.6.0 / 1.4.0 新增实验组织协议：固定 group 定义、stage request/attempt/event、具名输入输出与依赖、显式重试/恢复、Run 关联查询及构建数据回库。`gym.experiments` 与 `gym.environment_ts.experiments` 是同一服务；它委托现有执行、数据与 AutoBenchTS 入口，不内化项目实现。用法见[实验组织指南](experiment-organization.md)，每处核心变动的真实需求、适配器边界与兼容理由见 [ADR 0002](adr/0002-experiment-organization.md)。F2.1 技术验收已通过，见[本轮报告](reports/experiment-organization-2026-10-21.json)；F1 仍指历史 0.5.1 / 1.3.0，不改其冻结身份。
 
 ## 实现结构
 
@@ -157,7 +161,7 @@ with GymTS('/tmp/runs', data_home='/path/to/resources',
 
 代码假设已安装 `gymts-bench-tsqa` 并显式导入附件；安装或启用不自动下载/导入数据。资源原始字节、公开/私有 Parquet、卡片、质量报告和清单放独立 `data_home`，缓存放 `cache_home`，不装入核心 wheel；环境变量为 `GYMTS_DATA_HOME/GYMTS_CACHE_HOME`，未设置时使用 XDG 数据/缓存目录下的 gymts。源资源使用内容摘要身份与显式发布标签；Run 仍使用自己的 CAS。解析 benchmark 时把固定清单、定义与用途引用写入原生 EvaluationSpec/Run，不向 Candidate 递归授予私有资源。
 
-五份附件已显式导入为 **5 个 evaluation-only 数据集，共 19,354 行**，全部为 `test/user_declared_evaluation`，`training_allowed=false`；训练、prepare、dataset_build 均拒绝。公开 DatasetHandle 不暴露 raw/targets 引用或答案。原问题、选项、条件、全部有序数值和重复行保留；私有参考通过 evaluation 服务读取。未知参考保留 missing 与 eligible，不补造金标或删题。[完整 746 行测评验收](reports/bench-tsqa-full746-final-2026-10-20.json)已通过公开 Python/CLI 读取、原生 evaluate 和封存 Run 重评分；其 first-public-choice 基线准确率 332/746 是集成覆盖结果，不是模型质量证明。其余 18,608 行已登记并保留参考状态，未据此声称全部执行测评。
+五份附件已显式导入为 **5 个 evaluation-only 数据集，共 19,354 行**，全部为 `test/user_declared_evaluation`，`training_allowed=false`；训练、prepare、dataset_build 均拒绝。公开 DatasetHandle 不暴露 raw/targets 引用或答案。原问题、选项、条件、全部有序数值和重复行保留；私有参考通过 evaluation 服务读取。参考可读性与题目质量分开记录；最新解析修正已读取全部19,354行参考，TimeMQA有720行选项待复核，保留 missing 与 eligible，不补造金标或删题。[完整 746 行测评验收](reports/bench-tsqa-full746-final-2026-10-20.json)已通过公开 Python/CLI 读取、原生 evaluate 和封存 Run 重评分；其 first-public-choice 基线准确率 332/746 是集成覆盖结果，不是模型质量证明。其余 18,608 行已登记并保留参考状态，未据此声称全部执行测评。
 
 `resolve_benchmark` 返回既有 `gymts.evaluation/1`，执行、预期单元、重复、Scorer、Gate 与报告仍只有 AutoBenchTS 原生路径。外部 HF 适配器可按固定提交取得并冻结静态资源；核心不自建远程 Hub。完整 Hub、多租户目录、可视化编辑与发布审批尚未交付。资源别名并发不可变性已修复；最终同版核心发行与六适配包独立发行、全量 746 行及 RL/TimeSigma 原生复验均通过，精确 wheel/hash 与限制见[本轮交付](framework-delivery-2026-10-20.md)。详情见[资源目录设计及实现状态](dataset-benchmark-catalog-design.md)和[TSQA 适配包](../adapters/bench_tsqa/README.md)。
 

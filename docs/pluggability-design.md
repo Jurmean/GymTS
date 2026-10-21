@@ -54,7 +54,7 @@ LibraryTS 适配固定用户指定 NetmanAIOps/sktime 提交 `080f4c3c3695f239e3
 
 RL 完整工程验收采用声明过的微型 Qwen2、两个官方 GSM8K train 题、真实 ChatTS 准备及留出评价；两步 TRL 更新有非零组内奖励差异/梯度、weight_decay=0、权重改变且重载一致。新进程从 archive 装载，16 个训练 Run + 6 个新评价 + 6 个重复 seed Run 完整保存；重评不加载模型、不修改封存记录。实际 accuracy=0.0、format_valid=0.5；技术 Gate 只检查执行与评分覆盖，不代表模型质量达标。旧显式 Candidate seed 身份保留，新 repetition seed 使用执行上下文。
 
-五附件通过独立 `bench-tsqa` 包显式导入资源目录，保留所有 19,354 行、原始问题及公开条件/数值，私有答案/attributes 独立存储。全为 `test/user_declared_evaluation`，训练用途拒绝；不因文件名 rlvr 允许训练。未知参考保留 missing 与原 eligible。[完整 746 行验收](reports/bench-tsqa-full746-final-2026-10-20.json)使用透明 first-public-choice 基线，经原生 evaluate 和旧 Run 重评分，Python/CLI 公共输入一致；不是全部 19,354 行或真实模型质量验收。最终同版核心的全量 746 行复验已通过，精确 wheel/hash 见[最终报告](reports/bench-tsqa-full746-final-2026-10-20.json)。
+五附件通过独立 `bench-tsqa` 包显式导入资源目录，保留所有 19,354 行、原始问题及公开条件/数值，私有答案/attributes 独立存储。全为 `test/user_declared_evaluation`，训练用途拒绝；不因文件名 rlvr 允许训练。[解析修正](reports/bench-tsqa-reference-repair-summary-2026-10-21.json)已读取全部19,354行参考；TimeMQA有720行选项待复核，保留 missing 与原 eligible。[完整 746 行验收](reports/bench-tsqa-full746-final-2026-10-20.json)使用透明 first-public-choice 基线，经原生 evaluate 和旧 Run 重评分，Python/CLI 公共输入一致；不是全部 19,354 行或真实模型质量验收。最终同版核心的全量 746 行复验已通过，精确 wheel/hash 见[最终报告](reports/bench-tsqa-full746-final-2026-10-20.json)。
 
 0.3.x 项目导入改为 `gymts_chatts`、`gymts_timesigma`、`gymts_rl`；核心不反向转发。历史组件/Schema/builder/mask ID 和已提交 Run 不重标、不改写。新中立合同及保留原题的 TSQA 合同采用各自身份；canonical prompt 是派生提示实验，不能冒充原 benchmark。完整 v2 消息与通用 Runtime 仍不在当前交付范围。
 

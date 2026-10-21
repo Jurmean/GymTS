@@ -11,11 +11,12 @@ import re
 
 from gymts.contracts import GymTSError, canonical_json
 
-PARSER_REF = "tsqa.single-answer/1"
+PARSER_REF = "tsqa.single-answer/2"
+SUPPORTED_PARSER_REFS = ("tsqa.single-answer/1", PARSER_REF)
 PROJECTION_REF = "tsqa.literal-series-reference/1"
 CHOICE = re.compile(r"(?<![A-Za-z0-9])([A-Fa-f])\s*[):.]\s+")
 FOOTER = re.compile(r"\n\s*(?:Your answer|Please output|Now, based|Please directly output)", re.I)
-KINDS = ("mcq_label", "boolean", "text_choice", "unresolved")
+KINDS = ("mcq_label", "boolean", "text_choice", "structured", "unresolved")
 
 
 def _fail(message):
@@ -94,10 +95,22 @@ def decode_public(row, dataset_id, source_row):
         cursor = marker.end()
     projected.append(question[cursor:])
     choices = label_choices(question)
-    if re.search(r"True\s*/\s*False|True\s+or\s+False", question, re.I):
+    context = {"question_policy":"complete-original-with-lossless-series-projection/1",
+               "response_labels":None,"input_issue":None}
+    # A declared response alphabet is public information, even when the source
+    # conversion lost option text. Do not invent the missing choices or confuse
+    # an available answer label with a usable question.
+    declared = re.search(r"choice with upper letter:\s*([A-F](?:\s*/\s*[A-F])+)", question)
+    if declared:
+        context["response_labels"] = [part.strip() for part in declared[1].split('/')]
+        if not choices:
+            context["input_issue"] = "public_choice_text_unresolved"
+    if dataset_id == "local/dataset-a-rlvr":
+        kind, choices = "structured", []
+    elif re.search(r"True\s*/\s*False|True\s+or\s+False", question, re.I):
         kind = "boolean"
         choices = [{"id":"True", "text":"True"},{"id":"False", "text":"False"}]
-    elif choices:
+    elif choices or declared:
         kind = "mcq_label"
     elif "Please choose from:" in question:
         choices = text_choices(question)
@@ -108,7 +121,7 @@ def decode_public(row, dataset_id, source_row):
     sample_id = hashlib.sha256(canonical_json(identity)).hexdigest()
     return {"sample_id":sample_id,"dataset_id":dataset_id,"source_row":source_row,"task_kind":kind,
         "question_original":question,"question":"".join(projected),"series":series,"choices":choices,
-        "attachment_projection":projection,"projection_ref":PROJECTION_REF,"context":{"question_policy":"complete-original-with-lossless-series-projection/1"}}
+        "attachment_projection":projection,"projection_ref":PROJECTION_REF,"context":context}
 
 
 def _text_key(value):
@@ -120,10 +133,18 @@ def _text_key(value):
 def decode_target(row, public):
     answer = row.get("answer")
     status, canonical, reason = "unknown", None, "no_verified_reference_rule"
-    if isinstance(answer, str):
+    if public["task_kind"] == "structured":
+        from .structured import structured_reference
+        try:
+            canonical = structured_reference(row)
+            status, reason = "known", None
+        except (TypeError, ValueError, KeyError) as error:
+            reason = "unsupported_structured_reference: " + str(error)
+    elif isinstance(answer, str):
         value = answer.strip()
         if public["task_kind"] in ("mcq_label", "boolean"):
-            if value in {choice["id"] for choice in public["choices"]}:
+            labels = public['context'].get('response_labels') or [choice['id'] for choice in public['choices']]
+            if value in labels:
                 status, canonical, reason = "known", value, None
             else:
                 reason = "reference_not_in_public_choices"
@@ -133,8 +154,13 @@ def decode_target(row, public):
                 status, canonical, reason = "known", matches[0], None
             else:
                 reason = "reference_text_has_no_unique_public_choice"
+    input_issue = public['context'].get('input_issue')
+    if (status == 'known' and public['task_kind'] == 'mcq_label' and public['choices']
+            and canonical not in {choice['id'] for choice in public['choices']}):
+        input_issue = 'reference_outside_visible_choices'
     return {"sample_id":public["sample_id"],"reference_status":status,"reference_answer":canonical,
         "reference_kind":public["task_kind"],"reason":reason,"raw_answer_json":json.dumps(answer,ensure_ascii=False),
+        "input_issue":input_issue,
         "raw_attributes_json":json.dumps(row.get("attributes"),ensure_ascii=False),
         "raw_private_metadata_json":json.dumps({k:v for k,v in row.items() if k not in ("question","timeseries","cols","answer","attributes")},ensure_ascii=False),
         "allowed_uses":["evaluation"]}
@@ -144,6 +170,16 @@ def parse_response(raw, public):
     if not isinstance(raw, str) or not raw.strip():
         return None, "empty_answer"
     value = raw.strip()
+    if public['task_kind'] == 'structured':
+        # Mirror the existing RLVR answer wrapper extraction, before dispatching
+        # to its pinned deterministic task evaluator on the evaluation side.
+        value = value.split('</think>')[-1].replace('<answer>', '').replace('</answer>', '').strip()
+        matches = re.findall(r'\\answer\{(.*)\}', value, re.S)
+        if matches:
+            value = matches[0].strip()
+        elif '\\answer{' in value:
+            value = value.split('\\answer{')[-1].strip()
+        return ({'answer': value}, None) if value else (None, 'empty_answer')
     match = re.fullmatch(r"\\answer\{([^{}]*)\}", value, re.S)
     if match:
         value = match[1].strip()
@@ -151,7 +187,8 @@ def parse_response(raw, public):
         return None, "not_one_standalone_answer_tag"
     kind = public["task_kind"]
     if kind in ("mcq_label", "boolean"):
-        if value not in {item["id"] for item in public["choices"]}:
+        labels = public['context'].get('response_labels') or [item['id'] for item in public['choices']]
+        if value not in labels:
             return None, "answer_not_one_public_choice_id"
         return {"answer":value}, None
     if kind == "text_choice":

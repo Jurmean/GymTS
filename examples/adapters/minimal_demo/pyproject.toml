@@ -10,7 +10,7 @@ readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 requires-python = ">=3.9"
-dependencies = ["gymts>=0.5,<0.6"]
+dependencies = ["gymts>=0.5,<0.7"]
 
 [project.entry-points."gymts.integrations"]
 minimal-demo = "gymts_minimal_demo:register"

@@ -4,19 +4,19 @@ Contributions through bug reports, usage feedback, documentation, and independen
 
 ## Decide where the change belongs
 
-GymTS delivers a framework. EnvironmentTS owns execution and evidence, and AutoBenchTS owns independent evaluation. Project-specific data formats, model backends, task semantics, training algorithms, and domain scoring belong in independent adapters. Sharing a repository does not allow project implementations into the `gymts` core distribution.
+GymTS centers on storing data, connecting data, organizing experiments, and recording experiments. EnvironmentTS owns general data, execution and evidence; core organization protocols link stages and attempts, and AutoBenchTS owns independent evaluation. Project-specific data formats, model backends, task semantics, training algorithms, and domain scoring belong in independent adapters. Sharing a repository does not allow project implementations into the `gymts` core distribution.
 
 | Need | Preferred location |
 | --- | --- |
-| New data format, HF view, simulator, or testbed | Independent Environment adapter |
+| New data format, HF view, simulator, or testbed | Independent Environment, DatasetReader, or connector adapter |
 | New task, model, scorer, or benchmark resolver | Independent domain adapter and its schemas |
 | New toolset or Agent SDK | External tool/Agent adapter; the Agent chooses tool calls |
 | TRL, LibraryTS, or other training capabilities | Independent training/tool adapter, reusing upstream implementations where possible |
 | Execution, access boundaries, sealing, or evaluation mechanisms needed by all projects | Discuss a core contract after providing reproduction evidence |
 
-See the [framework guide](docs/framework.md) and [interface specification 1.2.0](docs/feishu/GymTS接口规范/GymTS接口规范.md) for the current contract. The [next pluggability contract](docs/pluggability-contract-v2.md) is a draft, not an implemented contract. Follow the [adapter guide](adapters/README.md) and [environment integration guide](docs/environment-adapters.md) for new packages.
+See the [framework guide](docs/framework.md) and [interface specification 1.4.0](docs/feishu/GymTS接口规范/GymTS接口规范.md) for the current contract. The [next pluggability contract](docs/pluggability-contract-v2.md) is a draft, not an implemented contract. Follow the [adapter guide](adapters/README.md) and [environment integration guide](docs/environment-adapters.md) for new packages. See the [experiment organization guide](docs/experiment-organization.md) for fixed data/artifact inputs, stage dependencies, attempts, and continuation after failure.
 
-The current 0.5.0 core is a frozen verification baseline. A proposed core change should explain in its Issue or PR:
+Current 0.6.0 / specification 1.4.0 uses the F2.1 frozen verification baseline. [Current acceptance](docs/reports/experiment-organization-2026-10-21.json) verifies independent integration and post-uninstall rescoring, preserving all 23 existing schema hashes. Historical F0/F1 versions and evidence remain intact. A proposed core change should explain in its Issue or PR:
 
 1. Which real project's requirement the existing interface cannot express, with minimal configuration and actual failure evidence.
 2. Why independent adapters or existing extension points cannot solve it, beyond implementation convenience.
@@ -31,7 +31,7 @@ Run these commands from the repository root. Core requires Python 3.9+ and curre
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install "setuptools>=64" wheel
+python -m pip install "setuptools>=64" wheel packaging
 python -m pip install --no-build-isolation -e .
 python -B examples/quickstart.py --root /tmp/gymts-contribution-demo
 ```
@@ -67,7 +67,7 @@ python -B scripts/check_release.py --output /tmp/gymts-release-check.json
 python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
 ```
 
-Both packaging scripts need `setuptools>=58`, `wheel`, and the ability to create pip-enabled environments with `venv`. They build in temporary directories and install local artifacts using `--no-index`. Reports go to the requested paths; temporary distributions are removed at completion. The GitHub Actions [workflow](.github/workflows/ci.yml) configures Python 3.9, 3.12, and 3.13; configuration is not proof that remote CI passed for this branch.
+Both packaging scripts need `setuptools>=58`, `wheel`, and the ability to create pip-enabled environments with `venv`; `check_adapters.py` additionally requires `packaging`. They build in temporary directories and install local artifacts using `--no-index`. Reports go to the requested paths; temporary distributions are removed at completion. The GitHub Actions [workflow](.github/workflows/ci.yml) configures Python 3.9, 3.12, and 3.13; configuration is not proof that remote CI passed for this branch.
 
 The existing 0.5.0 [isolated core installation report](docs/reports/core-package-check-2026-10-20.json) records 160 passes. The [eleven-package report](docs/reports/environment-adapter-package-check-2026-10-19.json) records 319 tests, with 54 conditional skips. These are baselines for specific snapshots, not fixed counts for future changes. Skips caused by missing native dependencies cannot replace actual runtime verification: [native acceptance](docs/reports/environment-acceptance-2026-10-19.json) for HF, Gymnasium, OpenEnv, and Prometheus separately records sources, versions, and successful/failed traces. New native backends should include reproducible commands and dependency instructions.
 

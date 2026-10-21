@@ -17,6 +17,7 @@ prune .gymts
 prune adapters
 # The tutorial adapter is a separate package from a full Git checkout.
 prune examples/adapters
+prune examples/data_organization
 global-exclude __pycache__ *.py[cod] .DS_Store
 global-exclude .env .env.* .netrc .pypirc credentials.json service-account*.json
 global-exclude *.pem *.key *.p12 *.pfx *.sqlite *.sqlite3 *.sqlite-wal *.sqlite-shm

@@ -1,0 +1,173 @@
+{
+  "status": "native-engineering-loop-completed",
+  "core_changes": 0,
+  "core_wheel_sha256": "8883e708dbfcc46301939335f594884b40239ddd8bbe201a66e6af2f18e012cf",
+  "core_verified_files": 39,
+  "upstream": {
+    "repository": "https://github.com/TimeCopilot/timecopilot",
+    "revision": "961aa330f71afcf53a6ecf2d4b499cb39b44da3e",
+    "version": "0.0.38"
+  },
+  "profile": {
+    "dataset": "statsforecast AirPassengers",
+    "public_history": 120,
+    "private_horizon": 12,
+    "model": "local Qwen2.5-14B instruction checkpoint",
+    "model_tree_sha256": "d0d6f379d2324a9748b6c5e45179102113f9887fb22e0872b0c9480556c6c935",
+    "model_files": 15,
+    "tool_choice_mode": "auto",
+    "native_tools_and_validators_preserved": true
+  },
+  "run": {
+    "run_id": "run_654e248d308a48c9a1e7ca45ca802c78",
+    "status": "succeeded",
+    "sealed_result_sha256": "sha256:bfa8ab09a25557fb77b6f9228faedb1723e265676537a7e3d9fc78b9192c2762",
+    "model_calls": 6,
+    "tool_calls": 4,
+    "model_statuses": [
+      "succeeded",
+      "succeeded",
+      "succeeded",
+      "succeeded",
+      "succeeded",
+      "succeeded"
+    ],
+    "tool_names": [
+      "timecopilot.tsfeatures_tool",
+      "timecopilot.cross_validation_tool",
+      "timecopilot.forecast_tool",
+      "timecopilot.detect_anomalies_tool"
+    ],
+    "native_selected_model": "AutoETS",
+    "native_tool_return_consumption": {
+      "chatcmpl-tool-17c50b55aa8e4780a2efd372dfb57320": [
+        "model-b0b49866764048cea08dd8035a8e997b",
+        "model-80e125ab43cf481a8e6dc2ef4373a64d"
+      ],
+      "chatcmpl-tool-83febd7433144a4483bf23e3ba75c7dc": [
+        "model-175604b2643a41b29bc306327b31d865",
+        "model-b0b49866764048cea08dd8035a8e997b",
+        "model-80e125ab43cf481a8e6dc2ef4373a64d"
+      ],
+      "chatcmpl-tool-b9ecc64ea54740b0a317b6996b8bb0f7": [
+        "model-026dc67028984dbf9f716de25f71b8fc",
+        "model-175604b2643a41b29bc306327b31d865",
+        "model-b0b49866764048cea08dd8035a8e997b",
+        "model-80e125ab43cf481a8e6dc2ef4373a64d"
+      ],
+      "chatcmpl-tool-e8807f36c5f2466184759caf41f3a5c1": [
+        "model-102b1997f90e4363b44d86a2fe7bc8ee",
+        "model-026dc67028984dbf9f716de25f71b8fc",
+        "model-175604b2643a41b29bc306327b31d865",
+        "model-b0b49866764048cea08dd8035a8e997b",
+        "model-80e125ab43cf481a8e6dc2ef4373a64d"
+      ]
+    },
+    "budget": {
+      "counts": {
+        "model_requests": 6,
+        "tool_calls": 4,
+        "total_tokens": 31389,
+        "usage_missing_responses": 0
+      },
+      "limits": {
+        "max_requests": 16,
+        "max_response_tokens": 4096,
+        "max_tool_calls": 12,
+        "max_total_tokens": 120000,
+        "max_wall_time_s": 600
+      },
+      "termination": "native_final_result",
+      "token_limit_semantics": "observed provider total; a completed response can cross the limit; then stop before consumption or further dispatch"
+    }
+  },
+  "evaluation_id": "evaluation_e06bc7e353c14b86ac8417b13229cee6",
+  "rescore_id": "evaluation_a30df0bae04d4424a8fa1c4ae6bc4ad9",
+  "metrics": [
+    {
+      "level": "aggregate",
+      "candidate_id": "native-timecopilot",
+      "group_key": {},
+      "unit_id": null,
+      "repetition": null,
+      "metric_id": "mae",
+      "result": {
+        "value": 44.41334215619239,
+        "status": "ready",
+        "counts": {
+          "eligible": 1,
+          "scored": 1,
+          "missing": 0,
+          "invalid": 0,
+          "excluded": 0
+        },
+        "reason": null
+      }
+    },
+    {
+      "level": "aggregate",
+      "candidate_id": "native-timecopilot",
+      "group_key": {},
+      "unit_id": null,
+      "repetition": null,
+      "metric_id": "rmse",
+      "result": {
+        "value": 52.018265022593305,
+        "status": "ready",
+        "counts": {
+          "eligible": 1,
+          "scored": 1,
+          "missing": 0,
+          "invalid": 0,
+          "excluded": 0
+        },
+        "reason": null
+      }
+    }
+  ],
+  "quality_verdict": "insufficient_evidence",
+  "quality_gates": [],
+  "rescore": {
+    "candidate_and_native_backend_forbidden": true,
+    "Popen_forbidden": true,
+    "local_model_service_stopped": true,
+    "sealed_result_and_events_unchanged": true,
+    "science_imports_absent": true,
+    "original_hashes": {
+      "run_654e248d308a48c9a1e7ca45ca802c78": {
+        "result": "sha256:bfa8ab09a25557fb77b6f9228faedb1723e265676537a7e3d9fc78b9192c2762",
+        "events": "sha256:e6b7d48b3b945d34b3846adbe758d6fe6b770c0acacf7f007a1f03446d3a30fc"
+      }
+    }
+  },
+  "contract_tests": 13,
+  "source_identities": {
+    "dataset_revision": "sha256:1f8864641ba9a752751dc4c27c63061db3dc3526f9e536def2f645344ff84c48",
+    "sample_tokens": [
+      "1f8864641ba9a752751dc4c27c63061db3dc3526f9e536def2f645344ff84c48"
+    ]
+  },
+  "retained_failures": [
+    {
+      "run_id": "run_352e468bd67249f6896414419716427b",
+      "cause": "Native feature name seasonality unavailable; original tool string-list schema had no enum"
+    },
+    {
+      "run_id": "run_ca5c3e2b61b8455d92508da262f6535e",
+      "cause": "7B required mode repeated native features and reached the 12-tool cap; failed Run and later scoring retained"
+    },
+    {
+      "run_id": "run_3811c4bbd177493c9b570815ea5dc629",
+      "cause": "14B required mode repeated four native stages and reached the 12-tool cap"
+    }
+  ],
+  "adapter_fixes": [
+    "Publish native feature/model enums using public dataclass copies, leaving original callables and validators unchanged",
+    "Reuse immutable reference availability across repeated experiments; save initial execution report for zero-inference driver recovery",
+    "Keep unavailable units in score selection and propagate failed execution coverage to CLI status",
+    "Bind worker session to host lifetime and clean only owned process groups, with actual sleep-process tests",
+    "Record the explicit user-selected auto request policy through the public native provider profile"
+  ],
+  "limits": "Small real engineering profile, not a paper reproduction or quality-pass claim. IO capture does not claim token IDs or logprobs. Whole lightweight Candidate metadata remains required during core0.5 rescore.",
+  "evidence_note": "Full original stores, private outcomes and model files are not distributed in this source repository."
+}

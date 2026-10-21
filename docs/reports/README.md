@@ -10,3 +10,7 @@
 当前交付边界见 [项目状态](../project-status.md)，环境验收见
 [环境适配](../environment-adapters.md)，许可验证见
 [MIT 验证摘要](mit-license-2026-10-20.json)。
+
+- [2026-10-21 TSQA 参考解析与评分接入修正](bench-tsqa-reference-repair-summary-2026-10-21.json)：公开聚合摘要，覆盖 19,354 行参考、720 行输入复核与 1,233 组上游规则对照；零模型调用。逐行题目、答案与诊断只保留本地，摘要固定原报告 SHA-256。
+
+- [2026-10-21 实验组织协议与 F2.1 验收](experiment-organization-2026-10-21.json)：固定输入、阶段尝试、数据回库、关系查询、恢复及独立外包冻结验证。

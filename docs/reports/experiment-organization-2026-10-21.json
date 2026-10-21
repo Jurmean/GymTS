@@ -1,0 +1,748 @@
+{
+  "protocol_version": "gymts.organization-acceptance/1",
+  "status": "passed",
+  "date": "2026-10-21",
+  "objective": "Store data, connect data, organize experiments and record experiments; project reuse is not a framework objective",
+  "version": "0.6.0",
+  "interface_version": "1.4.0",
+  "release_state": "working tree; no Git commit, tag, PyPI upload or website deployment in this task",
+  "requirements": [
+    {
+      "id": "experiment-organization",
+      "status": "passed",
+      "evidence": [
+        "gymts.experiment-group/1",
+        "gymts.stage-request/1",
+        "gymts.stage-attempt/1",
+        "gymts.experiment-event/1"
+      ],
+      "behavior": "Immutable definition revisions; fixed stage inputs, dependencies, named outputs; append-only attempts; explicit retry/recovery; stage-level continuation"
+    },
+    {
+      "id": "data-publication",
+      "status": "passed",
+      "evidence": {
+        "path": "/tmp/gymts-data-publish-validation.json",
+        "sha256": "ab06a01ac5a701bd99053846d0466a4cdf0228d8204c284a907fd38334571aac"
+      },
+      "behavior": "Fixed build shards and portable provenance survive deleting original Run store; original codec/schema/shard bytes and restrictive permissions retained"
+    },
+    {
+      "id": "uniform-query",
+      "status": "passed",
+      "evidence": {
+        "path": "/tmp/gymts-organization-20261021/f2.1-parent-query/report.json",
+        "sha256": "8f9501c775fca4861a2131b3f16f1eebe2caa0337021fb1404cc294139c8532e"
+      },
+      "behavior": "Group/data/Run/attempt/parent dataset identity and revision queries, including artifact-only publication; scoring adds associations without changing Run ownership"
+    },
+    {
+      "id": "responsibility-and-compatibility",
+      "status": "passed",
+      "evidence": [
+        "docs/adr/0002-experiment-organization.md",
+        "tests/test_experiment_organization_adversarial.py"
+      ],
+      "behavior": "EnvironmentTS owns data/execution/evidence; AutoBenchTS owns evaluation. Domain executors remain external; old contracts, Runs and outcomes are not rewritten"
+    },
+    {
+      "id": "frozen-independent-integration",
+      "status": "passed",
+      "evidence": {
+        "path": "/tmp/gymts-organization-20261021/f2-external/report.json",
+        "sha256": "1ccafca8124aa65c01a40df2ded61b830350978e6880912913b18d7e57a86525"
+      },
+      "behavior": "Independent CSV/data executors installed with exact frozen core; real Runs and numerical scores; fresh-process and post-uninstall rescoring; runtime files unchanged"
+    }
+  ],
+  "frozen_core": {
+    "freeze_id": "F2.1-experiment-organization-20261021",
+    "core_version": "0.6.0",
+    "interface_version": "1.4.0",
+    "source_files": {
+      "gymts/__init__.py": "93de2d37ad422d5771a04ec47fc0abd31eaf40bae07ac09b487696e24682273a",
+      "gymts/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "gymts/autobench_ts/__init__.py": "295a3476a58ead256ffddce42950bde872c0e6ca2ed043c058e7cf20370d2ef6",
+      "gymts/autobench_ts/aggregation.py": "3599669d9497cd43a18ed765442538cc2ffa4e0798b6ffc94fac170f2257c234",
+      "gymts/autobench_ts/catalog.py": "d2013bb38b95dd8f6858448dba5fea942435606ad58feaafbaef019dbebda39e",
+      "gymts/autobench_ts/service.py": "334d1288e522ad3b9b9d235681d766637b11773a2e525343e3c8c8bbf9068282",
+      "gymts/autobench_ts/types.py": "6195f4e247cef602384fdfbeac92c758e28516d08270fd5910166ffbc1036739",
+      "gymts/cli.py": "0c66b5791b4ebf6447ff78b6617c552d201449ff0365dafcdeef866cccbd9ebd",
+      "gymts/contracts/__init__.py": "ef73db1979dafa0824ede1f257607c61c03a416bab254e38aea89a636a5d8b81",
+      "gymts/contracts/common.py": "455951d65cde0792fba470b268735335fa38cf4a3dfc96b25d7d24521cfc4a71",
+      "gymts/contracts/organization.py": "3d7a464644fd0ac7bb9da2bf35430dfe4b83c16e53ef4019a1443c96d55a5a92",
+      "gymts/contracts/protocols.py": "e0c9e924184d2399ed6c2eaa0fc12fef933ea47a4790121a1a637fc20284babf",
+      "gymts/contracts/resources.py": "770ba490cd0760ac8e28eccf9ac905d0e9ccdea77e4bc739fba4f56de558aed1",
+      "gymts/contracts/schema.py": "44b7b44bb2331f9320fab5a4ecb8bb3592d4094c9fe8d4a9f1a86e7ac006d6e4",
+      "gymts/contracts/types.py": "3d674bc9d98912e27e6a681875d92e2b860d5efb8c174c5e78012e2748c4992a",
+      "gymts/environment_ts/__init__.py": "c9bee2e028538db168768571ad853c8a3001035521bcd6a50b8feb67e824652b",
+      "gymts/environment_ts/capture.py": "f3eb1073a1ec4eb72e44e9b2682da15f1944a2466912f4fdd80e8d128ae65b04",
+      "gymts/environment_ts/data_capture.py": "bdef92a9746714032a7de99e2f5c153d849bcd8cf96657df6983b8c32048fcc1",
+      "gymts/environment_ts/data_publish.py": "13354bb1585e31eb59f99752b2352079e544c5013c528f3f6c4350fc46f08693",
+      "gymts/environment_ts/data_sources.py": "4cbbcd99a4f5ce92b419f52fcac67d70e0c0c6faf9f0df6d36b336d9b50f0641",
+      "gymts/environment_ts/datasets.py": "90dcab14345e848d4f2ce89e16d4eacc5763f1e85011d2980923bab109957c30",
+      "gymts/environment_ts/experiments.py": "9e266d5338165b6547da53731c09f037c0ed632b5df3ea807795af87b27f3759",
+      "gymts/environment_ts/runner.py": "d1dac4dc50bc3bc8637672e444e6f3fd9585ff7a40c84912af67cde17c9a9556",
+      "gymts/environment_ts/services.py": "aee8a21a93cb1a72d963b2c6152258e56e6ad1464a2b4601a686770ffec0cd22",
+      "gymts/environment_ts/validation.py": "4adc98a681d4f9a67a13a6c17eacf28584911c88b7531fa02bf7f8bc038e986a",
+      "gymts/http_candidate.py": "e0a01fa9287c4afb6e2cd919b87b5cceb11bade2b2f350d893163618201ad8d9",
+      "gymts/integrations/__init__.py": "59c6759753e4eb4d82f8cdd2465e727d8434c4299f9fba3635fc32ca0c99ed16",
+      "gymts/plugin_support.py": "b053032128eed9582cde8ea18a6a5a6527c699436508c9ba2b2e8a1769d10461",
+      "gymts/plugins/__init__.py": "928e00be88d90462303efb60c78d29d2e5b4bf16cb3402f13014a71762dee65c",
+      "gymts/plugins/_common.py": "f96fb7f368e917694204d78f5aafe30b2f6755aba6919019b2866a3e60752c35",
+      "gymts/plugins/counter.py": "8586ca2da3ffa470f0911073563564c560b1e7324fc2d5cac201d92d46e7d9d9",
+      "gymts/plugins/forecast.py": "cf4e492158ff5039028df98b28e052dc816ed91290859983c3b5d5ee79a19383",
+      "gymts/plugins/replay.py": "d735d7bec5f0561b297e7619547098943ca02f20f62a0f46c24f577571d168cb",
+      "gymts/plugins/scoring.py": "988bda09e1ec1c533d0b562b0bd2ea6b94ffb2e56f4853b88bd67ba5281605c0",
+      "gymts/registries/__init__.py": "ac9096f6b2a4459300cafa007bd994b6c4ca11dcf34f71d0b0fc6b84d0d21a02",
+      "gymts/registries/resources.py": "cffbcc8b5e61c7fc9e16d861c3588a26b001958b4ec292ca91e33f503d7a784c",
+      "gymts/storage/__init__.py": "f1bee2d53b1063cbca34ee3036ca0b1ecf7f6c9056e3111dd2a1ec9c5f310b8b",
+      "gymts/storage/artifacts.py": "1fe2406937ab2362b0b2f9e3e73272328dbafd69ac7194e597f52090b3d798dc",
+      "gymts/storage/organization.py": "85e5ebda6927bd21643f0d7ee0c43460caf292c59126e6194d666c09ce98813d",
+      "gymts/storage/records.py": "21a89d76d9b4181c749509631eca03ae87106b945174bf6d2b911ecde8c20983",
+      "gymts/storage/resources.py": "2becaba202586b3e9b41b574c883f38ac25f21b63ae75c11f55d30d43db1c935",
+      "gymts/training/__init__.py": "1e4813b5b3a01aaf4042ee83d2a448e731e3584a880d8b001d952a5acaebd7b0",
+      "gymts/training/builder.py": "d4f2f2d354c74bdea9b01234a20e7f3d1b93cd302bc94d3be9d1459804135116",
+      "gymts/training/service.py": "3225426f6d0452ac81da9320a9619aed49f3b43fa5e79149cf4a389901e4aaff",
+      "setup.cfg": "b8b732cbe5eab13282c30de3a06f0da5c767ef010c9efe74e2e222b64d3888f2"
+    },
+    "source_tree_sha256": "410442bbffcd8062e46ca78570df5ffa1cc08303e203ef7fd60720e82123c930",
+    "schema_sha256": {
+      "gymts.artifact/1": "eeabe3583ca8f6dd2c5c029fc0149701cd48271dcc8fc3a9bd50948fdda1a340",
+      "gymts.assembly-plan/1": "b2a9fb7b347959280c64b95feb8c4568d0b96bc1ffb9e8f13808943fcd2b4c3d",
+      "gymts.autobench.benchmark/1": "d31bd70ab0730d79309f1acd4c476494a047d8ac2aa46b18793d4ba5bf1089cf",
+      "gymts.component/1": "91e0ee72c11713c3bc5412544f05be219adaf85fb19b4f4d8c04bc483de083e0",
+      "gymts.data-capture-row/1": "6093599694e8377c1682ae72a8bd7216786d8589f0dc658cf06b55add7db2a93",
+      "gymts.data-capture/1": "765518e75414321eacae3a3c3445490d97d02d8464e5c8ad4fdb8d60e27dfaaa",
+      "gymts.data-source/1": "db98194e81edf9e66532e8553506cba0b898ae14ec1b95670b0577c23f2fc053",
+      "gymts.dataset-asset/1": "e8b3245d035a1db0d4a97d3989d1bba12f11482b8539236556c970e2ec8c86aa",
+      "gymts.experiment-event/1": "34e519132758f2597be6b390525e7ccd84ca074c98353128eb17565167ceada8",
+      "gymts.experiment-group/1": "bb66a46db4bcc80252b1c6c7826b04d911af403ce78a69b47b001893eec1c8a2",
+      "gymts.experiment/1": "bdcbbc068712de546225fd6900cf4c5351597281a5cf7bf1ad31c7c3984866d0",
+      "gymts.extensions/1": "d746974fa9afd5e951f76f9af38954b0ad7f436f2120dc974da65e5ee39f856f",
+      "gymts.json/1": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "gymts.logprobs/1": "9708af6a581e23ecde949d922630ffb4527263f7706cc82a5f9e68099ed2aa0d",
+      "gymts.model-call/1": "8b8d4a9411932599f6d072ceba5fe48538db2b226d8b8d4ef329dd8fd3aadb51",
+      "gymts.native-inputs/1": "a2c799262a3ce3c19ef5cdd983bf3d12b43ab3c426227091b909dcb7054738c0",
+      "gymts.payload/1": "ea914574d74eac9a397c3ed88cda3410fba2ee0cfc4b41e6f9a8305be9677819",
+      "gymts.resource-provenance/1": "f7307bc315ec300ae847a5b8316a228d467247aa671483d1f682fe55356f65ac",
+      "gymts.selection/1": "358a97bd5652cfce3babc79fd3670145bc5fb205b8a811450dca68df67d1f782",
+      "gymts.source-dataset/1": "c3899478bfda012d39c2654cd6bdf89737cdaf506746d3a3ffc156dfc54aebdf",
+      "gymts.source-dataset/2": "0d7cf093b698038f0d95fbafceeff8a0a52fc25804f3e672d7dfd13918c1fa74",
+      "gymts.source-usage-policy/1": "d6b4b2548ee90896484016321cfbfc6acea7ee9cc2a0714ac245b88a63ea5658",
+      "gymts.stage-attempt/1": "2a27953e03ca030405728a1732b50f594383abfafce6213e59722350e44d4c00",
+      "gymts.stage-request/1": "3d57aa0177c08d17094c27f30c51097545e4743068ff3562b9b9cc1d13ba77e1",
+      "gymts.token-ids/1": "f7b95632ca0e591b9ca2d8d936d74fe41d1e15a73468410083c15b7419574860",
+      "gymts.tool-call/1": "c867587ef7951ef24cdca801b9968583de91c54cc0cc28d169d9d0653d6dedfa",
+      "gymts.view/1": "8f0b37d7a5f714f3ed788638bedc599175853448db73317da7e8a9e3da03ad1a"
+    },
+    "scope": "gymts/**/*.py and setup.cfg; documentation and tests may change without changing the runtime freeze",
+    "supersedes": {
+      "freeze_id": "F2-experiment-organization-20261021",
+      "wheel_sha256": "b81d7bc6968dc3255c9864fbeff752eb5058d5465bd6ad9a550c8435ddf7193f",
+      "reason": "Published build parent datasets were declared but omitted from group queries; query now follows explicit source-dataset/2 lineage and published-build source-dataset/1 parent metadata. Public TypedDicts completed; old schemas and Run semantics unchanged.",
+      "failure_probe": "/tmp/gymts-publish-query-probe/report.json"
+    },
+    "wheel": "/tmp/gymts-organization-20261021/frozen-core-f2.1/wheels/gymts-0.6.0-py3-none-any.whl",
+    "wheel_sha256": "69a912510ae7bbbb2a6bb15b9aa8db01c3367ae5bc18be34dd25bebf894a3fb6"
+  },
+  "schema_compatibility": {
+    "old_f1_schemas": 23,
+    "all_canonical_hashes_unchanged": true,
+    "new_schemas": [
+      "gymts.experiment-event/1",
+      "gymts.experiment-group/1",
+      "gymts.stage-attempt/1",
+      "gymts.stage-request/1"
+    ]
+  },
+  "core_verification": {
+    "installed_regression_tests": 196,
+    "skipped": 0,
+    "package_check": {
+      "status": "passed",
+      "version": "0.6.0",
+      "python": "3.11.8",
+      "offline": true,
+      "distributions": {
+        "sdist": {
+          "file": "gymts-0.6.0.tar.gz",
+          "files": 94,
+          "bytes": 210414,
+          "sha256": "c89fe697f416beaa2282b58ddbe8594276039a096e9f18088d411bc585d45e3e"
+        },
+        "wheel": {
+          "file": "gymts-0.6.0-py3-none-any.whl",
+          "files": 51,
+          "bytes": 133238,
+          "sha256": "1b16b28102a549d5a0cb9cf12567f58e4c9c867409d3d1f683ee54b9f858ce09"
+        },
+        "wheel_rebuilt_from_sdist": {
+          "file": "gymts-0.6.0-py3-none-any.whl",
+          "files": 51,
+          "bytes": 133238,
+          "sha256": "1b16b28102a549d5a0cb9cf12567f58e4c9c867409d3d1f683ee54b9f858ce09"
+        }
+      },
+      "direct_wheel_install": {
+        "isolated_import": true,
+        "console_scripts": 1,
+        "counter_operations": 3,
+        "project_plugins_bundled": false
+      },
+      "sdist_wheel_install": {
+        "isolated_import": true,
+        "console_scripts": 1,
+        "counter_operations": 3,
+        "project_plugins_bundled": false,
+        "installed_regression_tests": 196,
+        "installed_regression_skipped": 0,
+        "installed_regression_passed": 196
+      },
+      "external_plugin_install": {
+        "metadata_discovery_without_load": true,
+        "explicit_enable": true,
+        "forecast_results": 8,
+        "independent_linear_predictions_exact": true,
+        "public_sdk_only": true,
+        "uninstall_preserves_core_run": true,
+        "distribution": "gymts-release-linear-fixture==1.0.0"
+      },
+      "release_decisions": [],
+      "scope": "Distribution contents and isolated installations; not a Git index or full secret audit"
+    },
+    "evidence": {
+      "path": "/tmp/gymts-organization-20261021/package-check-f2.1.json",
+      "sha256": "566827357ce4d95150b40b47e0fcf5f1b7e27763d0aab966e0b4a64d3dcfbfa4"
+    },
+    "notable_cases": [
+      "real os._exit after sealed Run and adoption without reexecution",
+      "real os._exit midway through two-unit evaluation; all opened Runs remain queryable; default resend denied",
+      "Run and organization link transaction rollback",
+      "failed attempt retained across explicit retry",
+      "upstream rerun invalidates dependent stages without mutating old requests",
+      "nonterminal external response cannot become successful stage",
+      "source/dataset purpose policy and training denial",
+      "late concurrent stage claim cannot reuse outdated execution view"
+    ]
+  },
+  "adapter_compatibility": {
+    "status": "passed",
+    "packages": 16,
+    "discovered": 417,
+    "executed_passed": 356,
+    "optional_dependency_skipped": 61,
+    "coexistence": {
+      "all_enabled": [
+        "areal",
+        "bench-tsqa",
+        "chatts",
+        "chronos",
+        "datajuicer",
+        "gymnasium",
+        "hf-datasets",
+        "interaction",
+        "itformer",
+        "libraryts",
+        "openenv",
+        "prometheus",
+        "rl",
+        "timecopilot",
+        "timeseries",
+        "timesigma"
+      ],
+      "uninstalled": "gymts-areal",
+      "remaining_enabled_and_core_run_succeeded": [
+        "bench-tsqa",
+        "chatts",
+        "chronos",
+        "datajuicer",
+        "gymnasium",
+        "hf-datasets",
+        "interaction",
+        "itformer",
+        "libraryts",
+        "openenv",
+        "prometheus",
+        "rl",
+        "timecopilot",
+        "timeseries",
+        "timesigma"
+      ]
+    },
+    "evidence": {
+      "path": "/tmp/gymts-organization-20261021/adapter-compatibility-f2.1.json",
+      "sha256": "18b47413888cf05ac29ee4bee274fd883bc8af919ef5e3b3c2954365b9c80a65"
+    },
+    "scope": "Independent package/activation/regression/removal checks; no model training or quality claim",
+    "changes": "18 adapter/example distribution dependency ranges admit 0.6; ITFormer stable-version guard admits 0.5/0.6 while preserving complete wheel/hash/source verification. Domain code unchanged."
+  },
+  "local_example": {
+    "status": "succeeded",
+    "group_id": "organization/forecast-study",
+    "revision": "sha256:0f3c7060fe94e236a5292000160c34a6e53596651126a69f33602e1b40ef68a2",
+    "stage_count": 5,
+    "attempt_count": 5,
+    "run_count": 1,
+    "verdict": "pass",
+    "dataset_query_matches": 1,
+    "repeat_did_not_execute": true,
+    "original_result_unchanged": true,
+    "work": "/tmp/gymts-organization-20261021/demo-final"
+  },
+  "independent_integration": {
+    "status": "passed",
+    "package": {
+      "status": "passed",
+      "final_wheel": "/tmp/gymts-organization-20261021/f2-external/final-rebuilt-wheels/gymts_organization_demo-0.1.0-py3-none-any.whl",
+      "wheel_sha256": "739e28818d50b908c74775127eb466d5e5e7a343d509fecad3f09b4561cdfb8d",
+      "sdist": "/tmp/gymts-organization-20261021/f2-external/wheels-final/gymts_organization_demo-0.1.0.tar.gz",
+      "sdist_sha256": "cb2e433002334ec1c02fd60a762d3b1cdbb242073e7cec74e57d33308d79e218",
+      "original_and_sdist_rebuilt_production_bytes_equal": true,
+      "production_modules": {
+        "gymts_organization_demo/__init__.py": "ee5bdf6c544c7892ba7a5006fcc98befc9b9ff14426900d4b6258a7602335674",
+        "gymts_organization_demo/__main__.py": "29d98c105a9421bbc8866b4cdd9d9217767ca67ed6045efb8e343cd5f9dd7824"
+      },
+      "same_production_as_executed_v3": true,
+      "final_change": "README and standalone rescore script record explicit score-stage rerun; installed production modules unchanged"
+    },
+    "checks": {
+      "data_survives_adapter_uninstall": true,
+      "registered_public_rows_exact": true,
+      "training_denied": true,
+      "data_group_run_query": true,
+      "two_real_runs": true,
+      "per_candidate_predictions": 29,
+      "independent_numeric_formula_matches": true,
+      "sealed_run_results_and_events_unchanged": true,
+      "fresh_rescore_new_organized_attempt": true,
+      "external_stages_not_reexecuted_after_uninstall": true,
+      "no_model_source_subprocess_calls_on_rescore": true,
+      "event_sequence_contiguous": true,
+      "core_runtime_source_unchanged": true
+    },
+    "fresh_process_rescore": {
+      "status": "passed",
+      "adapter_absent": false,
+      "model_source_subprocess_calls": 0,
+      "public_rows": 32,
+      "dataset": {
+        "config": "default",
+        "dataset_id": "example/ett-hourly-view",
+        "revision": "sha256:12210601bb5446b7dfc3252799584dfcd48a8d0b3dd7536f1a9317dfe02f08a0",
+        "split": "evaluation"
+      },
+      "organization_query": true,
+      "run_dataset_query": true,
+      "organization_events": 17,
+      "run_ids": [
+        "run_a1cd6af663254d72bd15c1949607cecc",
+        "run_da949b2bfce84c5485c827c1efef4710"
+      ],
+      "sealed_results_and_events_unchanged": true,
+      "metrics_exact": true,
+      "numeric_reference_matches": true,
+      "metrics": {
+        "last-value": {
+          "counts": {
+            "eligible": 29,
+            "excluded": 0,
+            "invalid": 0,
+            "missing": 0,
+            "scored": 29
+          },
+          "reason": null,
+          "status": "ready",
+          "value": 1.3317583676042233
+        },
+        "window-mean": {
+          "counts": {
+            "eligible": 29,
+            "excluded": 0,
+            "invalid": 0,
+            "missing": 0,
+            "scored": 29
+          },
+          "reason": null,
+          "status": "ready",
+          "value": 1.389884904883373
+        }
+      },
+      "evaluation_id": "evaluation_6e579f589ebe4ccbaa0c4a3e3a99f9fc",
+      "verdict": "insufficient_evidence",
+      "organized_score_attempt_id": "attempt_0fb27a984d04402e96bfadfa7c1f3bd1",
+      "completed_external_stages_reused": true,
+      "report_ref": {
+        "artifact_id": "88d58e8d7a4068e798f19a0ab065431e4027dcd07902fd883152ee06d9b8c906",
+        "revision": "c476b65608a8506855844a65ca939fac5bb0fe9518f646c82395da1dc480d849",
+        "uri": "gymts-artifact://88d58e8d7a4068e798f19a0ab065431e4027dcd07902fd883152ee06d9b8c906/c476b65608a8506855844a65ca939fac5bb0fe9518f646c82395da1dc480d849",
+        "content_hash": "c476b65608a8506855844a65ca939fac5bb0fe9518f646c82395da1dc480d849",
+        "media_type": "application/json",
+        "schema_ref": "gymts.evaluation-report/1",
+        "size_bytes": 13952
+      }
+    },
+    "after_adapter_uninstall": {
+      "status": "passed",
+      "adapter_absent": true,
+      "model_source_subprocess_calls": 0,
+      "public_rows": 32,
+      "dataset": {
+        "config": "default",
+        "dataset_id": "example/ett-hourly-view",
+        "revision": "sha256:12210601bb5446b7dfc3252799584dfcd48a8d0b3dd7536f1a9317dfe02f08a0",
+        "split": "evaluation"
+      },
+      "organization_query": true,
+      "run_dataset_query": true,
+      "organization_events": 21,
+      "run_ids": [
+        "run_a1cd6af663254d72bd15c1949607cecc",
+        "run_da949b2bfce84c5485c827c1efef4710"
+      ],
+      "sealed_results_and_events_unchanged": true,
+      "metrics_exact": true,
+      "numeric_reference_matches": true,
+      "metrics": {
+        "last-value": {
+          "counts": {
+            "eligible": 29,
+            "excluded": 0,
+            "invalid": 0,
+            "missing": 0,
+            "scored": 29
+          },
+          "reason": null,
+          "status": "ready",
+          "value": 1.3317583676042233
+        },
+        "window-mean": {
+          "counts": {
+            "eligible": 29,
+            "excluded": 0,
+            "invalid": 0,
+            "missing": 0,
+            "scored": 29
+          },
+          "reason": null,
+          "status": "ready",
+          "value": 1.389884904883373
+        }
+      },
+      "evaluation_id": "evaluation_7272c0d47d6e485c98277e2a3e959c2d",
+      "verdict": "insufficient_evidence",
+      "organized_score_attempt_id": "attempt_048dfaf4f16c4b5b9ae6a2aba3a42c01",
+      "completed_external_stages_reused": true,
+      "report_ref": {
+        "artifact_id": "50579fe2784857dfea40a9e003ecbc155ad32bed0d31d13c8f42d2787a388f8c",
+        "revision": "a37b42303b4d2e371584a445fbbfeaee5fe50bb751c78011fd22ec16b378256b",
+        "uri": "gymts-artifact://50579fe2784857dfea40a9e003ecbc155ad32bed0d31d13c8f42d2787a388f8c/a37b42303b4d2e371584a445fbbfeaee5fe50bb751c78011fd22ec16b378256b",
+        "content_hash": "a37b42303b4d2e371584a445fbbfeaee5fe50bb751c78011fd22ec16b378256b",
+        "media_type": "application/json",
+        "schema_ref": "gymts.evaluation-report/1",
+        "size_bytes": 13952
+      }
+    },
+    "limits": [
+      "32-row, one-column rolling evaluation view, not the full ETT benchmark or a quality-improvement claim",
+      "Builtin reference forecast Task uses generic unit=value; original degC recorded in dataset features without changing raw magnitudes",
+      "Upstream naive timestamps use an explicitly declared UTC replay coordinate; actual source timezone is not asserted",
+      "No acceptance gates declared: numerical reports retain insufficient_evidence/no_acceptance_gate",
+      "CSV source revision is caller-provided provenance, full supplied SHA recorded; this example does not authenticate a fresh upstream download",
+      "Removing this connector works because public stored data use the core JSON reader and original Task/Candidates/Scorer remain in core; not a claim about arbitrary decoder removal"
+    ],
+    "evidence": {
+      "path": "/tmp/gymts-organization-20261021/f2-external/report.json",
+      "sha256": "1ccafca8124aa65c01a40df2ded61b830350978e6880912913b18d7e57a86525"
+    }
+  },
+  "legacy_benchmarks": {
+    "status": "passed",
+    "legacy_data_home": "/zzr/zmx/GymTS/Jurmean-GymTS/output/resources-20261020",
+    "datasets": [
+      {
+        "dataset_id": "local/bedtime",
+        "revision": "sha256:16beafd6471055e7888f3ca97319c788ca73ceaeb002ed502aa1c40b98bea600",
+        "splits": {
+          "test": {
+            "input_indices": [
+              0
+            ],
+            "row_count": 394,
+            "split_origin": "user_declared_evaluation",
+            "target_indices": [
+              0
+            ]
+          }
+        },
+        "usage_policy": {
+          "allowed_uses": [
+            "evaluation"
+          ],
+          "training_allowed": false
+        }
+      },
+      {
+        "dataset_id": "local/dataset-a-rlvr",
+        "revision": "sha256:9f06702fee2b3bc7591a117b03476643146ae407e736f365f176ffa777de3be0",
+        "splits": {
+          "test": {
+            "input_indices": [
+              0
+            ],
+            "row_count": 411,
+            "split_origin": "user_declared_evaluation",
+            "target_indices": [
+              0
+            ]
+          }
+        },
+        "usage_policy": {
+          "allowed_uses": [
+            "evaluation"
+          ],
+          "training_allowed": false
+        }
+      },
+      {
+        "dataset_id": "local/mcq2",
+        "revision": "sha256:65191bf5cf19680e2bc4dc8bd0dcc96eb678d83abc25e7c91e53d84f749e0391",
+        "splits": {
+          "test": {
+            "input_indices": [
+              0
+            ],
+            "row_count": 100,
+            "split_origin": "user_declared_evaluation",
+            "target_indices": [
+              0
+            ]
+          }
+        },
+        "usage_policy": {
+          "allowed_uses": [
+            "evaluation"
+          ],
+          "training_allowed": false
+        }
+      },
+      {
+        "dataset_id": "local/timemqa-full",
+        "revision": "sha256:6e77c1c044ae1cbdbef4e31c69fcab39e3b4aa3193f7b020bd1c1995f67dd3fc",
+        "splits": {
+          "test": {
+            "input_indices": [
+              0
+            ],
+            "row_count": 17703,
+            "split_origin": "user_declared_evaluation",
+            "target_indices": [
+              0
+            ]
+          }
+        },
+        "usage_policy": {
+          "allowed_uses": [
+            "evaluation"
+          ],
+          "training_allowed": false
+        }
+      },
+      {
+        "dataset_id": "local/tsexam-mcq",
+        "revision": "sha256:247ef2e4f311bc5089f3723dd9ca3449c4aed794741ddee000c914fb1d987602",
+        "splits": {
+          "test": {
+            "input_indices": [
+              0
+            ],
+            "row_count": 746,
+            "split_origin": "user_declared_evaluation",
+            "target_indices": [
+              0
+            ]
+          }
+        },
+        "usage_policy": {
+          "allowed_uses": [
+            "evaluation"
+          ],
+          "training_allowed": false
+        }
+      }
+    ],
+    "benchmark_count": 5,
+    "row_count": 19354,
+    "source_data_modified": false,
+    "scope": "Read legacy resource definitions only; no model evaluation or private target expansion"
+  },
+  "freeze_feedback": {
+    "initial_f2_identity": {
+      "path": "/tmp/gymts-organization-20261021/frozen-core/identity.json",
+      "sha256": "8196fbaa61495c03e39cb2a6e5869d156c732d2df97f2c4c9d3e815aff170dc9"
+    },
+    "failed_query_probe": {
+      "path": "/tmp/gymts-publish-query-probe/report.json",
+      "sha256": "f5c5704bd8ab0937f0402851468b43113ed6d46a500e8805c70e219b09bc858c"
+    },
+    "source_fix_probe": {
+      "path": "/tmp/gymts-publish-query-fix/report.json",
+      "sha256": "16209ba5d672a31013a5e45192197d4d1094a7d3c9ba6153da3c457f15fbf81a"
+    },
+    "final_exact_wheel_query_probe": {
+      "path": "/tmp/gymts-organization-20261021/f2.1-parent-query/report.json",
+      "sha256": "8f9501c775fca4861a2131b3f16f1eebe2caa0337021fb1404cc294139c8532e"
+    },
+    "initial_f2_unchanged": true,
+    "scope": "Only explicitly declared parent relationships in supported dataset manifests; no arbitrary opaque payload scanning"
+  },
+  "durable_evidence": {
+    "status": "passed",
+    "archive": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-organization/evidence/f2.1-organization-evidence.tar.gz",
+    "sha256": "cfbdb8b24d72f3e105e5811a115ae4a4010b4fe8548999da3b8d3ef8f4225ed5",
+    "bytes": 1852334,
+    "file_count": 3061,
+    "sqlite_backups": [
+      "external/run-f2/store/records.sqlite3",
+      "external/run-f2.1/store/records.sqlite3",
+      "external/run-f2-v2/store/records.sqlite3",
+      "external/run-f2-v3/store/records.sqlite3",
+      "parent-query/f2.1/store/runs/records.sqlite3",
+      "parent-query/source-fix/store/runs/records.sqlite3",
+      "parent-query/f2-failure/store/runs/records.sqlite3",
+      "legacy-catalog-check/runs/records.sqlite3",
+      "demo-final/runs/records.sqlite3"
+    ],
+    "manifest_hashes_verified": 3061,
+    "cas_references_verified": 1278,
+    "resource_objects_verified": 193,
+    "restore_root": "/tmp/gymts-organization-20261021/restored",
+    "excluded": "environments, caches, model weights, upstream checkouts; this archive is local and git-ignored"
+  },
+  "restored_fresh_process_rescore": {
+    "status": "passed",
+    "adapter_absent": true,
+    "model_source_subprocess_calls": 0,
+    "public_rows": 32,
+    "dataset": {
+      "config": "default",
+      "dataset_id": "example/ett-hourly-view",
+      "revision": "sha256:12210601bb5446b7dfc3252799584dfcd48a8d0b3dd7536f1a9317dfe02f08a0",
+      "split": "evaluation"
+    },
+    "organization_query": true,
+    "run_dataset_query": true,
+    "organization_events": 25,
+    "run_ids": [
+      "run_a1cd6af663254d72bd15c1949607cecc",
+      "run_da949b2bfce84c5485c827c1efef4710"
+    ],
+    "sealed_results_and_events_unchanged": true,
+    "metrics_exact": true,
+    "numeric_reference_matches": true,
+    "metrics": {
+      "last-value": {
+        "counts": {
+          "eligible": 29,
+          "excluded": 0,
+          "invalid": 0,
+          "missing": 0,
+          "scored": 29
+        },
+        "reason": null,
+        "status": "ready",
+        "value": 1.3317583676042233
+      },
+      "window-mean": {
+        "counts": {
+          "eligible": 29,
+          "excluded": 0,
+          "invalid": 0,
+          "missing": 0,
+          "scored": 29
+        },
+        "reason": null,
+        "status": "ready",
+        "value": 1.389884904883373
+      }
+    },
+    "evaluation_id": "evaluation_9459cec53f904e24a629ece4b2dc772d",
+    "verdict": "insufficient_evidence",
+    "organized_score_attempt_id": "attempt_483f68fbd2be4ca89bf7e927bcb79e8e",
+    "completed_external_stages_reused": true,
+    "report_ref": {
+      "artifact_id": "e7e7814bc583776b0730df1c978ce785d62ebe6028df4c7be330c31e68cac38e",
+      "revision": "40136972196db74066625648117a271fffd21a94b8faa7e072a16f5e9d816f1b",
+      "uri": "gymts-artifact://e7e7814bc583776b0730df1c978ce785d62ebe6028df4c7be330c31e68cac38e/40136972196db74066625648117a271fffd21a94b8faa7e072a16f5e9d816f1b",
+      "content_hash": "40136972196db74066625648117a271fffd21a94b8faa7e072a16f5e9d816f1b",
+      "media_type": "application/json",
+      "schema_ref": "gymts.evaluation-report/1",
+      "size_bytes": 13952
+    }
+  },
+  "documentation": {
+    "status": "passed",
+    "guide": "docs/experiment-organization.md",
+    "adr": "docs/adr/0002-experiment-organization.md",
+    "formal_spec": "docs/feishu/GymTS接口规范/GymTS接口规范.md",
+    "build": {
+      "external_links": 98,
+      "anchor_links": 0,
+      "repository_links": 897,
+      "site_links": 562,
+      "repository_fallback_links": 335,
+      "status": "passed",
+      "pages": 92,
+      "pages_per_language": 46,
+      "languages": [
+        "zh",
+        "en"
+      ],
+      "assets": 2,
+      "network_requests": 0,
+      "manifest": "docs/site-pages.json",
+      "work": "/tmp/gymts-organization-20261021/docs-final-v2",
+      "source": "/tmp/gymts-organization-20261021/docs-final-v2/source",
+      "site_dir": "/tmp/gymts-organization-20261021/docs-final-v2/site",
+      "configs": {
+        "zh": "/tmp/gymts-organization-20261021/docs-final-v2/mkdocs.zh.yml",
+        "en": "/tmp/gymts-organization-20261021/docs-final-v2/mkdocs.en.yml"
+      },
+      "staged_files": 96,
+      "manifest_sha256": "52818f027ef16da233464dab132e9b95ddd0f7a19ab2ddedfae534e0ff3d81e6",
+      "html_pages": 96,
+      "local_html_links_checked": 7494,
+      "remote_script_stylesheets": 0
+    },
+    "build_report": {
+      "path": "/tmp/gymts-organization-20261021/docs-final-build-v2.json",
+      "sha256": "f0729c8beada568c0b6cde4d60a39e4b225a91198a908b45b482d3c561a5f674"
+    }
+  },
+  "limits": [
+    "Local sequential stage orchestration; continuation is at stage boundaries, not recovery of native process memory or partial evaluation matrix execution",
+    "Interrupted external operations require inspection and explicit recovery/rerun; no automatic uncertain-action resend",
+    "Custom formats/readers, generators, model calls and domain scoring remain adapters",
+    "Existing project-specific preparation scripts are not all migrated into experiment groups by this protocol delivery",
+    "Scientific dependencies skipped by compatibility checks were not installed and no new training/LLM/GPU experiments were run",
+    "ETTh1 acceptance uses 32 rows and no quality gates; its verdict remains insufficient_evidence despite exact numerical metrics"
+  ],
+  "source_hygiene": {
+    "changed_or_untracked_files": 234,
+    "bytes": 2850357,
+    "files_over_1_mib": [],
+    "runtime_or_weight_files": [],
+    "frozen_core_source_drift": [],
+    "archive_ignored": true
+  },
+  "completion_audit": {
+    "all_five_delivery_requirements_verified": true,
+    "exact_frozen_runtime_unchanged": true,
+    "old_f1_schemas_unchanged": true,
+    "data_backflow_and_parent_query_verified_on_final_wheel": true,
+    "independent_real_runs_and_adapter_absent_rescore": true,
+    "durable_archive_restored_and_rescored": true,
+    "bilingual_docs_built_and_links_checked": true,
+    "runtime_data_and_weights_excluded_from_source_changes": true
+  }
+}

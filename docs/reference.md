@@ -1,6 +1,6 @@
 # GymTS CLI 与公共 API 参考
 
-适用版本：GymTS **0.5.0**，正式合同 **1.2.0**。本文按当前代码列出公开入口，不把设计草案写成可调用接口。完整工作流见[使用指南](user-guide.md)，字段与插件生命周期见[正式接口规范](feishu/GymTS接口规范/GymTS接口规范.md)。
+适用版本：GymTS **0.6.0** 工作树，正式合同 **1.4.0**；尚未发行。本文按当前代码列出公开入口，不把设计草案写成可调用接口。完整工作流见[使用指南](user-guide.md)，字段与插件生命周期见[正式接口规范](feishu/GymTS接口规范/GymTS接口规范.md)。
 
 ## 1. CLI
 
@@ -18,7 +18,7 @@ gymts [--store PATH] [--data-home PATH] [--cache-home PATH]
 | 参数 | 默认 | 含义 |
 | --- | --- | --- |
 | `--store PATH` | `.gymts` | 活动 Run SQLite 与 CAS 根目录，需本地 POSIX 语义 |
-| `--data-home PATH` | 环境变量或 XDG data 目录 | 固定数据资源及 benchmark 清单 |
+| `--data-home PATH` | 环境变量或 XDG data 目录 | 四类来源定义、固定数据资源及 benchmark 清单 |
 | `--cache-home PATH` | 环境变量或 XDG cache 目录 | 可重建的校验后资源缓存 |
 | `--integration NAME` | 无 | 显式启用已安装的受信任集成；可重复 |
 | `--help` | — | 显示帮助；各子命令也支持 `--help` |
@@ -33,9 +33,22 @@ gymts [--store PATH] [--data-home PATH] [--cache-home PATH]
 | `attach-outcomes SPEC` | `--run-id ID [--output FILE]` | SPEC 为 OutcomeRecord **数组**，追加后返回固定 OutcomeSnapshotRef |
 | `inspect RUN_ID` | `[--events]` | 读取已存 RunRecord；默认省略 events/event_refs |
 | `plugins` | 无 | 列举当前启用的 Environment/Task/Candidate/Scorer 精确 Manifest |
+| `run-data SPEC` | `--source ID --source-revision REV --dataset-id ID [--source-config default] [--config default] [--split recorded] [--output FILE]` | 绑定来源、执行原 ExperimentSpec 并采集 dataset；返回 run/dataset |
+| `sources list` | 无 | 列出当前 data_home 的来源定义 |
+| `sources register SPEC` | `[--alias LABEL ...] [--output FILE]` | 登记 DataSourceDefinition，不启动后端 |
+| `sources info SOURCE_ID` | `--revision REV [--config default] [--output FILE]` | 读取固定来源定义 |
+| `datasets capture RUN_ID` | `--source ID --source-revision REV --dataset-id ID [--source-config default] [--config default] [--split recorded] [--output FILE]` | 将已封存 Run 的实际环境数据登记为 dataset v2 |
 | `datasets list` | 无 | 列出当前 data_home 的固定数据清单 |
 | `datasets info DATASET_ID` | `--revision REV [--config default] [--split test] [--output FILE]` | 公开 DatasetHandle.info；不输出私有参考 |
 | `datasets register SPEC` | `[--alias LABEL ...] [--output FILE]` | 登记 SourceDatasetRevision；其引用的资源字节须先存在 |
+| `experiments register SPEC` | `[--output FILE]` | 登记不可变实验组定义，返回补齐字段与固定 revision |
+| `experiments run GROUP_ID` | `--revision REV [--retry-failed] [--rerun STAGE_ID ...] [--output FILE]` | 执行就绪阶段；重试和重跑须显式指定 |
+| `experiments info GROUP_ID` | `--revision REV [--output FILE]` | 阶段派生状态、全部 attempt 与关联 Run |
+| `experiments list` | `[--group-id ID] [--dataset-id ID] [--dataset-revision REV] [--status STATUS] [--output FILE]` | 按实验或数据查询实验组修订 |
+| `experiments events GROUP_ID` | `--revision REV [--after-seq N] [--output FILE]` | 有序组织事件 |
+| `experiments recover ATTEMPT_ID` | `--reason TEXT [--adopt-run] [--output FILE]` | 显式恢复开放 attempt；调用方先确认原工作已停止 |
+| `runs` | `[--group-id ID] [--revision REV] [--attempt-id ID] [--dataset-id ID] [--dataset-revision REV] [--status STATUS] [--output FILE]` | Run 摘要及原始 organization / 全部 associations |
+| `datasets publish-build SPEC` | `[--output FILE]` | SPEC 含 manifest、reader_ref 和发布选项；把固定构建结果回存长期目录 |
 | `autobench list` | 无 | 列举当前 data_home 的 benchmark 定义 |
 | `autobench register SPEC` | `[--alias LABEL ...] [--output FILE]` | 登记 BenchmarkDefinition，解析并固定数据 revision |
 | `autobench resolve BENCHMARK_ID` | `--revision REV --candidate FILE ... [--purpose regression] [--output FILE]` | 调用已安装 resolver，返回原生 EvaluationSpec |
@@ -139,6 +152,23 @@ gym.autobench.resolve_benchmark(benchmark_id, *, revision, candidates,
 
 `resolve_benchmark` 会物化所选固定源清单、用途和 BenchmarkDefinition 的 CAS 证据，再校验派生 EvaluationSpec；它不是无 I/O 的 `gym.plan`。resolver 得到独立的评价资源服务，不得到 Runner/Candidate 执行入口。
 
+### 2.4 实验组织
+
+`gym.experiments` 为现有执行与数据服务提供组织入口：
+
+```python
+org.register(definition)  # 返回规范化 group 定义，含固定 revision
+org.get(group_id, revision=revision)
+org.execute(group_id, revision=revision, retry_failed=False, rerun=())
+org.inspect(group_id, revision=revision)
+org.events(group_id, revision=revision, after_seq=0)
+org.query(group_id=None, dataset_id=None, dataset_revision=None, status=None)
+org.recover(attempt_id, reason=reason, adopt_run=False)
+org.register_executor(component_ref, executor)  # executor(spec, gym) -> dict
+```
+
+这里 `org = gym.experiments`。协议为 `gymts.experiment-group/1`、`gymts.stage-request/1`、`gymts.stage-attempt/1`、`gymts.experiment-event/1`。默认不重试 failed/cancelled/interrupted；retry_failed 重试前两者，rerun 显式重跑。恢复发生在阶段边界，只有 gymts.run 可采纳唯一已封存 Run。输入、JSON Pointer 和完整本地示例见[实验组织指南](experiment-organization.md)。
+
 ## 3. 配置与消息索引
 
 所有公共消息使用可序列化的 dict/list/scalar，不接受 NumPy 对象、NaN 或 Infinity 冒充 JSON。版本必须是已注册的精确版本，不能用 `latest/main/master` 代替固定组件。完整必填项及默认值以 schema/正式规范为准。
@@ -185,12 +215,15 @@ gym.autobench.resolve_benchmark(benchmark_id, *, revision, candidates,
 | `snapshot(run_ids, query=None)` | RecordSnapshot 包络，含 snapshot_ref、captured_at、runs、outcome_refs |
 | `get_snapshot(ref)` | 验证并读取正式 RecordSnapshot |
 | `list_outcome_refs(run_id)` | 当前可用 OutcomeRef 列表；需要冻结时使用 snapshot |
+| `list_runs(*, group_id=None, revision=None, attempt_id=None, status=None, dataset_id=None, dataset_revision=None)` | Run 摘要查询，保留原 organization 和全部 associations |
 
 `read_events` 的 query 支持 `after_seq`（默认 0）、`limit`（1..1000，默认 100）、`kinds`（null=全部，[]=不选）、`snapshot_ref`。有下一页时把 `next_after_seq` 传入；为 null 时结束。
 
 `read_outcomes` query 支持 `run_ids`、`outcomes_as_of`（兼容别名 `as_of`，二选一）、`outcome_refs`、`purpose`、`snapshot_ref`。截止时间与显式修订列表互斥；使用 snapshot_ref 时不能另指定动态截止或修订。用途不授权时报错，不静默泄露。
 
 `snapshot` 的 query 只支持 `through_seq`（run_id→seq）、`outcomes_as_of`、`outcome_refs`，**没有 purpose 字段**。默认在创建时固定当前已提交边界和可用 Outcome；指定前缀时不暴露更晚才封存的最终 RunResult。
+
+`gym.experiments.events(group_id, revision=revision, after_seq=0)` 读取有序组织事件。评分已有 Run 只追加关联，不改变原归属或封存证据。
 
 `begin_run`、`append`、`end_run` 是记录后端/Runner 集成协议。普通用户通过 `run/evaluate/score` 产生执行记录，不为现有封存 Run 手工补造执行事件。
 
@@ -271,6 +304,48 @@ AutoBenchTS 只向选中的 benchmark resolver 提供 `resources.datasets.load_d
 
 定义中数据发布标签在登记时解析为精确内容 revision；执行解析把源清单、用途策略和基准定义固定到 CAS，传播到 Run metadata 和报告。修改数据、提示、筛选、评分规则或 resolver 版本应发布新的定义修订。
 
+### 5.4 四类来源与 dataset v2
+
+以下为入口速查模板，变量由调用方提供；可直接运行的例子见[使用指南](user-guide.md#65-四类来源实际快照与回流)。核心公共接口已实现，并通过固定 F1 的四类真实来源、可移植读取和零模型重评验收。
+
+```python
+catalog = gym.environment_ts.datasets
+source = catalog.register_source(definition, aliases=("1.0.0",))
+source = catalog.load_source(source_id, revision=revision, config="default")
+sources = catalog.list_sources()
+manifest = catalog.load_manifest(dataset_id, revision=revision, config="default")
+manifest = catalog.register_snapshot(
+    rows, dataset_id=dataset_id, source_ref=source_ref, split="test", config="default",
+    schema_ref="gymts.json/1", targets=None, parents=(), usage_policy=None,
+    features=None, split_origin="explicit", attachments=(), capture=None, aliases=(), kind=None,
+)
+bound = catalog.bind_source(spec, source_id, revision=revision, config="default")
+manifest = catalog.capture_run(
+    run_id, source_id=source_id, revision=revision, dataset_id=dataset_id,
+    config="default", source_config="default", split="recorded", event_kinds=None,
+    usage_policy=None, aliases=(),
+)
+result = gym.run_data(spec, source_id=source_id, revision=revision, dataset_id=dataset_id,
+                      source_config="default", config="default", split="recorded")
+```
+
+`definition` 使用 `gymts.data-source/1`；`source_ref` 为 `{source_id,config,revision}`，`parents` 每项为 `{dataset_id,config,revision,split}`。标签在登记快照时解析成固定内容摘要。来源类别为 static/synthetic/simulation/live_testbed；合成有 recipe，可 seeded（须 seed）或 recorded。声明 seed 与实际 session seed 分开记录。
+
+`register_snapshot` 返回 `gymts.source-dataset/2`，复用 v1 公开/私有 shard 字段并增加 kind/origin/lineage/attachments。`load_manifest` 读取 v1/v2 完整清单；`load_dataset` 的公开 handle 还提供 `read_capture()`、`read_asset(asset_ref)`、`resolve_payload(value)`。采集元数据协议为 `gymts.data-capture/1`，环境事件行 schema 为 `gymts.data-capture-row/1`。
+
+`bind_source` 接收完整 ExperimentSpec 并返回副本，核对既有 Environment provider/config，将固定来源、父数据及共同用途写入 provenance；不改原 spec。`run_data` 返回 `{"run": RunResult, "dataset": manifest}`，保留真实 Task/Candidate。`capture_run` 接受 sealed Run，默认仅采集环境 session/request/observation/operation/receipt/feedback，保留失败/部分结果；不包含模型对话和私有 Outcome。实际 JSON/二进制附件进入 data_home，读取快照不依赖原 Run CAS。
+
+这些数据服务不另建执行器或评分器；benchmark `/1` 可固定 v1/v2 dataset，评价仍走原 AutoBenchTS。变更理由及旧合同兼容见 [ADR 0001](adr/0001-core-data-source-catalog.md)。
+
+### 5.5 构建数据显式回库
+
+```python
+catalog.publish_build(build, reader_ref=reader_ref, dataset_id=None,
+                      config="default", usage_policy=None, parents=(), aliases=())
+```
+
+将原 `gymts.dataset/1` Manifest、带 manifest_ref 的返回对象或其 ArtifactRef 发布为长期 `gymts.source-dataset/1`；保留原 shard 字节和私有可移植构建证据，不虚构 source。reader 由适配器提供，默认训练用途只可收窄，不自动增加 runtime/evaluation。详见[回库流程](experiment-organization.md#把构建数据回存长期目录)。
+
 ## 6. 训练数据构建扩展
 
 ```python
@@ -304,7 +379,7 @@ except GymTSError as error:
 
 ## 8. 版本、信任与接口稳定性
 
-发行版本、消息 schema 版本、项目组件版本和数据内容 revision 是不同身份。核心 0.5.0 实现正式规范 1.2.0，具体消息仍为 `/1`；更细的 [v2 合同](pluggability-contract-v2.md)尚未实施。
+发行版本、消息 schema 版本、项目组件版本和数据内容 revision 是不同身份。历史 F1 核心 0.5.1 对应规范 1.3.0；本轮 0.6.0 / 1.4.0 工作树新增四个组织协议，保留既有运行消息与数据资源身份。这不等于完整 [v2 Runtime 合同](pluggability-contract-v2.md)已实施。
 
 普通用户入口为本手册列出的 SDK/CLI、`gymts.contracts`、公开 Protocol、Registry、schema 与 training 扩展。项目内部辅助函数不保证公共兼容；新适配必须单向依赖公共 SDK，不导入 Runner 私有状态。详细扩展与兼容迁移见[开发者指南](adapter-development.md)。
 

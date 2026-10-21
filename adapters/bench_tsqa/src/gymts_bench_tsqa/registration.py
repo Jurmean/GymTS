@@ -40,9 +40,9 @@ def register_bench_tsqa_plugins(registries,schemas):
     item=manifest('tsqa-reference-scorer',['gymts.scorer/1'],'gymts.tsqa/empty/1')
     item.update(supported_task_protocols=[PROTOCOL],supported_alignment_matchings=['exact'],
         result_schema_refs=[RESULT],outcome_schema_refs=[OUTCOME],metrics={metric:{
-            'direction':'higher_better','unit':'ratio','requires_outcome':metric=='accuracy',
+            'direction':'higher_better','unit':'ratio','requires_outcome':metric!='format_valid',
             'eligibility_ref':component('one-planned-tsqa-source-row'),'eligibility_schema_ref':ALIGNMENT}
-            for metric in ('accuracy','format_valid')})
+            for metric in ('accuracy','task_score','format_valid')})
     registries.scorers.register(item,TSQAReferenceScorer)
     for name,factory,params in (('tsqa-first-choice',FirstChoiceCandidate,'gymts.tsqa/empty/1'),
             ('tsqa-http',TSQAHTTPCandidate,'gymts.tsqa/http-params/1')):

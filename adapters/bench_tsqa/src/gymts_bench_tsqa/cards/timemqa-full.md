@@ -12,11 +12,11 @@ time-series placeholders are reversibly projected to ordered neutral references;
 all named ragged observations are stored in Float64 without truncation. Original
 JSONL bytes, answers, attributes and unreviewed source metadata are private.
 
-The versioned `tsqa.single-answer/1` rules identify 16,983 known references and
-720 unknown references on these exact reviewed bytes. Unknown cases stay
-eligible and report missing/insufficient evidence; they are never auto-excluded.
-The immutable quality report records actual task kinds, source hashes, duplicate
-groups and unresolved-rule reasons. Parser review flags do not prove label errors.
+Parser v2 reads all 17,703 answer labels. There are 720 separate input review
+flags: 683 incomplete/unresolved public option blocks and 37 reference labels
+outside visible options. None is classified as a missing reference. Their source
+row numbers and reasons are retained in the quality audit. Input review rows
+remain eligible/missing for accuracy; no options or answers are invented.
 
 Evaluation definitions use full source rows, one planned case per source row,
 independent reference scoring and native AutoBenchTS plan/report contracts. The

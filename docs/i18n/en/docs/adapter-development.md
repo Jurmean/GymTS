@@ -1,12 +1,12 @@
 # Adapter development guide
 
-This guide is for developers integrating projects, sources, tasks, algorithms, models, or Agents with GymTS. It targets current `gymts==0.5.0` and formal specification `1.2.0`. The [interface specification](feishu/GymTS接口规范/GymTS接口规范.md) and [public Python protocols](../gymts/contracts/protocols.py) define complete message fields; lifecycle tables below use current implementation signatures.
+This guide is for developers integrating projects, sources, tasks, algorithms, models, or Agents with GymTS. It targets current `gymts==0.6.0` and formal specification `1.4.0`. The [interface specification](feishu/GymTS接口规范/GymTS接口规范.md) and [public Python protocols](../gymts/contracts/protocols.py) define complete message fields; lifecycle tables below use current implementation signatures.
 
 Deliver an independent package that depends one way on GymTS public interfaces. Core need not import your project or add project-name branches. Callers choose compatible sources, tasks, methods, and scorers. The repository's `adapters/` directory is only the source location of independent packages, not a declaration that projects are built into the framework.
 
 ## 1. Decide which role to implement
 
-EnvironmentTS owns execution and evidence; AutoBenchTS owns independent evaluation. Specific formats, native backend calls, and domain scoring stay in adapters.
+The four core workflows are storing data, connecting data, organizing experiments, and recording experiments. EnvironmentTS owns data organization and storage for four source kinds, execution, and evidence; AutoBenchTS owns benchmarks and independent evaluation. Specific formats, generators and service connections, native backend calls, and domain scoring stay in adapters. Use the public interfaces in the [experiment organization guide](experiment-organization.md) for multistage definitions, fixed inputs/outputs, dependencies, and attempts. External executors call existing execution/evaluation APIs rather than adding another scheduler. Current [F2.1 acceptance](reports/experiment-organization-2026-10-21.json) preserves the content hashes of all 23 existing schemas and verifies independent integration, record queries, and rescoring after adapter removal.
 
 | Need | Implementation | Boundary to reuse |
 | --- | --- | --- |

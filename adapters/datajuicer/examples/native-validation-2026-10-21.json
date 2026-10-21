@@ -1,0 +1,225 @@
+{
+  "protocol_version": "gymts.datajuicer-native-acceptance/1",
+  "run_id": "run_f1b1d96a6c514a9986f41d343531bea5",
+  "run_result_ref": {
+    "artifact_id": "1ce4446cb902b4bd3945862e33445e32386e5efc97e2845b62bc3dd0d2e29375",
+    "content_hash": "6125c2a65a40d9b9bc165afd0852fe7b44e7e85b2cb5b0c21cc2f6c629bf9fd6",
+    "media_type": "application/json",
+    "revision": "6125c2a65a40d9b9bc165afd0852fe7b44e7e85b2cb5b0c21cc2f6c629bf9fd6",
+    "schema_ref": "gymts.run-result/1",
+    "size_bytes": 22227,
+    "uri": "gymts-artifact://1ce4446cb902b4bd3945862e33445e32386e5efc97e2845b62bc3dd0d2e29375/6125c2a65a40d9b9bc165afd0852fe7b44e7e85b2cb5b0c21cc2f6c629bf9fd6"
+  },
+  "run_status": "succeeded",
+  "record_snapshot_ref": {
+    "artifact_id": "54fa551b7b85fcf4abb3078652855439355e21dd26b93d8e86ee0674014026cc",
+    "revision": "4124792903ddd2ba846040cd1e589b02cbfcac8ef9cd13fbb254dea4224278cd",
+    "uri": "gymts-artifact://54fa551b7b85fcf4abb3078652855439355e21dd26b93d8e86ee0674014026cc/4124792903ddd2ba846040cd1e589b02cbfcac8ef9cd13fbb254dea4224278cd",
+    "content_hash": "4124792903ddd2ba846040cd1e589b02cbfcac8ef9cd13fbb254dea4224278cd",
+    "media_type": "application/json",
+    "schema_ref": "gymts.record-snapshot/1",
+    "size_bytes": 656
+  },
+  "evaluation_id": "evaluation_17905a0425034944a8fff1beeee62aac",
+  "evaluation_status": "completed",
+  "evaluation_verdict": "pass",
+  "rescore_evaluation_id": "evaluation_979a941b750a4294a188fd670142fc81",
+  "rescore_status": "completed",
+  "rescore_verdict": "pass",
+  "model_calls": 12,
+  "operator_tool_calls": 3,
+  "zero_runtime_rescore": true,
+  "run_unchanged": true,
+  "native_return_full_text": false,
+  "generated_text_excludes_prompt": true,
+  "aggregate_metrics": {
+    "answer_accuracy": {
+      "value": 0.5,
+      "status": "ready",
+      "counts": {
+        "eligible": 1,
+        "scored": 1,
+        "missing": 0,
+        "invalid": 0,
+        "excluded": 0
+      },
+      "reason": null
+    },
+    "structure_rate": {
+      "value": 0.75,
+      "status": "ready",
+      "counts": {
+        "eligible": 1,
+        "scored": 1,
+        "missing": 0,
+        "invalid": 0,
+        "excluded": 0
+      },
+      "reason": null
+    },
+    "source_coverage": {
+      "value": 0.75,
+      "status": "ready",
+      "counts": {
+        "eligible": 1,
+        "scored": 1,
+        "missing": 0,
+        "invalid": 0,
+        "excluded": 0
+      },
+      "reason": null
+    },
+    "unique_rate": {
+      "value": 1.0,
+      "status": "ready",
+      "counts": {
+        "eligible": 1,
+        "scored": 1,
+        "missing": 0,
+        "invalid": 0,
+        "excluded": 0
+      },
+      "reason": null
+    },
+    "lineage_integrity": {
+      "value": 1.0,
+      "status": "ready",
+      "counts": {
+        "eligible": 1,
+        "scored": 1,
+        "missing": 0,
+        "invalid": 0,
+        "excluded": 0
+      },
+      "reason": null
+    },
+    "holdout_clean": {
+      "value": 1.0,
+      "status": "ready",
+      "counts": {
+        "eligible": 1,
+        "scored": 1,
+        "missing": 0,
+        "invalid": 0,
+        "excluded": 0
+      },
+      "reason": null
+    }
+  },
+  "stage_counts": [
+    {
+      "operator": "text_length_filter",
+      "input": 15,
+      "output": 14,
+      "dropped": 1
+    },
+    {
+      "operator": "document_deduplicator",
+      "input": 14,
+      "output": 12,
+      "dropped": 2
+    },
+    {
+      "operator": "gymts_audited_native_qa_mapper",
+      "input": 12,
+      "output": 9,
+      "dropped": 3
+    }
+  ],
+  "derived_dataset": {
+    "dataset_id": "gymts-validation/chatts-datajuicer-qa",
+    "revision": "sha256:58c9d91f86addea8d76d7e379a6c689af326c18b872ac13aaa21af760c6e2482",
+    "row_count": 9,
+    "training_read_verified": true,
+    "label_status": "model_generated_unverified"
+  },
+  "fresh_process_training_read": {
+    "rows": 9,
+    "no_native_runtime_imported": true
+  },
+  "frozen_core": {
+    "matches_f0": true,
+    "files": 39,
+    "gymts_module": "/tmp/gymts-five-projects-20261021/datajuicer/app-env/lib/python3.11/site-packages/gymts/__init__.py",
+    "wheel_sha256": "8883e708dbfcc46301939335f594884b40239ddd8bbe201a66e6af2f18e012cf"
+  },
+  "core_changes": 0,
+  "validated_at": "2026-10-21",
+  "boundary": "one native train-only source pipeline; data derivation and training-read acceptance, no model training/quality uplift claim",
+  "source_revision": "5a79624a97f87559430505b56c3f9aa117f90fb3d47631a6e3aa687761610441",
+  "train_families": 12,
+  "holdout_families": 4,
+  "source_fixture_rows": {
+    "duplicate": 2,
+    "short": 1
+  },
+  "source_level_quality": {
+    "eligible": 12,
+    "produced_qa": 9,
+    "numerically_correct": 6,
+    "numerically_incorrect": 3,
+    "no_derived_output": 3
+  },
+  "label_status": "model_generated_unverified",
+  "upstream": {
+    "commit": "abb9e49897bdd0e0e2f44ce3272cc1ea5c5a6111",
+    "license": "Apache-2.0",
+    "tree_sha256": "6ee32fcab30625d654349e470dec70362691d0f9d3531d83128b87dd518a1014"
+  },
+  "model": {
+    "directory": "/zzr/models/Qwen2.5-7B-I",
+    "tree_sha256": "d7a110d26401a6cd98465e8271018ab8b2ab2d7402266e3a881b6848a277db8e"
+  },
+  "worker_versions": {
+    "datasets": "5.0.1",
+    "numpy": "2.4.6",
+    "py-data-juicer": "1.6.1",
+    "torch": "2.6.0",
+    "transformers": "4.57.1"
+  },
+  "executed_adapter_wheel": {
+    "sha256": "edd475f082e894e2ca2eec335082b79d38e0741e73d8d9939734048b0b96e5da",
+    "version": "0.1.0"
+  },
+  "adapter_python_files_sha256": {
+    "__init__.py": "7d9598a723ffed1ad241e5deed965e5a7e9237822b589122ca90cb9651681a7a",
+    "candidate.py": "7412030592dcc269c701cb172fbec27d4fd89f23630268f57541c09e8ccbc704",
+    "cli.py": "7d55adce6ed07d5b7e673122f7d6dbec66ff4b1b7748c571a5893b0d3c262497",
+    "common.py": "de224f23ea412a08507f7b6e726e3905c86c2d02cd32237c237902ae7e42461a",
+    "contracts.py": "0b8f360f1087f2c92406d421db86412a4696527ad59e9f11f646e4944bf5a2c0",
+    "data.py": "190c9eacb651a385eb05ae482efa0f7ab773c265e5b741bbcee4cf996d3b00b8",
+    "experiments.py": "f2facc877b84f33d89159210b7968aaac241c562b33aac397cc7546858e2c145",
+    "lifecycle.py": "2c2fbcb25597d1d63cc46b9d40dd652fcbd0158aba7a00f7ffc6cd854fb872bc",
+    "native_audit.py": "6cbcde6fe0555b18c983d3523b74f47a9b85c457aedffcc4f84f0b360845bd3d",
+    "preflight.py": "15525053f57a0333632aee6cc7e950200bd9c654fb8495298bfc7f57d2cf80d5",
+    "registration.py": "5548e0e35916299b4d1eb602ba093164870da4102388405029b9e4e229f26b12",
+    "runtime.py": "7c0093bd5c76b372e377d712dfa7b262ef18967fde384f83ac435d8f5d768c17",
+    "scoring.py": "19937e8830d8bf098e30dd05f5d53662b60660c42acb46f8117aa844b08e4507",
+    "worker.py": "da971155f6aac223a1bd869639d85d34bd57babe04e292c4aea065d9a091039c"
+  },
+  "contract_tests": {
+    "count": 15,
+    "status": "passed",
+    "native_gpu_not_mocked": true
+  },
+  "prior_attempts_retained": 4,
+  "gpu_budget": {
+    "total_native_attempts": 5,
+    "total_gpu_seconds": 377.8551902770996,
+    "successful_attempt_gpu_seconds": 135.21245980262756,
+    "counter_reset": false
+  },
+  "evidence_location": {
+    "kind": "local_evidence_not_distributed",
+    "full_acceptance": "/tmp/gymts-five-projects-20261021/datajuicer/native-proof-5/acceptance.json",
+    "evaluation_report": "/tmp/gymts-five-projects-20261021/datajuicer/native-proof-5/evaluation.json",
+    "independent_rescore_report": "/tmp/gymts-five-projects-20261021/datajuicer/native-proof-5/rescore.json",
+    "run_root": "/tmp/gymts-five-projects-20261021/datajuicer/native-proof-5/records"
+  },
+  "limitations": [
+    "Only 9 of 12 source families produced a parseable QA.",
+    "Three derived numeric answers are wrong and remain unverified training labels.",
+    "The earlier prompt produced zero QAs in all 12 real model calls; its failed Run and raw evidence remain unchanged.",
+    "No model training update, downstream quality improvement, paper replication or production-scale throughput claim."
+  ]
+}

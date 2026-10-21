@@ -2,11 +2,13 @@
 
 | Item | Content |
 | --- | --- |
-| Specification version | 1.2.0 |
-| Updated | 2026-10-20 |
-| Status | Current GymTS 0.5.0 contract; local implementation scope accepted |
+| Specification version | 1.4.0 |
+| Updated | 2026-10-21 |
+| Status | GymTS 0.6.0 working tree: F2.1 organization verification passed; unreleased |
 | Core modules | EnvironmentTS, AutoBenchTS |
 | Audience | Framework developers; environment/task integrators; algorithm/Agent adapter developers; evaluation/training integrators |
+
+This round's **1.4.0 organization addition** is in §21 for the unreleased GymTS 0.6.0 working tree. Sections 1–19 preserve 0.5.0 / 1.2.0 baseline semantics. Section 20 retains the 0.5.1 / 1.3.0 F1 data contract and its historical acceptance scope. F1 is frozen and passed its original real four-source technical acceptance; its evidence and identity cannot replace this round's validation. The 23 existing core schemas retain their identities, with four organization schemas added. See [ADR 0001](../../adr/0001-core-data-source-catalog.md) and [ADR 0002](../../adr/0002-experiment-organization.md) for the reasons for these changes.
 
 GymTS accepts time-series experiment plans with explicit boundaries. EnvironmentTS organizes environment interaction, task execution and evidence recording, delivering RunResult; AutoBenchTS generates EvaluationReport from a fixed evaluation plan, original execution results and independent outcome evidence. Algorithms, models, pipelines and Agents integrate through the same Candidate contract.
 
@@ -1150,3 +1152,231 @@ Optional ExperimentSpec/EvaluationSpec provenance uses `gymts.resource-provenanc
 `registry.register(manifest,factory,describe=...,compatibility=...)` registers pure `describe(spec)` and `compatibility(context)`; factory.describe_spec and factory.check_compatibility_spec are alternatives. Environment/Task need pure descriptions for offline planning without instance-construction fallback. Pure hooks declare known composition constraints beyond Candidate protocols/schemas; context contains resolved configuration, three-role manifests and Environment/Task descriptions, without services/data. Do not guess values/shapes absent source facts; revalidate actual declarations/resources after runtime opening.
 
 Execution should establish Run and save configuration before creating/opening plugins and validating actual resources. Opening failures preserve stage, errors and partial evidence with best-effort cleanup/sealing. These Python provider extensions do not change existing Environment/Task/Candidate `/1` method messages. Old plugins lacking pure descriptions require migration for plan/validate, rather than secretly executing constructors to retain passing validation.
+
+## 20 Four-Kind Core Data Organization Addendum (1.3.0)
+
+This section places organization, catalogs and storage for static, synthetic, simulated and external live data within EnvironmentTS core responsibilities. Independent adapters still provide project formats, model calls, generators, native backends and codecs. AutoBenchTS continues to manage benchmarks and independent evaluation. This is an additive extension without rewriting existing resources, Runs or reports. See the ADR for implementation/F1 validation status; contract text is not execution evidence.
+
+### 20.1 DataSourceDefinition
+
+The protocol is `gymts.data-source/1`, with these fields:
+
+| Field | Meaning |
+| --- | --- |
+| `protocol_version` | Fixed to `gymts.data-source/1` |
+| `source_id`, `config`, `revision` | Source name, configuration name and content revision; registration computes a canonical content digest and resolves labels to fixed identities |
+| `kind` | `static`, `synthetic`, `simulation`, `live_testbed` |
+| `provider_ref` | Fixed ComponentRef for an existing Environment provider; no project-specific SourceProvider registry |
+| `configuration` | Environment configuration object for that provider, interpreted by its adapter |
+| `recipe` | Fixed source/generation/capture recipe object, or `null` |
+| `reproducibility` | `{mode: snapshot | seeded | recorded, seed: nonnegative integer | null}` |
+| `usage_policy` | Existing `gymts.source-usage-policy/1` |
+| `parent_datasets` | Fixed DatasetRef array; each entry is `{dataset_id,config,revision,split}` |
+| `card_ref` | DatasetAssetRef or `null` |
+
+A source definition fixes how data is obtained; an actual dataset revision fixes what was obtained. A seeded declaration does not replace actual generated values. A live source configuration version does not promise unchanging future observations. Source registration, aliases, uses and content digests reuse existing resource mechanisms.
+
+Synthetic sources require a fixed recipe but may declare `seeded` (requiring a seed) or `recorded` (for example, LLM generation without seed support). Generators need not all be deterministic or seedable. Declared seeds and actual SessionInfo seeds remain separate records. Clocks, episodes and capture windows come from real backend mechanisms/evidence; adapters retain their domain interpretation.
+
+### 20.2 SourceDatasetRevision v2
+
+`gymts.source-dataset/2` retains all v1 fields from §19.1 and adds:
+
+| Field | Content |
+| --- | --- |
+| `kind` | One of the four source kinds, matching the bound source |
+| `origin` | `{source_ref,source_definition}`; source_ref is fixed `{source_id,config,revision}`, while source_definition is a DatasetAssetRef for the complete definition |
+| `lineage` | `{parents,parent_manifests,capture}`; parents are fixed DatasetRefs, parent_manifests are DatasetAssetRefs for the corresponding complete manifests, and capture is a capture-metadata DatasetAssetRef or `null` |
+| `attachments` | Public DatasetAssetRef attachments published with the dataset |
+
+Source or parent release labels resolve to exact content revisions in this dataset. Definitions, parent manifests and actual capture records enter `data_home` with the data, so reading it does not require the original Run CAS to remain online. A data snapshot does not replace its Run/RecordSnapshot and differs from training-export `gymts.dataset/1`.
+
+Captured dynamic data uses `gymts.data-capture-row/1`: `{event_id,seq,kind,source_event_time,links,value}`. source_event_time is a string, number or `null`; value/links are objects. Actual episodes, clocks, seeds, source ownership, windows, status and partial results are fixed by sealed execution evidence. New wall time at registration must not fabricate collection time.
+
+Capture metadata uses `gymts.data-capture/1`, with fixed fields `{protocol_version,run_id,source_ref,source_trace_identity,through_seq,event_kinds,status,completion,started_at,ended_at,requested_scope,session,actual_scope,seed_used,ownership,initial_clock,last_observation_clock,observation_count,environment_end,environment_cleanup,evidence_status}`. It does not copy the full trace: source_trace_identity retains the original sealed execution-snapshot digest identity, while actual data attachments are separately portable.
+
+### 20.3 Public Data Services
+
+These summarize implemented 0.5.1 / 1.3.0 services, with caller-supplied variables. See the [user guide](../../user-guide.md) for external F1 acceptance status and executable workflows.
+
+```python
+catalog = gym.environment_ts.datasets
+catalog.register_source(definition, aliases=())
+catalog.load_source(source_id, revision=revision, config="default")
+catalog.list_sources()
+catalog.load_manifest(dataset_id, revision=revision, config="default")
+catalog.register_snapshot(
+    rows, dataset_id=dataset_id, source_ref=source_ref,
+    split="test", config="default", schema_ref="gymts.json/1",
+    targets=None, parents=(), usage_policy=None, features=None,
+    split_origin="explicit", attachments=(), capture=None, aliases=(), kind=None,
+)
+catalog.bind_source(spec, source_id, revision=revision, config="default")
+catalog.capture_run(
+    run_id, source_id=source_id, revision=revision, dataset_id=dataset_id,
+    config="default", source_config="default", split="recorded",
+    event_kinds=None, usage_policy=None, aliases=(),
+)
+```
+
+`bind_source` accepts a complete ExperimentSpec and returns a copy, adding source definition, parents and common usage policy to provenance without changing the original spec. `register_snapshot` directly registers obtained static/generated rows and independent targets without a Run. `load_manifest` reads a complete `/1` or `/2` manifest; existing public `load_dataset` still returns a DatasetHandle.
+
+`capture_run` fixes data and capture metadata from a sealed Run, retaining actual failed/partial execution status. By default it handles environment-data events, excluding model conversations, Outcomes and private evaluation references. Public binary/JSON artifacts in events become data assets and attachments, with original artifact identities retained as lineage. Repeating the same sealed capture does not add a new `now`; identical parameters should yield identical data-content identities.
+
+DatasetHandle adds `read_asset` and `resolve_payload`, restricted to its public attachment scope, to read actual data referenced by capture rows. `read_capture()` returns capture metadata; targets remain available through separate evaluation services. Catalog conveniences neither change domain answers nor automatically authorize training.
+
+### 20.4 Execution, CLI and Evaluation Reuse
+
+```python
+gym.run_data(
+    spec, source_id=source_id, revision=revision, dataset_id=dataset_id,
+    source_config="default", config="default", split="recorded",
+)
+# Returns {"run": RunResult, "dataset": SourceDatasetRevisionV2}
+```
+
+`run_data` composes `bind_source → run → capture_run`. Its spec is a complete ExperimentSpec preserving the original Task/Candidate for a real experiment; it is not another Candidate-free collection engine. Existing `run`, `evaluate` and `score` workflows remain valid.
+
+CLI additions are `sources list/register/info`, `run-data SPEC --source ID --source-revision REV --dataset-id ID` and `datasets capture RUN_ID --source ID --source-revision REV --dataset-id ID`. Assets, source definitions and dataset manifests use `data_home`; read caches use `cache_home`; Runs/reports remain in the local POSIX store.
+
+BenchmarkDefinition `/1` retains its protocol and may fix `/1` or `/2` datasets. AutoBenchTS still resolves native EvaluationSpecs, fixes candidates, repetitions and scoring, and rescores original output without execution. Successful source registration, capture or generation does not establish a passed benchmark or model-quality result.
+
+### 20.5 Compatibility and Freeze Validation
+
+Version 0.5.0 `/1` datasets, benchmarks, original ExperimentSpecs and historical Runs retain readability and behavior. New sources/captures use additional protocols without changing old content revisions. F1 validation must fix a 0.5.1 wheel and actual file identity, then use independent external packages for real static, synthetic, simulated and live sources. Check catalogs, real snapshots, execution, lineage feedback, independent evaluation and same-result rescoring. F0 five-project and pending AReaL evidence retain their original baseline rather than becoming F1 results.
+
+
+## 21 Experiment Organization, Dataset Publication and Linked Queries (1.4.0)
+
+This section describes the 0.6.0 working tree. F2.1 is frozen and passed organization technical verification; it is unreleased. See the [current evidence](../../reports/experiment-organization-2026-10-21.json) for scope. GymTS organizes data storage, data access, experiments and records; project formats, training algorithms and Agent decisions remain external. EnvironmentTS retains data, execution and evidence responsibilities; AutoBenchTS retains evaluation. These services reuse existing execution and records rather than add a domain Runtime. See the [experiment organization guide](../../experiment-organization.md) for complete usage.
+
+### 21.1 ExperimentGroup
+
+All normalized fields of `gymts.experiment-group/1` are required:
+
+| Field | Type and semantics |
+| --- | --- |
+| `protocol_version` | Constant `gymts.experiment-group/1` |
+| `group_id` | String; caller-defined experiment-group identity |
+| `revision` | String; canonical definition content digest, excluding revision, after defaults and fixed resource resolution |
+| `name` | String; display name |
+| `stages` | Nonempty Stage array with unique stage_id values and acyclic dependencies |
+
+Registration input may omit `protocol_version` and `revision`; null revision is computed by the service. An explicit content revision must match the definition. Changed definitions create new revisions; a group may retain multiple fixed revisions.
+
+Normalized Stage fields are:
+
+| Field | Type and semantics |
+| --- | --- |
+| `stage_id` | String; unique within this definition |
+| `executor_ref` | Fixed ComponentRef; latest/main/master are forbidden |
+| `spec` | Object retaining the original execution-service configuration; adapters interpret domain fields |
+| `depends_on` | Unique stage_id array, default empty; stage_output inputs add their dependencies automatically |
+| `purpose` | runtime / evaluation / training / prepare / dataset_build; evaluate/score default to evaluation, publish-build to dataset_build, others to runtime |
+| `inputs` | input_name → InputRef object, default empty |
+| `bindings` | input_name → JSON Pointer, default empty; every key names a declared input |
+| `outputs` | output_name → JSON Pointer, default empty |
+
+InputRef is exactly one of:
+
+```text
+{kind: "dataset", ref: {dataset_id, config, revision, split}}
+{kind: "source", ref: {source_id, config, revision}}
+{kind: "artifact", ref: ArtifactRef}
+{kind: "stage_output", stage_id: string, output: string}
+```
+
+Registration resolves dataset/source release labels to fixed content revisions and checks data usage and upstream named outputs. Output references must name declared outputs. JSON Pointers do not infer data formats, model artifacts or domain conversions.
+
+Bindings start at `spec` itself, such as `/candidate/artifact`; parent containers must exist, and an empty pointer cannot replace the entire spec. Outputs start at the return object, such as `/run_id`; empty pointer `""` selects the whole value. Use standard `~0` for `~` and `~1` for `/`. An unresolvable pointer fails the attempt and retains its request and error.
+
+### 21.2 StageRequest
+
+`gymts.stage-request/1` fixes the organization facts required for an actual invocation:
+
+| Field | Type and semantics |
+| --- | --- |
+| `protocol_version` | Constant `gymts.stage-request/1` |
+| `executor_ref` | This stage's fixed ComponentRef |
+| `purpose` | The stage's usage-purpose enum |
+| `binding_status` | resolved / failed |
+| `inputs` | Object; resolved named inputs, or original declarations when failed |
+| `spec` | Object; configuration after bindings, or original configuration when failed |
+| `datasets` | Array of `{dataset_id,config,revision}` fixing resolved dataset identities |
+| `provenance` | Existing `gymts.resource-provenance/1` |
+
+Declared data and sources must allow the stage purpose. Source manifests and combined restrictive usage propagate through attempt context into nested Runs and evaluation plans, including external executor calls to existing services. Existing usage may only narrow. Provenance does not grant private data to a Candidate. Binding failure before opening components still creates an attempt and failed request rather than leaving only terminal logs.
+
+### 21.3 StageAttempt and ExperimentEvent
+
+Fields of `gymts.stage-attempt/1` are:
+
+```text
+protocol_version, attempt_id, group_id, revision, stage_id, ordinal,
+status, started_at, ended_at, definition_ref, request_ref, dependencies,
+result_ref, outputs, error
+```
+
+`ordinal` starts at 1 and increases within group/revision/stage. Status is running / succeeded / failed / cancelled / interrupted. started_at is a string; ended_at is null while running. definition_ref fixes the complete definition; request_ref fixes StageRequest. dependencies maps stage_id to the upstream attempt_id consumed. result_ref is the return object's ArtifactRef or null; outputs is an object of named values; error is an object or null.
+
+Each actual invocation adds an attempt. A terminal attempt cannot be completed again or overwritten. Start and end versions remain immutable in CAS, with the index pointing to the current version. Run creation associates the Run with its current attempt within the same record transaction; ownership must not depend on a project journal written after execution.
+
+Fields of `gymts.experiment-event/1` are:
+
+```text
+protocol_version, group_id, revision, seq, event_id, recorded_at,
+kind, attempt_id, record_ref
+```
+
+seq increases from 1 within group/revision; attempt_id may be null. kind includes registered, attempt_started, run_linked, run_referenced and attempt_finished. record_ref fixes the corresponding fact. Organization events do not replace original execution events within a Run.
+
+### 21.4 Execution and Recovery
+
+`execute` selects ready stages serially in dependency order. By default it runs pending or stale stages and retains successful results. Failure blocks dependents; other ready branches may continue. In inspect output, pending/blocked/stale are derived stage states, not new attempt terminal states.
+
+- `retry_failed=True` explicitly retries failed/cancelled stages; every actual retry adds an attempt.
+- `rerun=(stage_id, ...)` explicitly reruns selected stages. An upstream attempt change makes successful stages consuming its old attempt stale; they execute again after their dependencies succeed.
+- Interrupted stages are not resent by default and require explicit rerun. An open running attempt prevents another execution of the same group revision.
+- `recover(attempt_id, reason=...)` only applies to an open attempt. The caller first confirms that previous work has stopped; the service records the reason and marks it interrupted.
+- `adopt_run=True` only permits a gymts.run attempt to adopt its single sealed Run and derive original named outputs without repeating execution. Other executors do not support this path.
+
+Recovery organizes new attempts at stage boundaries. It does not restore Python objects, individual units within an evaluation matrix or device operations with unknown side effects. Organization success does not override AutoBenchTS coverage, missing/invalid counts, metrics or Gate verdicts.
+
+### 21.5 Executors and Public Entry Points
+
+An executor is a trusted `executor(spec, gym) -> dict` callable returning a persistable JSON object. Status may be omitted; when present it must be succeeded/completed/failed/cancelled. Completed maps to attempt succeeded. Executors/adapters retain actual domain operations and input/output conversion.
+
+Built-in ComponentRefs are gymts.run, gymts.evaluate, gymts.score, gymts.capture and gymts.publish-build, all at version 1.0.0 with null origin_ref. The first three delegate to existing Run, EvaluationSpec and ScoreSpec paths. Capture spec contains source_ref, run_id, dataset_id and capture options. Publish-build spec contains manifest, reader_ref and publication options.
+
+```python
+org = gym.experiments
+fixed = org.register(definition)
+org.get(group_id, revision=revision)
+org.execute(group_id, revision=revision, retry_failed=False, rerun=())
+org.inspect(group_id, revision=revision)
+org.query(group_id=None, dataset_id=None, dataset_revision=None, status=None)
+org.recover(attempt_id, reason=reason, adopt_run=False)
+org.register_executor(component_ref, executor)
+gym.records.list_runs(group_id=None, revision=None, attempt_id=None,
+    status=None, dataset_id=None, dataset_revision=None)
+gym.experiments.events(group_id, revision=revision, after_seq=0)
+```
+
+Custom executors must be explicitly registered in each calling process. Use the supplied gym's existing services to create Runs associated automatically with the current attempt. Inspect returns the fixed definition reference, derived stages, all attempts and Run summaries. Query returns matching group revisions. Dataset matching includes explicitly declared input/resolved dataset identities, datasets recorded by associated Runs, dataset outputs, and parent DatasetRefs listed in standard source-dataset/2 lineage.parents or official source-dataset/1 build-output features.parent_datasets with a dataset_build marker. It follows these explicit manifest relationships without recursively inspecting arbitrary domain payloads or inventing parentage from filenames. This parent matching applies to organization query; list_runs retains actual Run-data matching and returns summaries without expanding all raw events.
+
+Run summaries distinguish `organization` from `associations`: the former retains original creation ownership; the latter lists each stage's association with that Run. A ScoreSpec using historical Runs adds run_referenced relationships without changing Run metadata, sealed results or events. Multiple scoring stages can reference one Run.
+
+CLI adds experiments register/run/info/list/events/recover, runs and datasets publish-build; see the [public reference](../../reference.md). CLI uses executors registered in its process. An adapter-specific callable requires its application entry point to register it first.
+
+### 21.6 Publish Build Results and Preserve Compatibility
+
+```python
+catalog.publish_build(build, reader_ref=reader_ref, dataset_id=None,
+    config="default", usage_policy=None, parents=(), aliases=())
+```
+
+Build may be the original gymts.dataset/1 Manifest, a return object including manifest_ref, or that Manifest's ArtifactRef. The service checks BuildSpec, input snapshots, parent permissions and output identity; copies original shard bytes into data_home; and retains reader_ref and original output_schema_ref to interpret those bytes. Private source_files retain build evidence and an index from original artifacts to persistent assets, outside public inputs.
+
+This entry point registers source-dataset/1 without inventing a source. Usage narrows from the training build and real parent evidence, without automatically granting runtime/evaluation. Captures with genuine sources retain the source-dataset/2 path in §20. These two resources and the gymts.dataset/1 build protocol remain distinct.
+
+Additional organization tables and CAS artifacts do not rewrite historical events or data revisions. Existing run, run_data, evaluate, score, DatasetBuilder and catalog entry points remain independently usable. Canonical digests of all 23 existing core schemas must remain unchanged; only the four organization schemas above are added. F0/F1 identities and historical acceptance remain intact. This round's new 0.6.0 freeze and compatibility checks require separate evidence and cannot be inferred from contract text.

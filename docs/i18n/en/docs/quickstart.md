@@ -1,8 +1,8 @@
 # Quickstart
 
-Run a small built-in experiment first, then install project adapters as needed. This workflow needs
-no GPU, external dataset, model service, or API key. Python 3.9+ is required; the local storage
-backend targets Linux / macOS.
+GymTS focuses on **storing data, connecting data sources, organizing experiments, and recording experiments**.
+Run a small built-in experiment first, then install adapters as needed. This workflow needs no GPU,
+external dataset, model service, or API key. Python 3.9+ is required; the local storage backend targets Linux / macOS.
 
 ## 1. Install from source
 
@@ -14,8 +14,10 @@ source .venv/bin/activate
 python -m pip install .
 ```
 
-The current implementation is 0.5.0, with public contract 1.2.0. These commands install the
+The current implementation is **0.6.0**, with public contract **1.4.0**. These commands install the
 repository source; they do not assume this version has been published to PyPI.
+
+Current F2.1 technical acceptance is complete. See the [experiment organization guide](experiment-organization.md) for fixed data references, stages, failure recovery, and data publication, and the [current acceptance report](reports/experiment-organization-2026-10-21.json) for verified scope and limitations.
 
 ## 2. Run your first experiment and rescore it
 
@@ -73,10 +75,11 @@ and credentials separately according to the adapter instructions.
 
 ## 5. Continue from here
 
-- [User guide](user-guide.md): planning, execution, late labels, resource catalogs, and training interfaces.
+- [User guide](user-guide.md): data storage and ingestion, planning, execution, late labels, and records.
+- [Experiment organization](experiment-organization.md): stage dependencies, attempt records, queries, and data publication.
 - [API and CLI](reference.md): method signatures, exit codes, and protocol fields.
 - [Environment adapters](environment-adapters.md): synthetic, static, simulation, and live sources.
-- [Independent adapters](../adapters/README.md): installation and validation for all 11 packages.
+- [Independent adapters](../adapters/README.md): package installation and validation matrices.
 - [Minimal teaching adapter](../examples/adapters/minimal_demo/README.md): independent installation, execution, removal, and rescoring.
 
 Keep active SQLite / CAS stores on a local POSIX filesystem, rather than an object-storage mount

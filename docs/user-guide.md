@@ -1,12 +1,14 @@
 # GymTS 使用指南
 
-本文面向安装、运行和比较方法的用户，适用于 **GymTS 0.5.0 / 接口规范 1.2.0**。所有未特别标注的命令在仓库根目录执行。最小链路只使用 Python 标准库和本地确定性数据，无需 GPU、模型账户或外部服务。
+本文面向安装、运行和比较方法的用户，适用于 **GymTS 0.6.0 / 接口规范 1.4.0**。所有未特别标注的命令在仓库根目录执行。最小链路只使用 Python 标准库和本地确定性数据，无需 GPU、模型账户或外部服务。
 
 接口字段的最终依据是[正式规范](feishu/GymTS接口规范/GymTS接口规范.md)；命令参数和 Python 方法速查见[参考手册](reference.md)。新增项目适配见[开发者指南](adapter-development.md)，各独立包的原生依赖和命令见[适配包目录](../adapters/README.md)。
 
 ## 1. GymTS 用来做什么
 
-GymTS 将一次实验拆为可独立替换的数据环境、任务和被测方法，并把执行事实与评价依据分开保存。
+GymTS 的主线是**存储数据、接入数据、组织实验、记录实验**。核心统一管理来源和数据修订，组织固定输入与阶段依赖，记录每次实际尝试和 Run；领域格式与执行方式由适配器提供，评价依据独立保存。
+
+当前 F2.1 已通过技术验收。多阶段执行、失败续接、按数据查询和构建数据回库见[实验组织指南](experiment-organization.md)；固定身份、已验证范围与限制见[当前验收报告](reports/experiment-organization-2026-10-21.json)。
 
 | 对象 | 作用 | 例子 |
 | --- | --- | --- |
@@ -17,9 +19,9 @@ GymTS 将一次实验拆为可独立替换的数据环境、任务和被测方�
 | Dataset | 可复用的固定数据资源 | 公开问题、私有参考、用途策略 |
 | Benchmark | 固定数据、任务和评价规则的配方 | 固定测试集上的候选比较 |
 
-**EnvironmentTS 管执行与证据；AutoBenchTS 管评价与重评。** 核心不内置 LibraryTS、ChatTS、TimeSigma 等项目，也不实现其模型、数据格式或领域评分。项目通过独立适配包提供这些能力。工具的选择由被测 Agent 完成，实际调用由其 SDK/适配器执行；框架记录关联与证据，详见[Agent 与工具职责](agent-toolsets.md)。
+**EnvironmentTS 在核心管数据组织、存储、执行与证据；AutoBenchTS 管 benchmark、评价与重评。** 核心不内置 LibraryTS、ChatTS、TimeSigma 等项目，也不实现其模型、数据格式或领域评分。项目通过独立适配包提供这些能力。工具的选择由被测 Agent 完成，实际调用由其 SDK/适配器执行；框架记录关联与证据，详见[Agent 与工具职责](agent-toolsets.md)。
 
-`run` 创建新实验，`evaluate` 创建一组固定的新实验并评价，`score` 只评价指定的旧输出。重新运行模型与对原结果重新评分是不同操作。
+`run` 创建一次 Run，`gym.experiments` 组织多阶段实验，`evaluate` 创建一组固定的新 Run 并评价，`score` 只评价指定的旧输出。重新运行模型与对原结果重新评分是不同操作。
 
 ## 2. 安装与检查
 
@@ -126,7 +128,7 @@ with GymTS(root="/tmp/gymts-guide-sdk") as gym:
 
 | 字段 | 决定什么 | 修改时注意 |
 | --- | --- | --- |
-| `protocol_version` | 消息合同，当前 `gymts.experiment/1` | 不等于发行版本 0.5.0 |
+| `protocol_version` | 消息合同，当前 `gymts.experiment/1` | 不等于发行版本 0.6.0 |
 | `name`、`purpose` | 名称和用途 | 用途影响准备/训练授权 |
 | `scene.environment` | 来源、字段映射、时钟与操作能力 | `source.kind` 只是来源类型，具体语义由适配器提供 |
 | `scene.task` | 任务插件及其参数 | Task 决定窗口、输入与结果含义 |
@@ -371,6 +373,80 @@ with GymTS(root="/tmp/gymts-benchmark-runs", data_home="/path/to/imported/resour
 
 五份用户题库属于测评数据，不随核心发行，不授权训练；本地 `local/` 名称也不代表官方数据发行。一个已有数据资源可以服务多个独立 Run store，前提是各进程安装并启用了所需 reader/resolver。
 
+### 6.5 四类来源、实际快照与回流
+
+核心统一管理 `static`、`synthetic`、`simulation`、`live_testbed` 四类来源。来源定义说明配方与配置，dataset revision 固定实际得到的数据。合成来源可以是支持 seed 的生成器，也可以是只能记录实际结果的 LLM 生成；不要求所有生成器确定性。episode/采集窗口、Run 与派生数据的关系进入目录，项目 provider 继续负责原生格式与调用。历史 F1 的四类真实来源及零模型重评已完成技术验收，见[报告](reports/core-data-organization-2026-10-21.json)；该历史身份不改写为当前 F2.1。
+
+下面从既有 ramp 实验登记合成来源，运行真实 last-value Candidate，将实际环境事件保存为 `/2` dataset，并登记一个保留观测事件身份的派生视图。最后换一个 Run root 读取同一数据目录。它是已运行的标准库教学例子；真实外部四类接入与源码外安装命令见[独立数据组织示例包](../examples/data_organization/README.md)。
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+from gymts import GymTS
+
+work = Path('/tmp/gymts-guide-data-v2')
+work.mkdir(parents=True, exist_ok=True)
+spec = json.loads(Path('examples/forecast_experiment.json').read_text())
+environment = spec['scene']['environment']
+definition = {
+    'protocol_version': 'gymts.data-source/1',
+    'source_id': 'local/guide-ramp', 'config': 'default', 'revision': None,
+    'kind': 'synthetic',
+    'provider_ref': {'name': environment['adapter'], 'version': environment['version'], 'origin_ref': None},
+    'configuration': {key: environment[key] for key in ('source', 'mapping', 'options')},
+    'recipe': environment['source']['connection']['generator'],
+    'reproducibility': {'mode': 'seeded', 'seed': spec['execution']['seed']},
+    'usage_policy': {'allowed_uses': ['runtime', 'evaluation'], 'training_allowed': False},
+    'parent_datasets': [], 'card_ref': None,
+}
+with GymTS(work/'runs', data_home=work/'data', cache_home=work/'cache') as gym:
+    catalog = gym.environment_ts.datasets
+    source = catalog.register_source(definition, aliases=('1.0.0',))
+    result = gym.run_data(spec, source_id=source['source_id'], revision=source['revision'],
+                          dataset_id='local/guide-ramp-recorded')
+    manifest = result['dataset']
+    ds = catalog.load_dataset(manifest['dataset_id'], revision=manifest['revision'], split='recorded')
+    capture = ds.read_capture()
+    print(result['run']['status'], ds.info['kind'], capture['observation_count'])
+    same = catalog.capture_run(result['run']['run_id'], source_id=source['source_id'],
+                               revision=source['revision'], dataset_id=manifest['dataset_id'])
+    assert same['revision'] == manifest['revision']
+    (work/'source.json').write_text(json.dumps(definition, indent=2)+'\n')
+    (work/'run-data.json').write_text(json.dumps(result, indent=2)+'\n')
+    # A deliberately simple derived view of actual captured observation metadata.
+    observation_rows = [row for row in ds if row['kind']=='observation']
+    derived = catalog.register_snapshot(
+        [{'sample_id': row['event_id'], 'parent_event_seq': row['seq']} for row in observation_rows],
+        dataset_id='local/guide-ramp-derived',
+        source_ref={key: source[key] for key in ('source_id','config','revision')},
+        split='derived', parents=({'dataset_id':manifest['dataset_id'], 'config':'default',
+                                 'revision':manifest['revision'], 'split':'recorded'},),
+        features={'projection':'observation-event-identity/1'},
+    )
+    assert len(derived['lineage']['parents'])==1
+    print('derived', derived['splits']['derived']['row_count'])
+with GymTS(work/'other-runs', data_home=work/'data', cache_home=work/'other-cache') as gym:
+    ds = gym.environment_ts.datasets.load_dataset(manifest['dataset_id'],revision=manifest['revision'],split='recorded')
+    assert ds.read_capture()['run_id']==result['run']['run_id']
+    print('shared_catalog',len(ds))
+PY
+```
+
+此例输出 `succeeded synthetic 10`、`derived 10`、`shared_catalog 21`。`run_data` 组合 `bind_source → run → capture_run`，保留完整 ExperimentSpec 的原 Task/Candidate。登记已取得快照时可直接用 `register_snapshot`，不执行生成器或模型；已封存 Run 可再次 `capture_run`，相同参数得到相同数据 revision。
+
+CLI 使用同一来源与原实验文件：
+
+```bash
+gymts --store /tmp/gymts-guide-data-v2/runs --data-home /tmp/gymts-guide-data-v2/data sources list
+gymts --store /tmp/gymts-guide-data-v2/runs --data-home /tmp/gymts-guide-data-v2/data sources info local/guide-ramp --revision 1.0.0
+gymts --store /tmp/gymts-guide-data-v2/runs --data-home /tmp/gymts-guide-data-v2/data run-data examples/forecast_experiment.json \
+  --source local/guide-ramp --source-revision 1.0.0 --dataset-id local/guide-ramp-cli \
+  --output /tmp/gymts-guide-data-v2/cli-run-data.json
+```
+
+`ds.read_capture()` 返回真实状态、scope、session seed、clock、所有权和清理等采集说明。公开制品通过 `resolve_payload` / `read_asset` 从目录附件读取，不要求旧 Run CAS 一直在线。原 Run 仍是执行证据，dataset 快照不能替代它。BenchmarkDefinition 可固定 v1/v2 数据集；评价仍使用 AutoBenchTS。字段和入口见[参考](reference.md)及[核心变更 ADR](adr/0001-core-data-source-catalog.md)。
+
 ## 7. 轨迹、制品和可复现证据
 
 ### 7.1 查看 Run 和事件
@@ -453,7 +529,7 @@ CAS 的 hash 保证引用的字节身份，不证明外部服务未来仍是同�
 
 离线数据支持固定内容重放；live 环境世界状态无法凭配置恢复，连续运行不同候选也不天然构成公平的同数据比较。需要对比时显式冻结共同观测，或由场景提供可恢复会话与受控试验设计。外部会话不支持 seed/reset 就应拒绝，不能记录一个没有实际生效的 seed。
 
-训练数据构建使用公开 `gymts.training.build_dataset(spec, records, artifacts)`，输入是固定 RecordSnapshot；具体格式、奖励、token/mask 和训练后端由独立 DatasetBuilder provider 提供。核心不内置 TRL/verl；现有 RL 包复用 TRL，verl、多轮 RL 和分布式训练尚未适配。`gymts.source-dataset/1` 是源资源清单，`gymts.dataset/1` 是训练导出结果，二者不能互换。
+训练数据构建使用公开 `gymts.training.build_dataset(spec, records, artifacts)`，输入是固定 RecordSnapshot；具体格式、奖励、token/mask 和训练后端由独立 DatasetBuilder provider 提供。训练后端仍在外部：RL 包复用 TRL，[AReaL 适配包](../adapters/areal/README.md)提供其原生多轮 rollout 与训练接口，具体已验证范围分别记录。`gymts.source-dataset/1`、`gymts.source-dataset/2` 是源资源清单，`gymts.dataset/1` 是训练导出结果；可用 `gym.environment_ts.datasets.publish_build(...)` 显式回库，保留原 reader/schema、血缘和用途，二者并不合并成同一协议。
 
 ## 9. 常见问题与故障排查
 
@@ -478,8 +554,8 @@ Python 中可捕获 `GymTSError` 并读取 `error.info`；Run 已建立后的运
 
 ## 10. 当前实现边界
 
-0.5.0 是同步本地 SDK/CLI，不是托管 HF Hub、企业多租户平台、分布式调度器或通用 Agent 引擎。插件是受信任的进程内 Python 代码，受限服务构成规范的访问边界，**不构成对恶意插件的系统沙箱**。核心没有 ToolRegistry/ToolBroker 自动注入任意工具集，完整 Agent 自主选择工具闭环仍需独立适配与验收。
+0.6.0 是同步本地 SDK/CLI，不是托管 HF Hub、企业多租户平台、分布式调度器或通用 Agent 引擎。插件是受信任的进程内 Python 代码，受限服务构成规范的访问边界，**不构成对恶意插件的系统沙箱**。核心没有 ToolRegistry/ToolBroker 自动注入任意工具集；Agent 工具执行由独立适配器负责，已验证范围见[适配包目录](../adapters/README.md)。
 
-本轮 HF、Gymnasium、OpenEnv 和 Prometheus 的验收范围及归档证据见[环境接入指南](environment-adapters.md)。本机真实服务可运行不代表用户生产 testbed 已验收；工程小模型更新、固定算法和已知常量 fixture 的评分也不代表模型能力提升。
+HF、Gymnasium、OpenEnv 和 Prometheus 的历史验收范围及归档证据见[环境接入指南](environment-adapters.md)。本机真实服务可运行不代表用户生产 testbed 已验收；工程小模型更新、固定算法和已知常量 fixture 的评分也不代表模型能力提升。
 
 现行规范与当前指南优先；[v2 合同](pluggability-contract-v2.md)和[企业平台路线](enterprise-platform-roadmap.md)是设计材料，不能直接当作已实现 API 调用。

@@ -19,6 +19,8 @@ import tarfile
 import tempfile
 import zipfile
 
+from packaging.specifiers import SpecifierSet
+
 import check_release as release
 
 
@@ -242,7 +244,20 @@ def check(root):
     projects = sorted(path.parent for path in (root / 'adapters').glob('*/pyproject.toml'))
     if not projects:
         raise release.ReleaseError('No independent adapter projects found')
-    reports = []
+    reports, unsupported = [], []
+    compatible = []
+    for project in projects:
+        config = configparser.ConfigParser()
+        config.read(project / 'setup.cfg', encoding='utf-8')
+        requirement = config['options'].get('python_requires', '')
+        if sys.version.split()[0] not in SpecifierSet(requirement):
+            unsupported.append({'distribution': config['metadata']['name'],
+                                'requires_python': requirement, 'reason': 'Current Python is outside the declared host compatibility range'})
+        else:
+            compatible.append(project)
+    projects = compatible
+    if not projects:
+        raise release.ReleaseError('No adapters support the current Python')
     with tempfile.TemporaryDirectory(prefix='gymts-adapters-release-') as temporary:
         work = Path(temporary)
         core_source = work / 'core-source'
@@ -269,6 +284,7 @@ def check(root):
         coexistence = check_coexistence(projects, core_wheel, core_source, work,
                                         dependency_wheels=dependency_wheels)
     return {'status': 'passed', 'offline': True, 'python': sys.version.split()[0], 'adapters': reports,
+            'unsupported_python': unsupported,
             'coexistence': coexistence,
             'scope': 'Independent package/activation/regression/removal checks; no model training or quality claim'}
 

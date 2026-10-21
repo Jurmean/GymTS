@@ -102,6 +102,8 @@ class LocalExperimentRecords:
                 PRIMARY KEY(run_id, artifact_ref)
             );
         """)
+        from .organization import OrganizationRecords
+        self.organization = OrganizationRecords(self)
 
     def close(self) -> None:
         with self._lock:
@@ -145,6 +147,9 @@ class LocalExperimentRecords:
         if not isinstance(meta, dict) or not isinstance(meta.get("run_id"), str) or not meta["run_id"]:
             raise storage_error("invalid_record", "RunMetadata requires a nonempty run_id")
         meta = json.loads(_text(meta))
+        context = self.organization.context.get()
+        if context is not None:
+            meta["organization"] = context
         run_id = meta["run_id"]
         if not isinstance(meta.get("resolved_spec_ref"), dict):
             raise storage_error("invalid_record", "RunMetadata requires resolved_spec_ref", run_id=run_id)
@@ -164,7 +169,15 @@ class LocalExperimentRecords:
                     raise storage_error("conflict", "RunMetadata identity already has different content", run_id=run_id)
             else:
                 connection.execute("INSERT INTO runs(run_id,metadata) VALUES(?,?)", (run_id, encoded))
+            if context is not None:
+                self.organization.link_run(connection, context, run_id)
         return {"run_id": run_id, "record_uri": "gymts-run://" + run_id}
+
+    def list_runs(self, *, group_id=None, revision=None, attempt_id=None, status=None,
+                  dataset_id=None, dataset_revision=None):
+        """Query execution identities and references without expanding event payloads."""
+        return self.organization.runs(group_id=group_id, revision=revision, attempt_id=attempt_id,
+            status=status, dataset_id=dataset_id, dataset_revision=dataset_revision)
 
     def _append(self, connection: sqlite3.Connection, run_id: str, drafts: List[dict], allow_sealed: bool = False) -> Dict[str, Any]:
         run = self._require_run(connection, run_id)

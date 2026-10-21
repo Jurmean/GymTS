@@ -1,6 +1,6 @@
 # GymTS documentation
 
-The current source implements **0.5.0** and public contract **1.2.0**. Documentation follows two stable responsibilities: EnvironmentTS execution/evidence and AutoBenchTS evaluation. Design proposals and historical experiment records are listed separately from current usage documentation.
+Current source is the unreleased **0.6.0** working tree with public contract **1.4.0**; F2.1 organization technical acceptance has passed. Documentation follows two stable responsibilities: EnvironmentTS data organization/execution/evidence and AutoBenchTS evaluation. Design proposals and historical experiment records are listed separately from current usage documentation.
 
 ## Getting started
 
@@ -8,6 +8,7 @@ The current source implements **0.5.0** and public contract **1.2.0**. Documenta
 | --- | --- |
 | Understand project goals, roles, experiment boundaries, and system placement | [Complete project overview](overview.md) |
 | Install, run your first experiment, evaluate, and rescore original Runs | [User guide](user-guide.md) |
+| Fix data references, connect stages, recover failures and publish data | [Experiment organization guide](experiment-organization.md) |
 | Look up commands, arguments, APIs, and configuration structures | [API / CLI reference](reference.md) |
 | Find executable scripts and configurations | [Examples](../examples/README.md) |
 | Troubleshoot common errors | [FAQ](faq.md) |
@@ -19,8 +20,11 @@ The current source implements **0.5.0** and public contract **1.2.0**. Documenta
 - [Framework implementation guide](framework.md): public SDK, component lifecycles, assembly, access boundaries, records, independent evaluation, and training extensions.
 - [Environment integration](environment-adapters.md): synthetic data, HF static data, Gymnasium, OpenEnv, and Prometheus; invocation, clocks, ownership, and actual acceptance scope.
 - [Dataset and benchmark catalog](dataset-benchmark-catalog-design.md): EnvironmentTS data access, public/private resources, AutoBenchTS benchmark resolution, and long-term storage.
+- [Experiment organization and dataset publication](experiment-organization.md): fixed data references, stage dependencies, attempts, explicit retry/recovery and linked queries.
+- [ADR 0002: experiment organization](adr/0002-experiment-organization.md): reasons for this round's core changes, adapter boundaries and historical compatibility.
+- [ADR 0001: four-kind core data organization](adr/0001-core-data-source-catalog.md): real gaps, corrected core responsibilities, existing-protocol compatibility and F1 freeze validation.
 - [Agents and external toolsets](agent-toolsets.md): Agent decisions, tool execution, environment I/O, private scoring boundaries, and the general tool loop that has not yet passed acceptance.
-- [Formal interface specification 1.2.0](feishu/GymTS接口规范/GymTS接口规范.md): fields, states, sequencing, errors, trajectories, and integration contracts.
+- [Formal interface specification 1.4.0](feishu/GymTS接口规范/GymTS接口规范.md): fields, states, sequencing, errors, trajectories and integration contracts; §21 defines this round's organization contract and §20 retains the historical F1 data-layer acceptance scope.
 
 ## Project and domain adapters
 
@@ -47,6 +51,9 @@ Start with the [independent adapter overview](../adapters/README.md). Each packa
 - [Changelog](../CHANGELOG.md), [roadmap](roadmap.md), [citation](citing.md), [MIT licensing](licensing.md), [license text](../LICENSE), [third-party sources](../THIRD_PARTY.md).
 
 ## Current acceptance and engineering evidence
+
+- [0.6.0 / contract 1.4.0 experiment organization acceptance](reports/experiment-organization-2026-10-21.json): F2.1 frozen identity; 196 core tests passed; sixteen-package compatibility records 356 passes and 61 optional-dependency skips; an independent 32-row ETTh1 view completed execution, independent evaluation and rescoring after adapter removal.
+- [Historical 0.5.1 four-kind core data acceptance](reports/core-data-organization-2026-10-21.json): real sources on frozen F1, catalog/portable attachments, independent evaluation and model-free rescoring.
 
 Reports document specific source, runtime dependency, and data snapshots. They are not live CI status, full benchmark rankings, or proof of production readiness. Some historical filenames retain dates from earlier environments; assess applicability by the versions, commits, hashes, and acceptance scope inside them.
 

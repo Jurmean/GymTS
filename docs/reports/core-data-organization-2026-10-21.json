@@ -1,0 +1,967 @@
+{
+  "status": "passed",
+  "date": "2026-10-21",
+  "core_data_acceptance": "passed",
+  "framework_responsibilities": {
+    "EnvironmentTS": "source definitions, immutable datasets, storage, Run binding, execution, portable capture and lineage",
+    "AutoBenchTS": "benchmark definitions, independent domain scoring and rescoring",
+    "external_adapters": "native formats, generators, simulators, service connectors, models and domain scorers"
+  },
+  "freeze": {
+    "freeze_id": "F1-data-organization-20261021",
+    "core_version": "0.5.1",
+    "contract_version": "1.3.0",
+    "scope": "gymts/**/*.py and setup.cfg",
+    "base_commit": "121abca88b65094e899b294a3d3416ccd004a25d",
+    "code_tree_sha256": "dad5d6a1785c4fa440a51dd4c93307f47ca000aa0d955daa70e68e32dcfac319",
+    "files": {
+      "gymts/__init__.py": "2bb6855981fc19e65fb9ebb7cb2e80a9145b2c15e125d3f78cd1d2de6c7d5bad",
+      "gymts/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "gymts/autobench_ts/__init__.py": "295a3476a58ead256ffddce42950bde872c0e6ca2ed043c058e7cf20370d2ef6",
+      "gymts/autobench_ts/aggregation.py": "3599669d9497cd43a18ed765442538cc2ffa4e0798b6ffc94fac170f2257c234",
+      "gymts/autobench_ts/catalog.py": "d2013bb38b95dd8f6858448dba5fea942435606ad58feaafbaef019dbebda39e",
+      "gymts/autobench_ts/service.py": "202a0761ccd46b08d9638ea113a64c7fb771e169bb443479a18787be2acd22e9",
+      "gymts/autobench_ts/types.py": "6195f4e247cef602384fdfbeac92c758e28516d08270fd5910166ffbc1036739",
+      "gymts/cli.py": "c5d4e8a2df0bcf5c9859c9e084ea9d886708d85a495c20519d6d1a3dafe5046c",
+      "gymts/contracts/__init__.py": "ef73db1979dafa0824ede1f257607c61c03a416bab254e38aea89a636a5d8b81",
+      "gymts/contracts/common.py": "455951d65cde0792fba470b268735335fa38cf4a3dfc96b25d7d24521cfc4a71",
+      "gymts/contracts/protocols.py": "b4f17c71b676d6011925fa488841f9080fc1efeec3fb3d2bcad55deda57f4616",
+      "gymts/contracts/resources.py": "770ba490cd0760ac8e28eccf9ac905d0e9ccdea77e4bc739fba4f56de558aed1",
+      "gymts/contracts/schema.py": "ef31c8e8a794b1d706dc695500fff112d6fc3d108d08e2ef0df52d96c8b07d7a",
+      "gymts/contracts/types.py": "a1db6681619558ae8425b9fd2376f6186ac0f27b38115f123fb773c6aed91daf",
+      "gymts/environment_ts/__init__.py": "c9bee2e028538db168768571ad853c8a3001035521bcd6a50b8feb67e824652b",
+      "gymts/environment_ts/capture.py": "f3eb1073a1ec4eb72e44e9b2682da15f1944a2466912f4fdd80e8d128ae65b04",
+      "gymts/environment_ts/data_capture.py": "bdef92a9746714032a7de99e2f5c153d849bcd8cf96657df6983b8c32048fcc1",
+      "gymts/environment_ts/data_sources.py": "4cbbcd99a4f5ce92b419f52fcac67d70e0c0c6faf9f0df6d36b336d9b50f0641",
+      "gymts/environment_ts/datasets.py": "a38519d4bd06f8d0ce6d4a220b72cfe475799e06783c2bfe61aa3a81deeb1cf4",
+      "gymts/environment_ts/runner.py": "a9796f2dbc46ead87214bcaefbfda4aa1e2b0bdcd6bc5b6e2578d91380721b32",
+      "gymts/environment_ts/services.py": "aee8a21a93cb1a72d963b2c6152258e56e6ad1464a2b4601a686770ffec0cd22",
+      "gymts/environment_ts/validation.py": "4adc98a681d4f9a67a13a6c17eacf28584911c88b7531fa02bf7f8bc038e986a",
+      "gymts/http_candidate.py": "e0a01fa9287c4afb6e2cd919b87b5cceb11bade2b2f350d893163618201ad8d9",
+      "gymts/integrations/__init__.py": "59c6759753e4eb4d82f8cdd2465e727d8434c4299f9fba3635fc32ca0c99ed16",
+      "gymts/plugin_support.py": "b053032128eed9582cde8ea18a6a5a6527c699436508c9ba2b2e8a1769d10461",
+      "gymts/plugins/__init__.py": "928e00be88d90462303efb60c78d29d2e5b4bf16cb3402f13014a71762dee65c",
+      "gymts/plugins/_common.py": "f96fb7f368e917694204d78f5aafe30b2f6755aba6919019b2866a3e60752c35",
+      "gymts/plugins/counter.py": "8586ca2da3ffa470f0911073563564c560b1e7324fc2d5cac201d92d46e7d9d9",
+      "gymts/plugins/forecast.py": "cf4e492158ff5039028df98b28e052dc816ed91290859983c3b5d5ee79a19383",
+      "gymts/plugins/replay.py": "d735d7bec5f0561b297e7619547098943ca02f20f62a0f46c24f577571d168cb",
+      "gymts/plugins/scoring.py": "988bda09e1ec1c533d0b562b0bd2ea6b94ffb2e56f4853b88bd67ba5281605c0",
+      "gymts/registries/__init__.py": "ac9096f6b2a4459300cafa007bd994b6c4ca11dcf34f71d0b0fc6b84d0d21a02",
+      "gymts/registries/resources.py": "cffbcc8b5e61c7fc9e16d861c3588a26b001958b4ec292ca91e33f503d7a784c",
+      "gymts/storage/__init__.py": "f1bee2d53b1063cbca34ee3036ca0b1ecf7f6c9056e3111dd2a1ec9c5f310b8b",
+      "gymts/storage/artifacts.py": "1fe2406937ab2362b0b2f9e3e73272328dbafd69ac7194e597f52090b3d798dc",
+      "gymts/storage/records.py": "b303bacdfc96bb320d1dcd0455bb8132db3d1688c3aa994b0b3092c6bf9bf33a",
+      "gymts/storage/resources.py": "2becaba202586b3e9b41b574c883f38ac25f21b63ae75c11f55d30d43db1c935",
+      "gymts/training/__init__.py": "1e4813b5b3a01aaf4042ee83d2a448e731e3584a880d8b001d952a5acaebd7b0",
+      "gymts/training/builder.py": "d4f2f2d354c74bdea9b01234a20e7f3d1b93cd302bc94d3be9d1459804135116",
+      "gymts/training/service.py": "3225426f6d0452ac81da9320a9619aed49f3b43fa5e79149cf4a389901e4aaff",
+      "setup.cfg": "bc5ea7b321f78f02d1573b1b917db96f73e7f9313a3a661dc872cab0280386b6"
+    },
+    "wheel": "/tmp/gymts-data-organization-20261021/frozen-core/wheels/gymts-0.5.1-py3-none-any.whl",
+    "wheel_sha256": "8944f39ffe516dbe22b7800f57fd18266cf6b3a4e84cf3a35b32cb6261ac2f1a",
+    "core_suite": {
+      "tests": 168,
+      "passed": 168,
+      "skipped": 0,
+      "log": "/tmp/gymts-data-organization-20261021/core-suite.log"
+    },
+    "schema_compatibility": {
+      "status": "passed",
+      "baseline_wheel_sha256": "8883e708dbfcc46301939335f594884b40239ddd8bbe201a66e6af2f18e012cf",
+      "unchanged_existing_schemas": 19,
+      "changed_existing_schemas": [],
+      "new_schemas": [
+        "gymts.data-capture-row/1",
+        "gymts.data-capture/1",
+        "gymts.data-source/1",
+        "gymts.source-dataset/2"
+      ]
+    },
+    "reason_for_new_freeze": "Core ownership of four data-source kinds, immutable snapshots, portable Run capture and lineage; project code stays external.",
+    "publication": "local candidate; no commit, tag, push or deployment in this task"
+  },
+  "source_compatibility": {
+    "status": "passed",
+    "baseline_wheel_sha256": "8883e708dbfcc46301939335f594884b40239ddd8bbe201a66e6af2f18e012cf",
+    "unchanged_existing_schemas": 19,
+    "changed_existing_schemas": [],
+    "new_schemas": [
+      "gymts.data-capture-row/1",
+      "gymts.data-capture/1",
+      "gymts.data-source/1",
+      "gymts.source-dataset/2"
+    ]
+  },
+  "distribution_check": {
+    "status": "passed",
+    "version": "0.5.1",
+    "python": "3.11.8",
+    "offline": true,
+    "distributions": {
+      "sdist": {
+        "file": "gymts-0.5.1.tar.gz",
+        "files": 86,
+        "bytes": 178464,
+        "sha256": "8fa58cf4dbaec7286f41d6354b64fc07f3a662802d9aff16466afcc1936584dd"
+      },
+      "wheel": {
+        "file": "gymts-0.5.1-py3-none-any.whl",
+        "files": 47,
+        "bytes": 118295,
+        "sha256": "8c3ab54a67e50c86c2e5c3c023d8728e728a6bad97804f9aed07817322a10934"
+      },
+      "wheel_rebuilt_from_sdist": {
+        "file": "gymts-0.5.1-py3-none-any.whl",
+        "files": 47,
+        "bytes": 118295,
+        "sha256": "8c3ab54a67e50c86c2e5c3c023d8728e728a6bad97804f9aed07817322a10934"
+      }
+    },
+    "direct_wheel_install": {
+      "isolated_import": true,
+      "console_scripts": 1,
+      "counter_operations": 3,
+      "project_plugins_bundled": false
+    },
+    "sdist_wheel_install": {
+      "isolated_import": true,
+      "console_scripts": 1,
+      "counter_operations": 3,
+      "project_plugins_bundled": false,
+      "installed_regression_tests": 168,
+      "installed_regression_skipped": 0,
+      "installed_regression_passed": 168
+    },
+    "external_plugin_install": {
+      "metadata_discovery_without_load": true,
+      "explicit_enable": true,
+      "forecast_results": 8,
+      "independent_linear_predictions_exact": true,
+      "public_sdk_only": true,
+      "uninstall_preserves_core_run": true,
+      "distribution": "gymts-release-linear-fixture==1.0.0"
+    },
+    "release_decisions": [],
+    "scope": "Distribution contents and isolated installations; not a Git index or full secret audit"
+  },
+  "source_acceptance": {
+    "status": "passed",
+    "independently_installed_example": "gymts-data-organization-demo==0.1.0",
+    "core_installed_files_checked": 46,
+    "core_before_after_equal": true,
+    "core_wheel_sha256": "8944f39ffe516dbe22b7800f57fd18266cf6b3a4e84cf3a35b32cb6261ac2f1a",
+    "run_count": 4,
+    "independent_score_count": 4,
+    "model_free_rescore_count": 4,
+    "original_run_store_unavailable_during_portable_read": true,
+    "sources": {
+      "static": {
+        "run_id": "run_3b6c54ab2fb74494bcba57ed8ee9eb85",
+        "status": "succeeded",
+        "counts": {
+          "observations": 1,
+          "inputs": 1,
+          "outputs": 1,
+          "results": 1,
+          "operations": 0,
+          "feedback": 0,
+          "updates": 0,
+          "cases_completed": 1,
+          "cases_incomplete": 0
+        },
+        "trace_ref": {
+          "artifact_id": "c581ec09f4d86a3be46f3850105d2f7dcc4f44d4e28352415c6aa8ece4a1ac95",
+          "content_hash": "48d52360046b6e808976df60c2a5e4bf556356e2806daaa804d3d85ba37f8b4f",
+          "media_type": "application/json",
+          "revision": "48d52360046b6e808976df60c2a5e4bf556356e2806daaa804d3d85ba37f8b4f",
+          "schema_ref": "gymts.execution-trace/1",
+          "size_bytes": 19284,
+          "uri": "gymts-artifact://c581ec09f4d86a3be46f3850105d2f7dcc4f44d4e28352415c6aa8ece4a1ac95/48d52360046b6e808976df60c2a5e4bf556356e2806daaa804d3d85ba37f8b4f"
+        },
+        "sealed_result_ref": {
+          "artifact_id": "ab7d37d8225298d2be8211a29455f90d58b8a42a3614eead60a86c6a05589fa5",
+          "content_hash": "3dd4826ff988998964efc78cd1a1c6d5896c255fb187ca67fa3781b74248558b",
+          "media_type": "application/json",
+          "revision": "3dd4826ff988998964efc78cd1a1c6d5896c255fb187ca67fa3781b74248558b",
+          "schema_ref": "gymts.run-result/1",
+          "size_bytes": 5782,
+          "uri": "gymts-artifact://ab7d37d8225298d2be8211a29455f90d58b8a42a3614eead60a86c6a05589fa5/3dd4826ff988998964efc78cd1a1c6d5896c255fb187ca67fa3781b74248558b"
+        },
+        "sealed_run_hash": "sha256:a819f05e5365b9bb87792e969d2d635ac546231435f34808c616cd97af894977",
+        "source_ref": {
+          "source_id": "four-data/static",
+          "config": "default",
+          "revision": "sha256:92fbb3ccb532c5a4c97f54830856bb0199d82b963ca1dec48f01785400f36981"
+        },
+        "dataset": {
+          "dataset_id": "four-data/static/recorded",
+          "config": "default",
+          "revision": "sha256:65290b52df13819de667474e39b8bfed1f8a62a59a486e0d509e9069590279a6",
+          "kind": "static",
+          "splits": {
+            "recorded": {
+              "row_count": 3,
+              "split_origin": "sealed-environment-run",
+              "input_indices": [
+                0
+              ],
+              "target_indices": []
+            }
+          },
+          "lineage": {
+            "parents": [
+              {
+                "config": "default",
+                "dataset_id": "four-data/static/inputs",
+                "revision": "sha256:99b6db25f75ec54099a8027e7eef51ebf3c2100389f885f67261835a26115c1e",
+                "split": "test"
+              }
+            ],
+            "parent_manifests": [
+              {
+                "uri": "gymts-data://sha256/0e952b373c8dd37f79946f13870ea37e64a718c862b25747f4c75c6b7d4b20ab",
+                "sha256": "0e952b373c8dd37f79946f13870ea37e64a718c862b25747f4c75c6b7d4b20ab",
+                "size_bytes": 1625,
+                "media_type": "application/json"
+              }
+            ],
+            "capture": {
+              "uri": "gymts-data://sha256/8ac26bc46138f1deeee9c1c8d5e4e89bab056046f5fa9908e320189d5840e52c",
+              "sha256": "8ac26bc46138f1deeee9c1c8d5e4e89bab056046f5fa9908e320189d5840e52c",
+              "size_bytes": 2348,
+              "media_type": "application/json"
+            }
+          }
+        },
+        "evaluation_id": "evaluation_767a2297c114418da16037457ba5b854",
+        "evaluation_verdict": "pass",
+        "coverage": {
+          "expected_units": 1,
+          "succeeded_runs": 1,
+          "failed_runs": 0,
+          "cancelled_runs": 0,
+          "not_started_units": 0
+        },
+        "aggregate_metrics": {
+          "mae": {
+            "value": 66.30788804071248,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          },
+          "rmse": {
+            "value": 92.66636342994126,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        "rescore_evaluation_id": "evaluation_2caab401d7d74d4e9d6255dcdb24a323",
+        "rescore_verdict": "pass",
+        "metrics_equal": true,
+        "coverage_equal": true,
+        "sealed_run_unchanged": true,
+        "backends_forbidden_in_rescore": true,
+        "portable": {
+          "row_count": 3,
+          "rows_hash": "sha256:e572cf0d2fc089b07c785fc3939e36b8b341cdcb4b5f0252b4f845ba49f331de",
+          "capture_hash": "sha256:8ac26bc46138f1deeee9c1c8d5e4e89bab056046f5fa9908e320189d5840e52c",
+          "source_ref": {
+            "config": "default",
+            "revision": "sha256:92fbb3ccb532c5a4c97f54830856bb0199d82b963ca1dec48f01785400f36981",
+            "source_id": "four-data/static"
+          },
+          "kind": "static",
+          "seed_used": 19,
+          "ownership": "created",
+          "status": "succeeded",
+          "environment_end": {
+            "detail": null,
+            "reason": "read_scope_end",
+            "terminated": false,
+            "truncated": false
+          },
+          "event_kinds": [
+            "environment_request",
+            "observation",
+            "session"
+          ],
+          "public_materialization_ref_identical": true
+        },
+        "evidence_refs": {
+          "manifest_ref": {
+            "artifact_id": "7aa6d85f263e82602c51ea39a95dfd95ff0fdb4705a99f3a7d0e83f3e014fede",
+            "revision": "d8b7361c6d5a4355a68b84a835c0d96642361ebbfeba15879361379391a4d83e",
+            "uri": "gymts-artifact://7aa6d85f263e82602c51ea39a95dfd95ff0fdb4705a99f3a7d0e83f3e014fede/d8b7361c6d5a4355a68b84a835c0d96642361ebbfeba15879361379391a4d83e",
+            "content_hash": "d8b7361c6d5a4355a68b84a835c0d96642361ebbfeba15879361379391a4d83e",
+            "media_type": "application/json",
+            "schema_ref": "gymts.json/1",
+            "size_bytes": 2138
+          },
+          "evaluation_report_ref": {
+            "artifact_id": "eb32c2bf17305b38abc3b65fb15d1ebd2f73a61c2ab29eb4ccae77d08654f4f5",
+            "revision": "7f77e6815236b5edc28e2d54e6f031d993012971ae614dd277bfc8a798a987ac",
+            "uri": "gymts-artifact://eb32c2bf17305b38abc3b65fb15d1ebd2f73a61c2ab29eb4ccae77d08654f4f5/7f77e6815236b5edc28e2d54e6f031d993012971ae614dd277bfc8a798a987ac",
+            "content_hash": "7f77e6815236b5edc28e2d54e6f031d993012971ae614dd277bfc8a798a987ac",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 11186
+          },
+          "rescore_report_ref": {
+            "artifact_id": "09bac2648bb447ebcd0643ac3a161d43914d6f24537ef080923ba5a10e004b0c",
+            "revision": "71f8f49797f3ccfdf27c96a279e25b1028bafc724972eed1c06e5f1b630d365f",
+            "uri": "gymts-artifact://09bac2648bb447ebcd0643ac3a161d43914d6f24537ef080923ba5a10e004b0c/71f8f49797f3ccfdf27c96a279e25b1028bafc724972eed1c06e5f1b630d365f",
+            "content_hash": "71f8f49797f3ccfdf27c96a279e25b1028bafc724972eed1c06e5f1b630d365f",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 11227
+          }
+        }
+      },
+      "synthetic": {
+        "run_id": "run_0e24671bdb9c4558877817ece6ce9045",
+        "status": "succeeded",
+        "counts": {
+          "observations": 1,
+          "inputs": 1,
+          "outputs": 1,
+          "results": 1,
+          "operations": 0,
+          "feedback": 0,
+          "updates": 0,
+          "cases_completed": 1,
+          "cases_incomplete": 0
+        },
+        "trace_ref": {
+          "artifact_id": "f3db95b00c8b36442f9c750d83fd53b1e458dabb1541a352b33946c329bbabe5",
+          "content_hash": "d872883ca182176dcfa60d321c34cd507969f98f2eed345f5ba84b92b85609bf",
+          "media_type": "application/json",
+          "revision": "d872883ca182176dcfa60d321c34cd507969f98f2eed345f5ba84b92b85609bf",
+          "schema_ref": "gymts.execution-trace/1",
+          "size_bytes": 18629,
+          "uri": "gymts-artifact://f3db95b00c8b36442f9c750d83fd53b1e458dabb1541a352b33946c329bbabe5/d872883ca182176dcfa60d321c34cd507969f98f2eed345f5ba84b92b85609bf"
+        },
+        "sealed_result_ref": {
+          "artifact_id": "df842ce1e5945a8ccff20f3332219b3657245f8c86b1aee98d4be34572190171",
+          "content_hash": "392a2812029a504a73151c3c73a1ac50d1c889add62c3faec84209fcd4624612",
+          "media_type": "application/json",
+          "revision": "392a2812029a504a73151c3c73a1ac50d1c889add62c3faec84209fcd4624612",
+          "schema_ref": "gymts.run-result/1",
+          "size_bytes": 5782,
+          "uri": "gymts-artifact://df842ce1e5945a8ccff20f3332219b3657245f8c86b1aee98d4be34572190171/392a2812029a504a73151c3c73a1ac50d1c889add62c3faec84209fcd4624612"
+        },
+        "sealed_run_hash": "sha256:a827a7935624e21d997f73bf63234bf6b9bc6dbead1554104fad55e626215440",
+        "source_ref": {
+          "source_id": "four-data/synthetic",
+          "config": "default",
+          "revision": "sha256:4bd3ccebf7dc3ef486b910afa60b03436fcd4be4b071f2c4d624093aa13d7699"
+        },
+        "dataset": {
+          "dataset_id": "four-data/synthetic/recorded",
+          "config": "default",
+          "revision": "sha256:2b78632388f4da096451d98c501c9ee69d52fbcbaa75847290e9c089c09226b0",
+          "kind": "synthetic",
+          "splits": {
+            "recorded": {
+              "row_count": 3,
+              "split_origin": "sealed-environment-run",
+              "input_indices": [
+                0
+              ],
+              "target_indices": []
+            }
+          },
+          "lineage": {
+            "parents": [
+              {
+                "config": "default",
+                "dataset_id": "four-data/synthetic/inputs",
+                "revision": "sha256:853b5d180dbf35b08dbc9441cfd361838bb861bf36f85d8dbeda1de360352468",
+                "split": "test"
+              }
+            ],
+            "parent_manifests": [
+              {
+                "uri": "gymts-data://sha256/a8b030765d4efb4f91f88a5298e13f9d22da914a29ee90f65603c8c0b2f24f4c",
+                "sha256": "a8b030765d4efb4f91f88a5298e13f9d22da914a29ee90f65603c8c0b2f24f4c",
+                "size_bytes": 1633,
+                "media_type": "application/json"
+              }
+            ],
+            "capture": {
+              "uri": "gymts-data://sha256/2047addd2dd20ba798ffda1ab9a8783830a84579d6f9f5545aa9d3ad904af006",
+              "sha256": "2047addd2dd20ba798ffda1ab9a8783830a84579d6f9f5545aa9d3ad904af006",
+              "size_bytes": 2351,
+              "media_type": "application/json"
+            }
+          }
+        },
+        "evaluation_id": "evaluation_37199562060f426a86e65286fff1973c",
+        "evaluation_verdict": "pass",
+        "coverage": {
+          "expected_units": 1,
+          "succeeded_runs": 1,
+          "failed_runs": 0,
+          "cancelled_runs": 0,
+          "not_started_units": 0
+        },
+        "aggregate_metrics": {
+          "mae": {
+            "value": 41.211058982937985,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          },
+          "rmse": {
+            "value": 46.2061174146021,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        "rescore_evaluation_id": "evaluation_90af0dd7edfb48a9a77ed4bc12be1573",
+        "rescore_verdict": "pass",
+        "metrics_equal": true,
+        "coverage_equal": true,
+        "sealed_run_unchanged": true,
+        "backends_forbidden_in_rescore": true,
+        "portable": {
+          "row_count": 3,
+          "rows_hash": "sha256:92d3f4cc85a0146a706a5ee6464cde7a34a49b046c68e2c592ea5670a9524305",
+          "capture_hash": "sha256:2047addd2dd20ba798ffda1ab9a8783830a84579d6f9f5545aa9d3ad904af006",
+          "source_ref": {
+            "config": "default",
+            "revision": "sha256:4bd3ccebf7dc3ef486b910afa60b03436fcd4be4b071f2c4d624093aa13d7699",
+            "source_id": "four-data/synthetic"
+          },
+          "kind": "synthetic",
+          "seed_used": 27,
+          "ownership": "created",
+          "status": "succeeded",
+          "environment_end": {
+            "detail": null,
+            "reason": "read_scope_end",
+            "terminated": false,
+            "truncated": false
+          },
+          "event_kinds": [
+            "environment_request",
+            "observation",
+            "session"
+          ],
+          "public_materialization_ref_identical": true
+        },
+        "evidence_refs": {
+          "manifest_ref": {
+            "artifact_id": "5c5226f44dceb33945e73ea444f3bef5ecae2ac4b5322dbe6c80c9630c9d3797",
+            "revision": "8460b56f2ab2417273dd72a2ba36637666f3d92b77b9ff3dca3948de11e7fd89",
+            "uri": "gymts-artifact://5c5226f44dceb33945e73ea444f3bef5ecae2ac4b5322dbe6c80c9630c9d3797/8460b56f2ab2417273dd72a2ba36637666f3d92b77b9ff3dca3948de11e7fd89",
+            "content_hash": "8460b56f2ab2417273dd72a2ba36637666f3d92b77b9ff3dca3948de11e7fd89",
+            "media_type": "application/json",
+            "schema_ref": "gymts.json/1",
+            "size_bytes": 2149
+          },
+          "evaluation_report_ref": {
+            "artifact_id": "85e529597331aa678b28cc2c09032fdbeb7ef46785e7a78eea73344898e97e1a",
+            "revision": "2d74400052d33371dfe7e586cb7db2449410f05782cacf38c9915c20f833c748",
+            "uri": "gymts-artifact://85e529597331aa678b28cc2c09032fdbeb7ef46785e7a78eea73344898e97e1a/2d74400052d33371dfe7e586cb7db2449410f05782cacf38c9915c20f833c748",
+            "content_hash": "2d74400052d33371dfe7e586cb7db2449410f05782cacf38c9915c20f833c748",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 11227
+          },
+          "rescore_report_ref": {
+            "artifact_id": "d53a4f9e223a4455940a21bc3875a3809b2c644d088383236892f0f43da5157e",
+            "revision": "427770731025c981f8477618b5dad2970a7bdad6cbe7a084c8369714d1a1f54d",
+            "uri": "gymts-artifact://d53a4f9e223a4455940a21bc3875a3809b2c644d088383236892f0f43da5157e/427770731025c981f8477618b5dad2970a7bdad6cbe7a084c8369714d1a1f54d",
+            "content_hash": "427770731025c981f8477618b5dad2970a7bdad6cbe7a084c8369714d1a1f54d",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 11268
+          }
+        }
+      },
+      "simulation": {
+        "run_id": "run_28631438e15443a3837ddf3c16e8075b",
+        "status": "succeeded",
+        "counts": {
+          "observations": 7,
+          "inputs": 6,
+          "outputs": 6,
+          "results": 6,
+          "operations": 6,
+          "feedback": 0,
+          "updates": 0,
+          "cases_completed": 1,
+          "cases_incomplete": 0
+        },
+        "trace_ref": {
+          "artifact_id": "a8e88fadbffc08f832ff4657a197d2c9a970f819afab736b6221f759961a7699",
+          "content_hash": "6e755c2672ff76920e117cbea839f82ad0c814c8b0e9547bc3307b3425075a76",
+          "media_type": "application/json",
+          "revision": "6e755c2672ff76920e117cbea839f82ad0c814c8b0e9547bc3307b3425075a76",
+          "schema_ref": "gymts.execution-trace/1",
+          "size_bytes": 51415,
+          "uri": "gymts-artifact://a8e88fadbffc08f832ff4657a197d2c9a970f819afab736b6221f759961a7699/6e755c2672ff76920e117cbea839f82ad0c814c8b0e9547bc3307b3425075a76"
+        },
+        "sealed_result_ref": {
+          "artifact_id": "1ceed1660a99b24e62ac91085f12be0528b58d723d810b27e19b187d2eab090b",
+          "content_hash": "5dc016525a31c05b4af12f2473cae5318442128e22d435bb0730d8bef16c612b",
+          "media_type": "application/json",
+          "revision": "5dc016525a31c05b4af12f2473cae5318442128e22d435bb0730d8bef16c612b",
+          "schema_ref": "gymts.run-result/1",
+          "size_bytes": 2809,
+          "uri": "gymts-artifact://1ceed1660a99b24e62ac91085f12be0528b58d723d810b27e19b187d2eab090b/5dc016525a31c05b4af12f2473cae5318442128e22d435bb0730d8bef16c612b"
+        },
+        "sealed_run_hash": "sha256:83a140d520b5c127c1edbe87e337b4b0cdc6b3e9b9896fd693e70d6368def615",
+        "source_ref": {
+          "source_id": "four-data/simulation",
+          "config": "default",
+          "revision": "sha256:099fef8335f216105562b4e6b1560d842a5d9f96f8a398bc36047eeac18931a4"
+        },
+        "dataset": {
+          "dataset_id": "four-data/simulation/recorded",
+          "config": "default",
+          "revision": "sha256:44077293e7569a07312c93a1fe6e03b23d4bbbad01cba1042f76d1852627b778",
+          "kind": "simulation",
+          "splits": {
+            "recorded": {
+              "row_count": 27,
+              "split_origin": "sealed-environment-run",
+              "input_indices": [
+                0
+              ],
+              "target_indices": []
+            }
+          },
+          "lineage": {
+            "parents": [],
+            "parent_manifests": [],
+            "capture": {
+              "uri": "gymts-data://sha256/c8f0267798bee46788d3e00fd5a6d3f2fe6f2f0ca9d703bc58458e2fe5e0677b",
+              "sha256": "c8f0267798bee46788d3e00fd5a6d3f2fe6f2f0ca9d703bc58458e2fe5e0677b",
+              "size_bytes": 2708,
+              "media_type": "application/json"
+            }
+          }
+        },
+        "evaluation_id": "evaluation_ee603e3e7fd0431eb191ad1795e86640",
+        "evaluation_verdict": "pass",
+        "coverage": {
+          "expected_units": 1,
+          "succeeded_runs": 1,
+          "failed_runs": 0,
+          "cancelled_runs": 0,
+          "not_started_units": 0
+        },
+        "aggregate_metrics": {
+          "episode_return": {
+            "value": 1.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          },
+          "episode_length": {
+            "value": 6.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          },
+          "terminated": {
+            "value": 1.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          },
+          "truncated": {
+            "value": 0.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          },
+          "scope_limited": {
+            "value": 0.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 1,
+              "scored": 1,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        "rescore_evaluation_id": "evaluation_f7bad38d71534ddeab68490155ea44b3",
+        "rescore_verdict": "pass",
+        "metrics_equal": true,
+        "coverage_equal": true,
+        "sealed_run_unchanged": true,
+        "backends_forbidden_in_rescore": true,
+        "portable": {
+          "row_count": 27,
+          "rows_hash": "sha256:084f6f69e2ae04fcd4b5d107f0ac749da7b5ed77a4bf2c7d81e7f56f69b38d8b",
+          "capture_hash": "sha256:c8f0267798bee46788d3e00fd5a6d3f2fe6f2f0ca9d703bc58458e2fe5e0677b",
+          "source_ref": {
+            "config": "default",
+            "revision": "sha256:099fef8335f216105562b4e6b1560d842a5d9f96f8a398bc36047eeac18931a4",
+            "source_id": "four-data/simulation"
+          },
+          "kind": "simulation",
+          "seed_used": 19,
+          "ownership": "created",
+          "status": "succeeded",
+          "environment_end": {
+            "detail": null,
+            "reason": "backend_terminated",
+            "terminated": true,
+            "truncated": false
+          },
+          "event_kinds": [
+            "environment_operation",
+            "environment_receipt",
+            "environment_request",
+            "observation",
+            "session"
+          ]
+        },
+        "evidence_refs": {
+          "manifest_ref": {
+            "artifact_id": "9c016fa1e779d82d9aa355a2d53f360280b90a3f9186d20804f7391f23dc65ad",
+            "revision": "88cf54dcf4cad995ee9914a2a7f75221142517407331df3d08568a982484bb1f",
+            "uri": "gymts-artifact://9c016fa1e779d82d9aa355a2d53f360280b90a3f9186d20804f7391f23dc65ad/88cf54dcf4cad995ee9914a2a7f75221142517407331df3d08568a982484bb1f",
+            "content_hash": "88cf54dcf4cad995ee9914a2a7f75221142517407331df3d08568a982484bb1f",
+            "media_type": "application/json",
+            "schema_ref": "gymts.json/1",
+            "size_bytes": 1776
+          },
+          "evaluation_report_ref": {
+            "artifact_id": "a8a67608ad7b4b099eecb5f3f9dae0669fdb05ebfd546453eb63a31884fe02d8",
+            "revision": "46014786ab6d3d3ce2aa71efe0ede971be9b09bfc7c9113effd20819b8e0776b",
+            "uri": "gymts-artifact://a8a67608ad7b4b099eecb5f3f9dae0669fdb05ebfd546453eb63a31884fe02d8/46014786ab6d3d3ce2aa71efe0ede971be9b09bfc7c9113effd20819b8e0776b",
+            "content_hash": "46014786ab6d3d3ce2aa71efe0ede971be9b09bfc7c9113effd20819b8e0776b",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 13259
+          },
+          "rescore_report_ref": {
+            "artifact_id": "3cc7d012e888fc6a2b7f9f26c7458427c41b8377c4673ea74bea01fb3812a83a",
+            "revision": "e49a09ca31b7dbbb30d5a6e5d37dee9861a408c94f2218450b7fad94c595f8a8",
+            "uri": "gymts-artifact://3cc7d012e888fc6a2b7f9f26c7458427c41b8377c4673ea74bea01fb3812a83a/e49a09ca31b7dbbb30d5a6e5d37dee9861a408c94f2218450b7fad94c595f8a8",
+            "content_hash": "e49a09ca31b7dbbb30d5a6e5d37dee9861a408c94f2218450b7fad94c595f8a8",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 13300
+          }
+        }
+      },
+      "live_testbed": {
+        "run_id": "run_c77d10b98d7b42dab4f6e3b4ad0ea44a",
+        "status": "succeeded",
+        "counts": {
+          "observations": 137,
+          "inputs": 11,
+          "outputs": 11,
+          "results": 11,
+          "operations": 0,
+          "feedback": 0,
+          "updates": 0,
+          "cases_completed": 11,
+          "cases_incomplete": 0
+        },
+        "trace_ref": {
+          "artifact_id": "d0686ab4cdc2c2cb2e406d6f19f7a94787d0250440dc84d23fb67603fc8f50bd",
+          "content_hash": "c2c194cf9f3ec28c90892b881fe3f9a64fba6cfa4ff7e388008940c08969c469",
+          "media_type": "application/json",
+          "revision": "c2c194cf9f3ec28c90892b881fe3f9a64fba6cfa4ff7e388008940c08969c469",
+          "schema_ref": "gymts.execution-trace/1",
+          "size_bytes": 298794,
+          "uri": "gymts-artifact://d0686ab4cdc2c2cb2e406d6f19f7a94787d0250440dc84d23fb67603fc8f50bd/c2c194cf9f3ec28c90892b881fe3f9a64fba6cfa4ff7e388008940c08969c469"
+        },
+        "sealed_result_ref": {
+          "artifact_id": "266525bcac151ee1abafd7e59098a7550e7114b8d4fda0a0ba77a19211369b96",
+          "content_hash": "d99cd0046c752c129ccf090e98042cf78d51cb344a34672c765b516483763032",
+          "media_type": "application/json",
+          "revision": "d99cd0046c752c129ccf090e98042cf78d51cb344a34672c765b516483763032",
+          "schema_ref": "gymts.run-result/1",
+          "size_bytes": 41800,
+          "uri": "gymts-artifact://266525bcac151ee1abafd7e59098a7550e7114b8d4fda0a0ba77a19211369b96/d99cd0046c752c129ccf090e98042cf78d51cb344a34672c765b516483763032"
+        },
+        "sealed_run_hash": "sha256:5e4e5c25cb99e604031a2f7b33643ad23a3c6937e40957830c9f0603c39e3f08",
+        "source_ref": {
+          "source_id": "four-data/live_testbed",
+          "config": "default",
+          "revision": "sha256:59cd6aa9246b55e240a41e443a459a38223913d27546933e0166516c4e66ece2"
+        },
+        "dataset": {
+          "dataset_id": "four-data/live_testbed/recorded",
+          "config": "default",
+          "revision": "sha256:961e1317ce547404bcf4a27af865f4aa61c1a7039c8e17a49444eec9a80f25da",
+          "kind": "live_testbed",
+          "splits": {
+            "recorded": {
+              "row_count": 275,
+              "split_origin": "sealed-environment-run",
+              "input_indices": [
+                0
+              ],
+              "target_indices": []
+            }
+          },
+          "lineage": {
+            "parents": [],
+            "parent_manifests": [],
+            "capture": {
+              "uri": "gymts-data://sha256/8895d955cd28b49025a5c3158d6f5172756be3f218af93bbf5be2be329f45633",
+              "sha256": "8895d955cd28b49025a5c3158d6f5172756be3f218af93bbf5be2be329f45633",
+              "size_bytes": 23941,
+              "media_type": "application/json"
+            }
+          }
+        },
+        "evaluation_id": "evaluation_d9a7bc97eb254a668ab6fab5bb13f7d2",
+        "evaluation_verdict": "pass",
+        "coverage": {
+          "expected_units": 1,
+          "succeeded_runs": 1,
+          "failed_runs": 0,
+          "cancelled_runs": 0,
+          "not_started_units": 0
+        },
+        "aggregate_metrics": {
+          "mae": {
+            "value": 0.0,
+            "status": "ready",
+            "counts": {
+              "eligible": 11,
+              "scored": 11,
+              "missing": 0,
+              "invalid": 0,
+              "excluded": 0
+            },
+            "reason": null
+          }
+        },
+        "rescore_evaluation_id": "evaluation_3ef29a175a2e48c1853d58cccbe95cb8",
+        "rescore_verdict": "pass",
+        "metrics_equal": true,
+        "coverage_equal": true,
+        "sealed_run_unchanged": true,
+        "backends_forbidden_in_rescore": true,
+        "portable": {
+          "row_count": 275,
+          "rows_hash": "sha256:45133990f2ef30467dfdf0c99fdb3424b9480a63cf08db5c4756f4de76953c75",
+          "capture_hash": "sha256:996e5cdc0a6a1e391d0d484e0792fdaf1162e4a9d182e88f2a8348f4bd6351cf",
+          "source_ref": {
+            "config": "default",
+            "revision": "sha256:59cd6aa9246b55e240a41e443a459a38223913d27546933e0166516c4e66ece2",
+            "source_id": "four-data/live_testbed"
+          },
+          "kind": "live_testbed",
+          "seed_used": null,
+          "ownership": "attached",
+          "status": "succeeded",
+          "environment_end": {
+            "detail": null,
+            "reason": "read_scope_end",
+            "terminated": false,
+            "truncated": false
+          },
+          "event_kinds": [
+            "environment_request",
+            "observation",
+            "session"
+          ]
+        },
+        "evidence_refs": {
+          "manifest_ref": {
+            "artifact_id": "e57f2c6ae082d55cefbe903b72b65e4447ab80550d51a8f2aaeaa75f7fc1c4cc",
+            "revision": "6938c4d92123b33db8786e7bad1d1b1bdfdaabc20dc7b1c8dc0437e162d8bac3",
+            "uri": "gymts-artifact://e57f2c6ae082d55cefbe903b72b65e4447ab80550d51a8f2aaeaa75f7fc1c4cc/6938c4d92123b33db8786e7bad1d1b1bdfdaabc20dc7b1c8dc0437e162d8bac3",
+            "content_hash": "6938c4d92123b33db8786e7bad1d1b1bdfdaabc20dc7b1c8dc0437e162d8bac3",
+            "media_type": "application/json",
+            "schema_ref": "gymts.json/1",
+            "size_bytes": 10595
+          },
+          "evaluation_report_ref": {
+            "artifact_id": "3da806447682446cf6684882c6f4c6f2e1f52ff255584813f609815aac3f2c78",
+            "revision": "f50278bec73aeb1b154c710b1f4d8367fdb9a482d9a263735fa43ea11ddf26f8",
+            "uri": "gymts-artifact://3da806447682446cf6684882c6f4c6f2e1f52ff255584813f609815aac3f2c78/f50278bec73aeb1b154c710b1f4d8367fdb9a482d9a263735fa43ea11ddf26f8",
+            "content_hash": "f50278bec73aeb1b154c710b1f4d8367fdb9a482d9a263735fa43ea11ddf26f8",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 9890
+          },
+          "rescore_report_ref": {
+            "artifact_id": "e0fcc6596b8b8de745638eba48de3ba1575f1d5d46af6a85c9230fb1eed73ec3",
+            "revision": "c62db5d11bf640a429cc00dd7fa383e477bddd060ce4c78ded3ebfe4f2d7b0c1",
+            "uri": "gymts-artifact://e0fcc6596b8b8de745638eba48de3ba1575f1d5d46af6a85c9230fb1eed73ec3/c62db5d11bf640a429cc00dd7fa383e477bddd060ce4c78ded3ebfe4f2d7b0c1",
+            "content_hash": "c62db5d11bf640a429cc00dd7fa383e477bddd060ce4c78ded3ebfe4f2d7b0c1",
+            "media_type": "application/json",
+            "schema_ref": "gymts.evaluation-report/1",
+            "size_bytes": 9931
+          }
+        }
+      }
+    },
+    "scope": "Engineering execution, persistent data and scoring coverage; not a model-quality or causal live forecasting claim",
+    "paid_api_calls": 0,
+    "gpu_jobs": 0,
+    "light_rescore_dependency_check": {
+      "status": "passed",
+      "missing_native_or_model_packages": {
+        "numpy": true,
+        "scipy": true,
+        "pandas": true,
+        "sktime": true,
+        "gymnasium": true,
+        "torch": true,
+        "transformers": true
+      }
+    },
+    "acceptance_ref": {
+      "artifact_id": "5d6f036ecdd7ed27139c374254b5ff8dd843c3effb3559bae1437115e47430f0",
+      "revision": "6cb6fbe573d78f8152af1052c4af7fe214298aef2430f97266b6114dbbf9609a",
+      "uri": "gymts-artifact://5d6f036ecdd7ed27139c374254b5ff8dd843c3effb3559bae1437115e47430f0/6cb6fbe573d78f8152af1052c4af7fe214298aef2430f97266b6114dbbf9609a",
+      "content_hash": "6cb6fbe573d78f8152af1052c4af7fe214298aef2430f97266b6114dbbf9609a",
+      "media_type": "application/json",
+      "schema_ref": "gymts.json/1",
+      "size_bytes": 60030
+    }
+  },
+  "adapter_compatibility": {
+    "status": "passed",
+    "native_report": "/tmp/gymts-data-organization-20261021/adapter-compatibility.json",
+    "native_report_sha256": "e4c8fd6b6421d7b21c2dc3ff2e0842e22a5096590b9b385b67ad0750cd239aa3",
+    "python": "3.11.8",
+    "packages": 16,
+    "tests": {
+      "discovered": 407,
+      "passed": 346,
+      "skipped_optional_dependencies": 61
+    },
+    "all_independent_wheel_sdist_rebuilds_and_uninstall_old_run_rescores_passed": true,
+    "all_enabled": 16,
+    "removed": "gymts-areal",
+    "remaining_enabled_and_core_run_succeeded": 15,
+    "areal_profile": "Current V13 draft tokenizer projection code with22 discovered/20 executed/2 skipped; this packaging check is not V11 native training or V13 GPU/deployment acceptance.",
+    "itformer_repair": "Only regression inventory assertions changed: independently hash all gymts/* fixture wheel members and compare the complete returned mapping; use len(expected_files) for verify count. No production adapter/core edits.",
+    "first_failure_log_preserved": "/tmp/gymts-data-organization-20261021/adapter-compatibility.log",
+    "first_failure_analysis_preserved": "/tmp/gymts-data-organization-20261021/adapter-compatibility-failure-analysis.json",
+    "repaired_full_run_log": "/tmp/gymts-data-organization-20261021/adapter-compatibility-repaired.log",
+    "isolated_itformer_repair_report": "/tmp/gymts-data-organization-20261021/itformer-test-inventory-repair.json",
+    "frozen_f1_core_wheel_sha256": "8944f39ffe516dbe22b7800f57fd18266cf6b3a4e84cf3a35b32cb6261ac2f1a",
+    "frozen_f1_source_files_match": 41,
+    "frozen_f1_source_files_changed": [],
+    "network_calls": 0,
+    "native_training_or_gpu_calls": 0
+  },
+  "durable_evidence": {
+    "status": "passed",
+    "archive": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-data-organization/evidence/f1-data-organization-20261021.tar.gz",
+    "sha256": "6528db40e57e5340ee41f066305730a0904e5b286a79b4c76c9fca70dfde1f82",
+    "bytes": 995489,
+    "files": 1309,
+    "uncompressed_file_bytes": 5082443,
+    "restored_to": "/tmp/gymts-data-organization-20261021/restored",
+    "contains": "Four sealed Run stores and persistent data; exact frozen core and independent wheels; source/install identities and score evidence",
+    "excluded": "Native model/runtime environments, third-party libraries, service TSDB, rebuildable caches and duplicate data copy",
+    "restore_verification": {
+      "status": "passed",
+      "archived_artifact_references_verified": 567,
+      "persistent_data_objects_verified": 60,
+      "restored_dataset_kinds": [
+        "static",
+        "synthetic",
+        "simulation",
+        "live_testbed"
+      ],
+      "restored_dataset_read": "passed",
+      "restored_model_free_rescore": "passed",
+      "sealed_runs_unchanged": true,
+      "model_and_environment_execution_forbidden": true
+    },
+    "verification_supplements": {
+      "adapter-compatibility.json": {
+        "path": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-data-organization/evidence/metadata/adapter-compatibility.json",
+        "sha256": "e4c8fd6b6421d7b21c2dc3ff2e0842e22a5096590b9b385b67ad0750cd239aa3",
+        "bytes": 21743
+      },
+      "adapter-compatibility-summary.json": {
+        "path": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-data-organization/evidence/metadata/adapter-compatibility-summary.json",
+        "sha256": "6807bff04f9ed75872ecc948605721f56e652c8569800c753b7bb489876f2cb0",
+        "bytes": 1640
+      },
+      "adapter-compatibility-failure-analysis.json": {
+        "path": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-data-organization/evidence/metadata/adapter-compatibility-failure-analysis.json",
+        "sha256": "090886a65dd86948bf99523f352d9b35c48ecabea7092f8bf79263f730dc585a",
+        "bytes": 4397
+      },
+      "adapter-compatibility.log": {
+        "path": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-data-organization/evidence/metadata/adapter-compatibility.log",
+        "sha256": "d3e06c80c5e70c9ec3d11fbd368e664c7d70190c33a9f9ce783f43ca1b1c3b7b",
+        "bytes": 997
+      },
+      "adapter-compatibility-repaired.log": {
+        "path": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-data-organization/evidence/metadata/adapter-compatibility-repaired.log",
+        "sha256": "e4c8fd6b6421d7b21c2dc3ff2e0842e22a5096590b9b385b67ad0750cd239aa3",
+        "bytes": 21743
+      },
+      "itformer-test-inventory-repair.json": {
+        "path": "/zzr/zmx/GymTS/Jurmean-GymTS/.gymts-data-organization/evidence/metadata/itformer-test-inventory-repair.json",
+        "sha256": "32580ed3895588ca6ab807c53aca4cd059b49bbc9234c0435a3e45866e43db92",
+        "bytes": 954
+      }
+    }
+  },
+  "publication": "Local work only; no Git commit, push, package publication or website deployment performed for this data-core update.",
+  "code_freeze_still_matches": true
+}

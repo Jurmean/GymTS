@@ -280,6 +280,8 @@ class AutoBenchTS:
                 raise _error("Gate references unknown or repeated candidates")
 
     def evaluate(self, spec: dict) -> dict:
+        from gymts.environment_ts.experiments import inherit_organization_inputs
+        spec = inherit_organization_inputs(spec, self.records, self.artifacts)
         spec = deepcopy(spec)
         scoring, comparison, scorer = self._common(spec, "evaluate")
         if not isinstance(spec["cases"], list) or not spec["cases"] or not isinstance(spec["candidates"], list) or not spec["candidates"]:
@@ -333,6 +335,8 @@ class AutoBenchTS:
         return self._execute(spec, units, experiments, scorer, {})
 
     def score(self, spec: dict) -> dict:
+        from gymts.environment_ts.experiments import inherit_organization_inputs
+        spec = inherit_organization_inputs(spec, self.records, self.artifacts)
         spec = deepcopy(spec)
         scoring, comparison, scorer = self._common(spec, "score")
         if spec["previous_evaluation_id"] is not None and not isinstance(spec["previous_evaluation_id"], str):

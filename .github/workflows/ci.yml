@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install build tools
-        run: python -m pip install "setuptools>=58" wheel
+        run: python -m pip install "setuptools>=58" wheel packaging
       - name: Run regression tests
         run: python -B -m unittest discover -s tests -v
       - name: Build and verify isolated installations

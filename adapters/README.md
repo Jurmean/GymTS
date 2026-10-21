@@ -1,6 +1,10 @@
 # GymTS 项目适配包
 
-最终交付的是 GymTS 框架。接入真实项目用于检验公共合同、发现缺口和修正框架；项目适配器与资源独立交付。当前核心 `gymts==0.5.0`，正式接口规范为 1.2.0。五个原适配包为 0.2.0，TSQA 及本轮五个来源/领域包为 0.1.0，均依赖 `gymts>=0.5,<0.6`。当前共十一份独立适配包。公共 SDK 随核心发布，共享领域合同另行成包；纯装配、最小资源目录和 RL checkpoint 新评价已实现，完整 v2 Runtime 仍是提案。
+GymTS 的主线是存储数据、接入数据、组织实验、记录实验。真实项目用于检验公共合同与发现缺口；项目适配器与资源独立交付。当前核心 `gymts==0.6.0`，正式接口规范为 1.4.0。原有十一包中五包为 0.2.0、六包为 0.1.0；2026-10-21 新增 TimeCopilot、ITFormer、Chronos-2、Data-Juicer、AReaL 五包，均为 0.1.0。当前共十六份独立适配包，均声明 `gymts>=0.5,<0.7`；已有最小教程使用同一范围，四类数据教程为 `gymts>=0.5.1,<0.7`，专用组织教程为 `gymts>=0.6,<0.7`。公共 SDK、四类来源目录、不可变数据回库和实验组织随核心发布，共享领域合同另行成包；完整 v2 Runtime 仍是提案。
+
+固定数据与产物输入、阶段依赖、attempt、显式恢复和统一查询见[实验组织指南](../docs/experiment-organization.md)。当前 [F2.1 验收](../docs/reports/experiment-organization-2026-10-21.json)保留旧 23 个 schema 摘要，验证真实分阶段运行、独立评价与适配包卸载后重评。
+
+历史 F0 冻结轮次的新增接入、真实成功/失败、原生训练和独立重评按项目记录，见[五项目接入与验收](../docs/five-project-integration-acceptance-2026-10-21.md)。TimeCopilot、ITFormer、Chronos-2、Data-Juicer 已完成所列工程闭环；十六包离线发行检查、跨项目六个 CPU Run/三次独立重评和两类非法组合拒绝已完成；AReaL 已验证真实训练和检查点发布，仅新进程留出评价与重评仍 pending。实现接口、工程执行和模型质量分别判断。
 
 ## 角色与依赖
 
@@ -13,12 +17,12 @@
 GymTS
   EnvironmentTS：源数据目录、执行、访问边界、Run、轨迹、制品与快照
   AutoBenchTS：benchmark 登记/解析、评价计划、独立评分、比较、Gate 与报告
-  公共注册、版本、错误、训练构建与资源存储服务
+  公共实验集合、阶段/attempt、依赖、续接、查询、注册、版本、错误、训练构建与资源存储服务
 ```
 
 | 交付物 | 目录与模块 | 内容 |
 | --- | --- | --- |
-| `gymts` | 仓库根 / `gymts` | 两个主模块、公共 SDK、轨迹、存储、训练构建与资源目录服务 |
+| `gymts` | 仓库根 / `gymts` | 两个主模块、公共 SDK、实验组织、轨迹、存储、训练构建与资源目录服务 |
 | `gymts-timeseries` | [timeseries](timeseries/README.md) / `gymts_timeseries` | 中立数值 JSON/CSV Source、七类 Task、解析、独立 Scorer；不依赖具体模型 |
 | `gymts-libraryts` | [libraryts](libraryts/README.md) / `gymts_libraryts` | 指定 NetmanAIOps/sktime 的十个真实工具、原生数据加载、Naive/Polynomial Candidate、预测 Scorer |
 | `gymts-chatts` | [chatts](chatts/README.md) / `gymts_chatts` | ChatTS 数据读取与生成、模型内部 codec、时序/文本 HTTP、旧 QA 合同兼容 |
@@ -30,11 +34,16 @@ GymTS
 | `gymts-gymnasium` | [gymnasium](gymnasium/README.md) / `gymts_gymnasium` | 自有 Gymnasium 实例 reset/step/close，复用外部 interaction 合同 |
 | `gymts-openenv` | [openenv](openenv/README.md) / `gymts_openenv` | 官方 SDK 持久 WS 会话、原始请求响应证据，复用 interaction 合同 |
 | `gymts-prometheus` | [prometheus](prometheus/README.md) / `gymts_prometheus` | 只读附着实时指标，PromQL、接收时间和历史缓存；不拥有 Task、模型或 Scorer |
+| `gymts-timecopilot` | [timecopilot](timecopilot/README.md) / `gymts_timecopilot` | 原生 Agent、工具选择与返回续推、预算、真实模型/工具证据；6 次模型请求与四原生工具闭环完成，独立评价及重评；复用 timeseries 合同 |
+| `gymts-itformer` | [itformer](itformer/README.md) / `gymts_itformer` | 官方 EngineMT-QA 派生视图、严格原生模型推理、私有答案和独立 Scorer；8 QA 工程验收完成 |
+| `gymts-chronos` | [chronos](chronos/README.md) / `gymts_chronos` | 原生 Chronos-2 多变量/日历协变量与分位数、fit、不可变检查点及重载评价；复用 timeseries 合同 |
+| `gymts-datajuicer` | [datajuicer](datajuicer/README.md) / `gymts_datajuicer` | 原生 train-only 过滤/去重/QA、完整血缘与质量 Scorer、显式派生数据登记和训练用途读取 |
+| `gymts-areal` | [areal](areal/README.md) / `gymts_areal` | 原生 TIR 多轮工具 rollout、PPOTrainer/GRPO 与检查点协调；复用 rl 数据/任务/评分；实际训练/发布已验证，留出评价与重评 pending |
 | 资源与实验配置 | 外部资源包或部署目录 | 版本化卡片/基准定义、数据和权重引用、预算、配方 |
 
 核心不导入项目包，不保存项目名称分支；适配器不依赖核心私有实现。领域包可被多个项目共享，但不能因共享就搬进核心。RL 调用上游 ChatTS 数值生成函数，不依赖 `gymts-chatts` 包。
 
-数据 Source 只交付数值和明确公开的来源事实；Task 决定问题、输出含义、解析与可见边界；模型 codec 在 Candidate 内构造原生请求。ChatTS 默认走这个中立路径，旧 `/1` ID、schema 和行为通过 `--legacy` 保留。默认规范化题目是另一个派生提示实验，manifest/report 明确不等价原 benchmark prompt；原始材料仍保留为来源证据。已有 benchmark 的任务约束不随意改变，换任务需要新视图及独立参考。
+中立数值时序路径中的 Source 交付数值和明确公开的来源事实；Task 决定问题、输出含义、解析与可见边界；模型 codec 在 Candidate 内构造原生请求。ChatTS 默认走这个中立路径，旧 `/1` ID、schema 和行为通过 `--legacy` 保留。默认规范化题目是另一个派生提示实验，manifest/report 明确不等价原 benchmark prompt；原始材料仍保留为来源证据。已有 benchmark 的任务约束不随意改变，换任务需要新视图及独立参考。
 
 LibraryTS 使用用户指定 [NetmanAIOps/sktime](https://github.com/NetmanAIOps/sktime)，固定提交 `080f4c3c3695f239e328548bac7d7a3ef7aa9127`，没有替换成另一个 PyPI sktime。方法、生成器、数据算子和评分实现分别接入对应角色；LibraryTS 实现与某一次 Run 中的 Candidate 实例分别记录版本。真实原生 API 已接通；该工具集自身的统一资产登记/发布属于外部项目，GymTS 只提供通用引用和接入接口。当前两个数值方法每次仅对获准输入窗口真实拟合后预测，不复用跨调用状态，不接触未来标签；没有宣称是已训练持久权重。
 
@@ -54,6 +63,9 @@ python -m pip install './adapters/bench_tsqa[runtime]'
 python -m pip install './adapters/hf_datasets[runtime]'
 python -m pip install ./adapters/interaction './adapters/gymnasium[runtime]'
 python -m pip install ./adapters/openenv ./adapters/prometheus
+python -m pip install ./adapters/timeseries ./adapters/rl \
+  ./adapters/timecopilot ./adapters/itformer ./adapters/chronos \
+  ./adapters/datajuicer ./adapters/areal
 ```
 
 各包通过 `gymts.integrations` 发布入口。发现只读取元数据，显式启用才注册；不会自动加载模型、执行训练或下载数据。
@@ -84,7 +96,7 @@ Environment/Task 提供纯 `factory.describe_spec(spec)` 或注册 `describe=`�
 
 核心公开 `gymts.training.build_dataset(spec, records, artifacts)`、`DatasetBuilderProvider` 与 `DatasetBuilderRegistry`。provider 经 `gymts.dataset_builders` 按精确版本选择；服务校验固定引用、目标格式、BuildSpec/CAS 与 DatasetManifest 一致性。具体 token/mask/reward/样本血缘由独立 provider 验证，框架不写 RL 行格式。
 
-RL 的 `NativeRolloutBuilder` 实现既有原生轨迹导出；旧两参数 helper 兼容保留。TRL 通过 `rollout_provider` 与 artifact services 接收已发布 shard，继续使用上游 GRPO loss、backward、optimizer。CPU 小模型测试验证真实参数更新，不以镜像实现的测试代替上游训练。没有新增训练框架；verl、多轮和分布式后端尚未适配。
+RL 的 `NativeRolloutBuilder` 实现既有原生轨迹导出；旧两参数 helper 兼容保留。TRL 通过 `rollout_provider` 与 artifact services 接收已发布 shard，继续使用上游 GRPO loss、backward、optimizer。CPU 小模型测试验证真实参数更新，不以镜像实现的测试代替上游训练。本轮另有独立 `gymts-areal` 接入原生多轮 TIR、训练与检查点协调；其真实验收状态见五项目记录，不能用原 TRL 包的范围概括所有训练后端。没有新增训练框架；verl 等其他后端仍需独立适配。
 
 正式评价始终由 AutoBenchTS `evaluate/score` 负责。RL 现有 `rl-qa-scorer` 与 `gymts-rl score` 支持旧评测 Run、独立参考、显式 Gate 和新参考修订，不重新加载模型；训练 heldout 摘要不变成正式报告。RL 现已发布固定基础身份、adapter/config、tokenizer/processor 和训练血缘的单 archive；新进程 Candidate 从 `artifact` 装载，execution seed 不进入候选身份，原生 evaluate 后可重复同 seed 和零推理重评，历史身份不伪合并。[完整工程验收](../docs/reports/rl-checkpoint-loop-2026-10-20.json)包含真实 TRL 两步更新与 28 个封存 Run，实际 accuracy=0.0、format_valid=0.5；技术 Gate 只看执行和覆盖。微型模型的有效训练仅使用两个官方 GSM8K train 题，ChatTS 真实准备并独立评价，五附件未用于训练；不声明大型模型或全部 processor 的新轮验收。
 
@@ -97,12 +109,14 @@ python -B scripts/check_release.py --output /tmp/gymts-core-check.json
 python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
 ```
 
-检查需要本地 setuptools/wheel，离线构建全部 wheel/sdist、源包重建；每个包在源码目录外的干净环境独立安装，依赖仅从本地 wheelhouse 解析，验证发现、启用、CLI、回归、移除与核心旧 Run 重评分；上一轮六包的[发行检查](../docs/reports/adapter-package-check-2026-10-20.json)保留。本轮全部十一包独立构建/安装/共同启用/移除已通过[新发行检查](../docs/reports/environment-adapter-package-check-2026-10-19.json)，各新增来源另有原生零跳过验收，见[环境接入指南](../docs/environment-adapters.md)。原生项目和大模型测试显式开启，不调用付费服务。历史验收保留，最新版本与真实八组合、原生调用和训练扩展证据见[本轮验证](../docs/component-replacement-validation-2026-10-19.md)。
+检查需要本地 setuptools/wheel/packaging，离线构建全部 wheel/sdist、源包重建；每个包在源码目录外的干净环境独立安装，依赖仅从本地 wheelhouse 解析，验证发现、启用、CLI、回归、移除与核心旧 Run 重评分；上一轮六包的[发行检查](../docs/reports/adapter-package-check-2026-10-20.json)保留。原有十一包独立构建/安装/共同启用/移除已通过[来源适配发行检查](../docs/reports/environment-adapter-package-check-2026-10-19.json)，各新增来源另有原生零跳过验收，见[环境接入指南](../docs/environment-adapters.md)。历史 F0 十六包已通过独立构建/安装、共同启用和移除回归：404 项发现，343 项执行通过、61 项明确 skip（V2 其余十五包 + V11 AReaL 补检组合，非全体最终源码单报告）；另有[跨项目 CPU 替换验收](../docs/reports/cross-project-role-replacement-2026-10-21.json)的 6 个真实 Run、3 次禁止执行的新进程重评和两类原生前拒绝。跳过不是原生验收，AReaL 更新与检查点发布已验证，留出评价/重评仍 pending。原生项目和大模型测试显式开启，不调用付费服务。历史验收保留，早期八种组合、原生调用和训练扩展证据见[历史验证](../docs/component-replacement-validation-2026-10-19.md)。当前版本和兼容回归以 [F2.1 组织协议验收](../docs/reports/experiment-organization-2026-10-21.json)为准，不把历史测试计数当作当前运行结果。
 
-后续项目先核对真实语义与当前规范，以最小真实实验定位差距。格式、任务解释和原生 API 放外部适配器；共享领域语义放独立合同包；生命周期、权限、身份、轨迹或评价组织缺口才扩展核心并保留旧项目回归。接入完成需验证兼容角色替换、非法组合拒绝、独立交付、移除与历史重评分。最小资源目录、纯装配与 RL checkpoint 链已交付；完整 v2 生命周期、通用隔离/远程 Runtime、Agent 对可替换工具集的真实工具循环、更多训练 profile/后端仍待验收；外部 LibraryTS 资产平台和上位 Research/Memory 编排各自独立。资源别名并发不可变性修复后的最终同版核心、746 行 benchmark、RL 检查点链、TimeSigma 原生 75 项与 LibraryTS 原生 10 项均已复验；精确身份和实际范围见[本轮交付](../docs/framework-delivery-2026-10-20.md)。
+脚本使用 `packaging.SpecifierSet` 按每个包的 `python_requires` 选择当前解释器可检查的包，并在 `unsupported_python` 中明确报告不兼容项；这不是该包测试通过。Python 3.9 保留核心与兼容包检查，CI 的 Python 3.12/3.13 配置用于全部包。可选科学数据测试按独立依赖分组报告 skip，轻量注册、规划、冻结和评分回归继续执行；完整原生数据与模型验收另行记录。
+
+后续项目先核对真实语义与当前规范，以最小真实实验定位差距。格式、任务解释和原生 API 放外部适配器；共享领域语义放独立合同包；生命周期、权限、身份、轨迹或评价组织缺口才扩展核心并保留旧项目回归。接入完成需验证兼容角色替换、非法组合拒绝、独立交付、移除与历史重评分。最小资源目录、纯装配与 RL checkpoint 链已交付；完整 v2 生命周期和通用隔离/远程 Runtime 仍未交付。TimeCopilot 原生 Agent 工具循环与 AReaL 多轮训练分别有外部适配器及独立验收状态；更多工具集与训练 profile 不能据此视为已覆盖；外部 LibraryTS 资产平台和上位 Research/Memory 编排各自独立。资源别名并发不可变性修复后的最终同版核心、746 行 benchmark、RL 检查点链、TimeSigma 原生 75 项与 LibraryTS 原生 10 项均已复验；精确身份和实际范围见[本轮交付](../docs/framework-delivery-2026-10-20.md)。
 
 ## 工具集由 Agent 调用
 
 LibraryTS 与其他工具集都是可替换的外部提供方。被测 Agent 在 Task/配置允许的能力内选择工具，原生 SDK 或平台通过适配执行，并把结果交回 Agent。GymTS 只承担公共接口、实验环境边界、调用关联和证据保存；不强制安装某个工具集，不因同仓库有 adapters 目录就内化项目。
 
-当前工具包装、固定算法 Candidate 和 Research journal 的验收分别保留；它们没有证明自主 Agent 已完成工具选择和续推。内部纯计算、额外环境读写、Run 外实验编排和私有评分按实际效果分路，见[工具职责与现状](../docs/agent-toolsets.md)。
+原有工具包装、固定算法 Candidate 和 Research journal 的验收分别保留。本轮 TimeCopilot 直接运行原生 Agent，由模型选择真实工具和参数并消费工具返回；6 次真实模型请求完成四个原生工具阶段并选择 AutoETS，独立未来评分与禁用模型重评已完成；前三次失败和预算保留，不能用固定算法调用替代。AReaL 多轮 rollout 的训练证据另行验收。内部纯计算、额外环境读写、Run 外实验编排和私有评分按实际效果分路，见[工具职责与现状](../docs/agent-toolsets.md)。

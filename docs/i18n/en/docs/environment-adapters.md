@@ -1,6 +1,27 @@
 # EnvironmentTS environment integration
 
-This round was verified on 2026-10-19 (Shanghai). Synthetic data, static datasets, advancing simulations, and external live systems all connect through the existing Environment interface, with project implementations kept in independent adapters. EnvironmentTS owns execution, access scope, lifecycle, and evidence; AutoBenchTS owns fixed evaluation plans, independent scoring, and rescoring. HF column parsing, Gymnasium/OpenEnv calls, PromQL, and domain scoring remain outside core. See the [acceptance index](reports/environment-acceptance-2026-10-19.json) for actual Runs, native versions, distribution checks, and archive hashes.
+Current core is **0.6.0**, with interface specification **1.4.0**. GymTS focuses on **storing data, connecting data sources, organizing experiments, and recording experiments**. EnvironmentTS owns source definitions, dataset snapshots, collection windows, lineage, execution, and evidence; AutoBenchTS owns benchmarks, independent evaluation, and rescoring. Formats, generators, native SDKs, and domain scoring remain in adapters.
+
+Current F2.1 technical acceptance passed. See the [experiment organization guide](experiment-organization.md) for fixed data references, stages, attempt records, queries, and explicit build publication, and the [current acceptance report](reports/experiment-organization-2026-10-21.json) for identities, scope, and limitations. `run_data` still composes source binding, the original experiment, and capture without replacing real Task/Candidates. Four-kind data rationale and an executable data workflow remain in [ADR 0001](adr/0001-core-data-source-catalog.md) and the [user guide](user-guide.md#65-四类来源实际快照与回流).
+
+The historical Environment-integration verification dated 2026-10-19 (Shanghai) covers synthetic data, static datasets, advancing simulations, and external live systems. HF column parsing, Gymnasium/OpenEnv calls, and PromQL remain outside core. Its actual Runs, native versions, distribution checks, and archive hashes remain in the [historical acceptance index](reports/environment-acceptance-2026-10-19.json). The 2026-10-19 and F1 evidence below retains its original identity; it is not relabeled as new F2.1 native execution.
+
+## Historical F1: Frozen 0.5.1 Four-Kind Core Data Acceptance
+
+Core F1 was frozen before the [independent four-source example](../examples/data_organization/README.md) was installed outside source. Core APIs own source definitions, assets, snapshots, capture and lineage; the package only composes existing providers, domain projections and experiment configuration. It changes no core files and adds no separate catalog, executor or evaluator.
+
+| Kind | Real source and fixed view | Actual execution and evidence |
+| --- | --- | --- |
+| static | AirPassengers loaded by fixed native LibraryTS: 144 points, 132 public history plus 12 independent future values; one numeric input row | Native NaiveForecaster drift fit and independent held-out MAE/RMSE |
+| synthetic | Original ChatTS numerical generator, seed 27: 40 points, 32 public history plus eight independent future values; one numeric input row | Reuses independent forecast Task/Candidate/Scorer without rewriting the generator |
+| simulation | Real Gymnasium FrozenLake, reset seed 19 | Six real actions, seven observations, native terminal state and return=1 retained |
+| live_testbed | Genuine Prometheus scraping a local exporter | 137 observation batches and 11 results; actual time/capture scope retained, with scoring after the service stops |
+
+The result is four real Runs, four independent AutoBenchTS evaluations and four lightweight-environment rescores. Technical Gates check execution and coverage only, not forecast quality, autonomous Agent tool capability or causal online prediction. The rescore environment has no NumPy/SciPy/pandas/sktime/Gymnasium/torch/Transformers, and forbids Run execution and Environment/Candidate construction. All metrics, coverage and sealed-Run hashes remain unchanged.
+
+Separately, `data_home` was copied to another directory, external services stopped and the original Run store moved aside. A new Run root reread all four datasets, capture metadata and every portable attachment. Independent scoring still worked after restoring the original Run store. Offline dataset readability and historical Run rescoring are separate evidence; a dataset copy is not a complete execution archive.
+
+The fixed F1 wheel SHA-256 before/after real execution is `8944f39ffe516dbe22b7800f57fd18266cf6b3a4e84cf3a35b32cb6261ac2f1a`; the core code-tree digest is `dad5d6a1785c4fa440a51dd4c93307f47ca000aa0d955daa70e68e32dcfac319`. All 168 core regressions plus wheel/sdist and installation-outside-source checks completed separately. Rebuilt distribution-wheel bytes may differ from the actual F1 wheel, while matching the same code tree. See the [machine-readable report](reports/core-data-organization-2026-10-21.json) for identities, Run/evaluation/rescore IDs and scope. The existing sixteen-package F1 compatibility check discovered 407 tests: 346 executed passes and 61 optional-dependency skips. It includes that round’s AReaL V13 CPU draft without relabeling native training or held-out evaluation. Joint activation of sixteen packages, and fifteen after removing AReaL, also passed core execution and sealed-output rescoring. Complete four-source evidence was archived and restored into a fresh directory: 567 CAS references and 60 data-object digests were checked, followed by successful four-source reads and lightweight rescoring again. No Git/PyPI publication occurred, and F0 or pending AReaL status did not change.
 
 ## Four source kinds and where the stacks fit
 

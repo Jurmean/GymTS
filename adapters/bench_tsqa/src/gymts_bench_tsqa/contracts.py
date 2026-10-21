@@ -1,6 +1,6 @@
 """Neutral, lossless public benchmark questions and private reference contracts."""
 from gymts.contracts.schema import OBJECT, STRING, array, nullable, obj
-from .parsing import KINDS, PARSER_REF, PROJECTION_REF
+from .parsing import KINDS, SUPPORTED_PARSER_REFS, PROJECTION_REF
 
 PROTOCOL = 'gymts.task/tsqa-benchmark/1'
 PUBLIC = 'gymts.tsqa/public-sample/1'
@@ -25,17 +25,21 @@ def domain_schemas():
         'task_kind':{'enum':list(KINDS)},'question_original':STRING,'question':STRING,
         'series':array(series,minItems=1),'choices':array(choice),'attachment_projection':array(projection),
         'projection_ref':{'const':PROJECTION_REF},'context':OBJECT})
-    known = lambda kind,answer: obj({'reference_status':{'const':'known'},'reference_answer':answer,
-        'reference_kind':{'const':kind},'reason':{'type':'null'}})
+    def known(kind, answer):
+        fields = {'reference_status':{'const':'known'},'reference_answer':answer,
+            'reference_kind':{'const':kind},'reason':{'type':'null'},'input_issue':nullable(STRING)}
+        return obj(fields, required=[key for key in fields if key!='input_issue'])
     outcome = {'anyOf':[known('mcq_label',{'type':'string','pattern':'^[A-F]$'}),
         known('boolean',{'enum':['True','False']}),
         known('text_choice',{'type':'string','pattern':'^choice_[1-4]$'}),
+        known('structured',STRING),
         obj({'reference_status':{'const':'unknown'},'reference_answer':{'type':'null'},
-            'reference_kind':{'enum':list(KINDS)},'reason':STRING})]}
+            'reference_kind':{'enum':list(KINDS)},'reason':STRING,'input_issue':nullable(STRING)},
+            required=['reference_status','reference_answer','reference_kind','reason'])]}
     return {PUBLIC:public, INPUT:public, SNAPSHOT:obj({'dataset_revision':STRING,'samples':array(public,minItems=1)}),
         OUTPUT:obj({'raw_text':{'type':'string'},'evidence':OBJECT}),
         RESULT:obj({'raw_text':{'type':'string'},'parsed':nullable(obj({'answer':{'type':'string'}})),
-            'reason':nullable(STRING),'parser_ref':{'const':PARSER_REF}}), OUTCOME:outcome,
+            'reason':nullable(STRING),'parser_ref':{'enum':list(SUPPORTED_PARSER_REFS)}}), OUTCOME:outcome,
         ALIGNMENT:obj({'dataset_revision':STRING,'sample_id':token}), TOKEN:token,
         CONTEXT:obj({'dataset_revision':STRING,'sample_count':{'type':'integer','minimum':1}}),
         TASK_PARAMS:obj({'task_kind':{'enum':list(KINDS)}})}

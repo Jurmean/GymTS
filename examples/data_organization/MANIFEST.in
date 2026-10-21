@@ -1,0 +1,2 @@
+include README.md LICENSE pyproject.toml setup.cfg run.py
+recursive-include tests *.py

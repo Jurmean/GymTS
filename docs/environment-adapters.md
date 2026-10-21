@@ -1,10 +1,27 @@
 # EnvironmentTS 环境接入
 
-本轮验证日期为 2026-10-19（上海）。合成数据、静态数据集、可推进仿真和外部实时
-系统均可通过既有 Environment 接口接入，项目实现继续放在独立适配包。EnvironmentTS
-负责执行、访问范围、生命周期和证据；AutoBenchTS 负责固定评价计划、独立评分和重评。
-HF 列解析、Gymnasium/OpenEnv 调用、PromQL 和领域评分均未进入核心。
-实际 Run、原生版本、发行检查与归档哈希汇总见[本轮总验收索引](reports/environment-acceptance-2026-10-19.json)。
+当前核心为 **0.6.0**，接口规范为 **1.4.0**。GymTS 的主线是**存储数据、接入数据、组织实验、记录实验**。EnvironmentTS 管来源定义、dataset 快照、采集窗口、血缘、执行与证据；AutoBenchTS 管 benchmark、独立评价和重评。具体格式、生成器、原生 SDK 与领域评分继续放在适配器。
+
+当前 F2.1 已通过技术验收。固定数据引用、阶段依赖、尝试记录、查询和显式回库见[实验组织指南](experiment-organization.md)，固定身份、范围与限制见[当前验收报告](reports/experiment-organization-2026-10-21.json)。`run_data` 仍组合来源绑定、原实验和采集，不替换真实 Task/Candidate。四类数据层的变更理由与可运行数据流程仍见 [ADR 0001](adr/0001-core-data-source-catalog.md)和[使用指南](user-guide.md#65-四类来源实际快照与回流)。
+
+既有 Environment 接入验证日期为 2026-10-19（上海），覆盖合成、静态、可推进仿真和外部实时系统。HF 列解析、Gymnasium/OpenEnv 调用与 PromQL 均未进入核心。该次实际 Run、原生版本、发行检查及归档哈希保留在[历史验收索引](reports/environment-acceptance-2026-10-19.json)。下文 2026-10-19 与 F1 两组历史证据保持原身份，不改标为 F2.1 本轮新增原生运行。
+
+## 历史 F1：0.5.1 四类核心数据层冻结验收
+
+该轮先冻结核心 F1，再从源码目录外安装[独立四源示例包](../examples/data_organization/README.md)。来源定义、数据资产、快照、采集与血缘使用核心 API；独立包只组合既有 provider、领域投射与实验配置。它没有修改核心或另建目录、执行器、评价器。
+
+| 类别 | 真实来源与固定视图 | 实际执行与证据 |
+| --- | --- | --- |
+| static | 固定 LibraryTS 原生加载的 AirPassengers，共 144 点；132 点公开历史、12 点独立未来；一个数值输入行 | 原生 NaiveForecaster drift 拟合，独立留出 MAE/RMSE |
+| synthetic | ChatTS 原数值生成器，seed 27，共 40 点；32 点公开历史、8 点独立未来；一个数值输入行 | 复用独立 forecast Task/Candidate/Scorer，不重写生成器 |
+| simulation | 真实 Gymnasium FrozenLake，reset seed 19 | 6 次真实动作、7 次观测、原生终态与 return=1 保留 |
+| live_testbed | 真正 Prometheus 抓取本机 exporter | 137 批观测、11 份结果；保留实际时间与采集范围，服务停止后再评分 |
+
+共 4 个真实 Run、4 份独立 AutoBenchTS 评价与 4 次轻量环境重评。技术 Gate 只检查执行和覆盖，不能据此推断预测质量、Agent 自主工具能力或因果在线预测。重评环境没有 NumPy/SciPy/pandas/sktime/Gymnasium/torch/Transformers，禁止执行 Run 和构造 Environment/Candidate；全部指标、覆盖与封存 Run 摘要保持不变。
+
+另将 `data_home` 复制到独立目录，停止外部服务并移开原 Run store，再从新 Run root 重读四类数据、采集元数据与每个可移植附件。恢复原 Run store 后仍可独立评分。数据离线可读与旧 Run 可重评是两项分开的证据，不把 dataset 复制说成完整执行档案。
+
+真实运行前后固定的 F1 wheel SHA-256 均为 `8944f39ffe516dbe22b7800f57fd18266cf6b3a4e84cf3a35b32cb6261ac2f1a`；核心代码树为 `dad5d6a1785c4fa440a51dd4c93307f47ca000aa0d955daa70e68e32dcfac319`。168 项核心回归及 wheel/sdist、源码外安装检查另行完成；发行重建 wheel 的字节摘要不必等于实际 F1 wheel，但核对同一代码树。完整身份、Run/评价/重评 ID 与范围见[机器可读报告](reports/core-data-organization-2026-10-21.json)。旧十六包在 F1 上的兼容检查共发现 407 项，346 项执行通过、61 项因可选依赖缺失跳过；包括该轮 AReaL V13 CPU 草案，不改写原生训练或留出评价状态。十六包共存及移除 AReaL 后十五包共存、核心运行与封存重评也通过。完整四类证据归档后已在新目录恢复，核对 567 个 CAS 引用和 60 个数据对象摘要，再次通过四类读取及轻量重评。没有发布 Git/PyPI，也未更改 F0 或 AReaL pending 状态。
 
 ## 四类来源与技术栈的位置
 

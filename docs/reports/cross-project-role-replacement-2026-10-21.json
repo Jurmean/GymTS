@@ -1,0 +1,336 @@
+{
+  "protocol_version": "gymts.cross-project-role-replacement-acceptance/1",
+  "date": "2026-10-21",
+  "status": "completed",
+  "scope": "CPU engineering compatibility; no new LLM experiment, persistent training, quality improvement, or paper reproduction",
+  "core": {
+    "version": "0.5.0",
+    "contract": "1.2.0",
+    "wheel_sha256": "8883e708dbfcc46301939335f594884b40239ddd8bbe201a66e6af2f18e012cf",
+    "host_verified_files": 39,
+    "native_verified_files": 39,
+    "core_changes": 0,
+    "adapter_production_changes": 0
+  },
+  "source": {
+    "project": "TimeCopilot",
+    "dataset": "AirPassengers",
+    "public_history_points": 120,
+    "withheld_future_points": 12,
+    "original_public_snapshot_content_hash": "37d848a41498914fb4df987d3321ad90a27b6de8fab85c1160886b1be173e78a",
+    "original_public_snapshot_identity_preserved": true,
+    "private_forecast_holdout_identity_preserved": true,
+    "csv_preserves_values_and_actual_task_input": true,
+    "csv_has_its_own_derived_revision": true,
+    "original_tc_store_unchanged": true
+  },
+  "native_provider": {
+    "project": "NetmanAIOps/sktime LibraryTS",
+    "revision": "080f4c3c3695f239e328548bac7d7a3ef7aa9127",
+    "sktime_versions": [
+      "0.40.1"
+    ],
+    "worker_sha256": [
+      "7d5c294a75e3d516abfe4bec2bad196ab242e100e28fc1e041eafab5327f0df9"
+    ],
+    "existing_native_environment_modified": false,
+    "wrapper_identity_note": "The supplied legacy host wheel and existing native environment differ in source.py/candidate.py/tools.py; all inventories are recorded. Actual worker.py/runtime.py bytes and resolve_source/git/tool_ref/implementation_ref function ASTs match. source.py differs only by extra native allowed_scopes/effect metadata; Candidate/tools in that interpreter are not called by the native worker."
+  },
+  "executions": {
+    "runs": 6,
+    "native_fits": 6,
+    "model_calls": 6,
+    "tool_calls": 6,
+    "llm_requests": 0,
+    "gpu_usage": 0,
+    "fresh_process_rescore_new_executions": 0,
+    "fresh_process_rescore_native_dispatches": 0,
+    "fresh_process_absent_dependencies": [
+      "torch",
+      "numpy",
+      "pandas",
+      "sktime",
+      "timecopilot",
+      "pydantic_ai"
+    ]
+  },
+  "replacement_matrix": [
+    {
+      "source_form": "numeric-snapshot",
+      "task_id": "forecast.numeric",
+      "task_version": "0.2.0",
+      "candidate": "naive-drift",
+      "native_estimator": "sktime.forecasting.naive.NaiveForecaster",
+      "run_id": "run_4dc1c6b0301b429ebbdd0c139a613273",
+      "evaluation_id": "evaluation_78cfb2d6eed7445bbc220b9477e2dcbb",
+      "rescore_evaluation_id": "evaluation_03dd96399b0f410f87e820e1f9dc2f8e",
+      "metrics": {
+        "mae": {
+          "value": 79.04341736694678,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        },
+        "rmse": {
+          "value": 102.57890694158483,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "evaluation_status": "completed",
+      "evaluation_verdict": "insufficient_evidence",
+      "native_fit_calls": 1,
+      "native_fit_scope": "current_authorized_input_only",
+      "events": 14,
+      "native_model_calls": 1,
+      "native_tool_calls": 1,
+      "sealed_result_and_event_hashes_unchanged": true
+    },
+    {
+      "source_form": "numeric-snapshot",
+      "task_id": "forecast.numeric",
+      "task_version": "0.2.0",
+      "candidate": "polynomial-linear",
+      "native_estimator": "sktime.forecasting.trend.PolynomialTrendForecaster",
+      "run_id": "run_c1d5c2fb0cde4e07891cd5d123e83ee0",
+      "evaluation_id": "evaluation_78cfb2d6eed7445bbc220b9477e2dcbb",
+      "rescore_evaluation_id": "evaluation_03dd96399b0f410f87e820e1f9dc2f8e",
+      "metrics": {
+        "mae": {
+          "value": 50.08248547352826,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        },
+        "rmse": {
+          "value": 67.42081565543427,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "evaluation_status": "completed",
+      "evaluation_verdict": "insufficient_evidence",
+      "native_fit_calls": 1,
+      "native_fit_scope": "current_authorized_input_only",
+      "events": 14,
+      "native_model_calls": 1,
+      "native_tool_calls": 1,
+      "sealed_result_and_event_hashes_unchanged": true
+    },
+    {
+      "source_form": "csv-numeric-snapshot",
+      "task_id": "forecast.numeric",
+      "task_version": "0.2.0",
+      "candidate": "naive-drift",
+      "native_estimator": "sktime.forecasting.naive.NaiveForecaster",
+      "run_id": "run_419059aae3124d289ae3064619ad1e52",
+      "evaluation_id": "evaluation_42aa6718269646c8843ed96a1cce1d55",
+      "rescore_evaluation_id": "evaluation_53f06503741644ae82070bc6e9828958",
+      "metrics": {
+        "mae": {
+          "value": 79.04341736694678,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        },
+        "rmse": {
+          "value": 102.57890694158483,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "evaluation_status": "completed",
+      "evaluation_verdict": "insufficient_evidence",
+      "native_fit_calls": 1,
+      "native_fit_scope": "current_authorized_input_only",
+      "events": 14,
+      "native_model_calls": 1,
+      "native_tool_calls": 1,
+      "sealed_result_and_event_hashes_unchanged": true
+    },
+    {
+      "source_form": "csv-numeric-snapshot",
+      "task_id": "forecast.numeric",
+      "task_version": "0.2.0",
+      "candidate": "polynomial-linear",
+      "native_estimator": "sktime.forecasting.trend.PolynomialTrendForecaster",
+      "run_id": "run_2873bbc160174f5fbb9e801564d5a1a4",
+      "evaluation_id": "evaluation_42aa6718269646c8843ed96a1cce1d55",
+      "rescore_evaluation_id": "evaluation_53f06503741644ae82070bc6e9828958",
+      "metrics": {
+        "mae": {
+          "value": 50.08248547352826,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        },
+        "rmse": {
+          "value": 67.42081565543427,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "evaluation_status": "completed",
+      "evaluation_verdict": "insufficient_evidence",
+      "native_fit_calls": 1,
+      "native_fit_scope": "current_authorized_input_only",
+      "events": 14,
+      "native_model_calls": 1,
+      "native_tool_calls": 1,
+      "sealed_result_and_event_hashes_unchanged": true
+    },
+    {
+      "source_form": "numeric-snapshot",
+      "task_id": "pattern.trend_direction",
+      "task_version": "0.2.0",
+      "candidate": "naive-drift",
+      "native_estimator": "sktime.forecasting.naive.NaiveForecaster",
+      "run_id": "run_918469672f1e4f689e299be0e5c28edd",
+      "evaluation_id": "evaluation_f9a52320231b4b05ac9f8488a41217de",
+      "rescore_evaluation_id": "evaluation_b00c8356f84146ff87f7f0931c22b361",
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "evaluation_status": "completed",
+      "evaluation_verdict": "insufficient_evidence",
+      "native_fit_calls": 1,
+      "native_fit_scope": "current_authorized_input_only",
+      "events": 14,
+      "native_model_calls": 1,
+      "native_tool_calls": 1,
+      "sealed_result_and_event_hashes_unchanged": true
+    },
+    {
+      "source_form": "numeric-snapshot",
+      "task_id": "pattern.trend_direction",
+      "task_version": "0.2.0",
+      "candidate": "polynomial-linear",
+      "native_estimator": "sktime.forecasting.trend.PolynomialTrendForecaster",
+      "run_id": "run_a0bd973974af457a862c5270a1930720",
+      "evaluation_id": "evaluation_f9a52320231b4b05ac9f8488a41217de",
+      "rescore_evaluation_id": "evaluation_b00c8356f84146ff87f7f0931c22b361",
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "status": "ready",
+          "counts": {
+            "eligible": 1,
+            "scored": 1,
+            "missing": 0,
+            "invalid": 0,
+            "excluded": 0
+          },
+          "reason": null
+        }
+      },
+      "evaluation_status": "completed",
+      "evaluation_verdict": "insufficient_evidence",
+      "native_fit_calls": 1,
+      "native_fit_scope": "current_authorized_input_only",
+      "events": 14,
+      "native_model_calls": 1,
+      "native_tool_calls": 1,
+      "sealed_result_and_event_hashes_unchanged": true
+    }
+  ],
+  "negative_combinations": {
+    "popen_calls": 0,
+    "cases": [
+      {
+        "case": "chronos_distribution_candidate_point_qa_task",
+        "valid": false,
+        "plan_error_code": "unsupported_capability",
+        "issues": [
+          {
+            "code": "unsupported_capability",
+            "path": "$",
+            "message": "Candidate task incompatible"
+          }
+        ]
+      },
+      {
+        "case": "libraryts_persistent_fit_unsupported",
+        "valid": false,
+        "plan_error_code": "unsupported_capability",
+        "issues": [
+          {
+            "code": "unsupported_capability",
+            "path": "$",
+            "message": "Candidate fitting unavailable"
+          }
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "All reports retain gates=[] and verdict insufficient_evidence; no quality threshold is inferred.",
+    "Forecast variants share the exact same private future observations; trend is a distinct task with a separately declared OLS-slope-sign reference on authorized history.",
+    "This validates one declared-compatible cross-project subset, not arbitrary interchangeability of all project roles.",
+    "Two acceptance-driver evidence-reading errors were recovered from saved sealed results without rerunning completed native models.",
+    "Raw input/target values, predictions, full specs, logs and active CAS remain in the local acceptance workspace.",
+    "Replacing the Candidate with fixed LibraryTS algorithms is not a new Agent loop and does not prove TimeCopilot can swap arbitrary external toolsets."
+  ]
+}

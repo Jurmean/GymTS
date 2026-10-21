@@ -1,0 +1,202 @@
+{
+  "protocol_version": "gymts.reference-audit-summary/1",
+  "distribution": "public_aggregate_projection",
+  "original_report_sha256": "49eb1f3694c2725b231db0dea98dead4c1fca926f5763b866b639df6b4d7f86a",
+  "original_report_filename": "bench-tsqa-reference-repair-2026-10-21.json",
+  "original_report_distribution": "local_only_gitignored",
+  "projection_scope": "Aggregate counts, source-file hashes and fixed parser/scoring-rule identities only. Per-row questions, reference answers, option lists, row identifiers and response diagnostics are omitted; the original detailed report is unchanged.",
+  "parser_ref": "tsqa.single-answer/2",
+  "structured_rule_ref": "chatts.dataset-a-rlvr/dc2dcb0-deterministic-1",
+  "model_calls": 0,
+  "training_calls": 0,
+  "source_store_read_only": true,
+  "script_sha256": "63c93b7fe368cb00450aa56d41e9af4ff2093020e80a4dfad71ff7927eb7e109",
+  "vendor_sha256": "e9daf472414c76af530d23452d3732aa545b2642826908f89f3034a500441565",
+  "passed": true,
+  "datasets": [
+    {
+      "dataset_id": "local/bedtime",
+      "source_sha256": "33184d62aa56bb84320d1083743ff429733fd1f9200a739a695c04fbf86c3a99",
+      "row_count": 394,
+      "task_kinds": {
+        "boolean": 197,
+        "mcq_label": 197
+      },
+      "reference_status": {
+        "known": 394
+      },
+      "unknown_reference_reasons": {},
+      "input_review_rows": 0,
+      "input_review_reasons": {},
+      "evaluable_reference_rows": 394,
+      "duplicate_public_input_groups": 0,
+      "additional_duplicate_rows": 0,
+      "different_raw_reference_groups": 0,
+      "rows_excluded": 0,
+      "unknown_reference_policy": "eligible_missing_no_answer_repair",
+      "split_origin": "user_declared_evaluation",
+      "parser_ref": "tsqa.single-answer/2",
+      "projection_ref": "tsqa.literal-series-reference/1",
+      "license_status": "not_supplied",
+      "training_allowed": false
+    },
+    {
+      "dataset_id": "local/dataset-a-rlvr",
+      "source_sha256": "76250827aa9c7e37337048d682eb0bd966700265c3b6ee9720823c2b824da0f3",
+      "row_count": 411,
+      "task_kinds": {
+        "structured": 411
+      },
+      "reference_status": {
+        "known": 411
+      },
+      "unknown_reference_reasons": {},
+      "input_review_rows": 0,
+      "input_review_reasons": {},
+      "evaluable_reference_rows": 411,
+      "duplicate_public_input_groups": 22,
+      "additional_duplicate_rows": 22,
+      "different_raw_reference_groups": 9,
+      "rows_excluded": 0,
+      "unknown_reference_policy": "eligible_missing_no_answer_repair",
+      "split_origin": "user_declared_evaluation",
+      "parser_ref": "tsqa.single-answer/2",
+      "projection_ref": "tsqa.literal-series-reference/1",
+      "license_status": "not_supplied",
+      "training_allowed": false
+    },
+    {
+      "dataset_id": "local/mcq2",
+      "source_sha256": "b67358a0cf2947584b5e7514678fd715957a775257f77ac808d588fa7643c66d",
+      "row_count": 100,
+      "task_kinds": {
+        "text_choice": 100
+      },
+      "reference_status": {
+        "known": 100
+      },
+      "unknown_reference_reasons": {},
+      "input_review_rows": 0,
+      "input_review_reasons": {},
+      "evaluable_reference_rows": 100,
+      "duplicate_public_input_groups": 0,
+      "additional_duplicate_rows": 0,
+      "different_raw_reference_groups": 0,
+      "rows_excluded": 0,
+      "unknown_reference_policy": "eligible_missing_no_answer_repair",
+      "split_origin": "user_declared_evaluation",
+      "parser_ref": "tsqa.single-answer/2",
+      "projection_ref": "tsqa.literal-series-reference/1",
+      "license_status": "not_supplied",
+      "training_allowed": false
+    },
+    {
+      "dataset_id": "local/timemqa-full",
+      "source_sha256": "958fe1cba75b573a5723f38ea80d82bfeb2d2f1ede377c0f8bf81983aca405f2",
+      "row_count": 17703,
+      "task_kinds": {
+        "boolean": 6904,
+        "mcq_label": 10799
+      },
+      "reference_status": {
+        "known": 17703
+      },
+      "unknown_reference_reasons": {},
+      "input_review_rows": 720,
+      "input_review_reasons": {
+        "public_choice_text_unresolved": 683,
+        "reference_outside_visible_choices": 37
+      },
+      "evaluable_reference_rows": 16983,
+      "duplicate_public_input_groups": 0,
+      "additional_duplicate_rows": 0,
+      "different_raw_reference_groups": 0,
+      "rows_excluded": 0,
+      "unknown_reference_policy": "eligible_missing_no_answer_repair",
+      "split_origin": "user_declared_evaluation",
+      "parser_ref": "tsqa.single-answer/2",
+      "projection_ref": "tsqa.literal-series-reference/1",
+      "license_status": "not_supplied",
+      "training_allowed": false
+    },
+    {
+      "dataset_id": "local/tsexam-mcq",
+      "source_sha256": "4bf0e416b8e66771686a0f12b167da3a8af9e5e453f5fb95665b0004b1f8f5c7",
+      "row_count": 746,
+      "task_kinds": {
+        "mcq_label": 746
+      },
+      "reference_status": {
+        "known": 746
+      },
+      "unknown_reference_reasons": {},
+      "input_review_rows": 0,
+      "input_review_reasons": {},
+      "evaluable_reference_rows": 746,
+      "duplicate_public_input_groups": 4,
+      "additional_duplicate_rows": 5,
+      "different_raw_reference_groups": 0,
+      "rows_excluded": 0,
+      "unknown_reference_policy": "eligible_missing_no_answer_repair",
+      "split_origin": "user_declared_evaluation",
+      "parser_ref": "tsqa.single-answer/2",
+      "projection_ref": "tsqa.literal-series-reference/1",
+      "license_status": "not_supplied",
+      "training_allowed": false
+    }
+  ],
+  "input_review_summary": {
+    "rows": 720,
+    "datasets": {
+      "local/timemqa-full": 720
+    },
+    "reasons": {
+      "public_choice_text_unresolved": 683,
+      "reference_outside_visible_choices": 37
+    },
+    "reference_status": {
+      "known": 720
+    }
+  },
+  "structured": {
+    "rows": 411,
+    "abilities": {
+      "noise": 42,
+      "local": 72,
+      "season": 37,
+      "shape-cluster": 15,
+      "shape-correlation": 15,
+      "trend": 41,
+      "local-cluster": 27,
+      "local-correlation": 27,
+      "deductive": 43,
+      "causal": 92
+    },
+    "parity_comparisons": 1233,
+    "parity_mismatches": 0,
+    "negative_control_zero_rows": 411,
+    "reference_text_self_score_mean": 0.979930942628766,
+    "self_score_mean_is_model_result": false,
+    "reference_text_nonperfect_count": 25
+  },
+  "upstream_reward": {
+    "sha256": "415e0e278a31769a9f6e522315b0c6fc92fe8c68a06b805e7d3ef17da03ee8ff",
+    "revision": "dc2dcb091f5268fb4c87b89584f2ac120a095e5e"
+  },
+  "official_dataset_a": {
+    "url": "https://zenodo.org/records/14349206",
+    "md5": "1978d2ae5f2760ef944477fdcab223b2",
+    "sha256": "7bb01666afd13b52e3b57e65c97a71ee88d7a26a1cc6c9e104a838719323381c",
+    "compound_rows": 159,
+    "subquestions": 411,
+    "exact_content_multiset_match": true
+  },
+  "totals": {
+    "source_rows": 19354,
+    "references_read": 19354,
+    "input_review_rows": 720,
+    "evaluable_reference_rows": 18634,
+    "rows_excluded": 0
+  },
+  "interpretation": "Deterministic reference/parser audit with zero model and training calls; reference self-checks are not model results. Original evaluation-only restrictions, unresolved inputs and historical evidence identities remain unchanged."
+}

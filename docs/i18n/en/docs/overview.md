@@ -22,7 +22,7 @@ This applies to numeric forecasting, time-series QA, detection, controlled inter
 
 ## Two main modules
 
-**EnvironmentTS owns execution and evidence.** It organizes a Run, fixes the resolved configuration and component identities, constrains data reads and environment operations, invokes Environment, Task, and Candidate, and preserves observations, inputs, outputs, receipts, errors, and cleanup facts. It also provides public access to the source dataset catalog.
+**EnvironmentTS owns data organization and storage, execution, and evidence.** It registers static, synthetic, simulation, and external live-testbed sources through one catalog, fixes source versions, dataset snapshots, and lineage, and provides public reads. It organizes a Run, fixes the resolved configuration and component identities, invokes Environment, Task, and Candidate, and preserves observations, inputs, outputs, receipts, errors, and cleanup facts. Actual captured data can then become reusable dataset revisions. Independent adapters still handle specific formats, generators, and service connections.
 
 **AutoBenchTS owns evaluation.** It registers and resolves benchmarks, fixes every expected evaluation unit, organizes the necessary new Runs, passes fixed results and independent references to Scorers, and aggregates metrics, comparisons, and Gates. `score` reads old Runs to create a new report without rerunning Candidates. Failed, missing, and not-yet-started units remain in the plan.
 

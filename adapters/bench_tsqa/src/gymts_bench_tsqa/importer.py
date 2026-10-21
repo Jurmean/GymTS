@@ -31,7 +31,7 @@ def _arrow_schema(private=False):
     if private:
         return pa.schema([pa.field('sample_id',pa.string(),False),pa.field('reference_status',pa.string(),False),
             pa.field('reference_answer',pa.string()),pa.field('reference_kind',pa.string(),False),
-            pa.field('reason',pa.string()),pa.field('raw_answer_json',pa.string(),False),
+            pa.field('reason',pa.string()),pa.field('input_issue',pa.string()),pa.field('raw_answer_json',pa.string(),False),
             pa.field('raw_attributes_json',pa.string(),False),pa.field('raw_private_metadata_json',pa.string(),False),
             pa.field('allowed_uses',pa.list_(pa.string()),False)])
     series=pa.struct([pa.field('name',pa.string(),False),pa.field('values',pa.list_(pa.float64()),False)])
@@ -43,7 +43,8 @@ def _arrow_schema(private=False):
         pa.field('question_original',pa.string(),False),pa.field('question',pa.string(),False),
         pa.field('series',pa.list_(series),False),pa.field('choices',pa.list_(choice),False),
         pa.field('attachment_projection',pa.list_(projection),False),pa.field('projection_ref',pa.string(),False),
-        pa.field('context',pa.struct([pa.field('question_policy',pa.string(),False)]),False)])
+        pa.field('context',pa.struct([pa.field('question_policy',pa.string(),False),
+            pa.field('response_labels',pa.list_(pa.string())),pa.field('input_issue',pa.string())]),False)])
 
 
 def _parquet(rows,private=False):
@@ -82,6 +83,9 @@ def audit_rows(dataset_id,raw):
         'task_kinds':dict(collections.Counter(row['task_kind'] for row in public)),
         'reference_status':dict(collections.Counter(row['reference_status'] for row in targets)),
         'unknown_reference_reasons':dict(collections.Counter(row['reason'] for row in targets if row['reference_status']=='unknown')),
+        'input_review_rows':sum(bool(row['input_issue']) for row in targets),
+        'input_review_reasons':dict(collections.Counter(row['input_issue'] for row in targets if row['input_issue'])),
+        'evaluable_reference_rows':sum(row['reference_status']=='known' and not row['input_issue'] for row in targets),
         'duplicate_public_input_groups':len(duplicates),'additional_duplicate_rows':sum(len(g)-1 for g in duplicates),
         'different_raw_reference_groups':len(ambiguous),'rows_excluded':0,
         'unknown_reference_policy':'eligible_missing_no_answer_repair','split_origin':'user_declared_evaluation',
@@ -91,7 +95,7 @@ def audit_rows(dataset_id,raw):
     return public,targets,quality
 
 
-def import_attachments(gym,attachment_dir,*,dataset_ids=None,alias='1.0.0'):
+def import_attachments(gym,attachment_dir,*,dataset_ids=None,alias='2.0.0'):
     """Publish all rows, private raw files/targets and fixed reusable definitions."""
     catalog=gym.environment_ts.datasets
     results=[]
@@ -125,7 +129,7 @@ def import_attachments(gym,attachment_dir,*,dataset_ids=None,alias='1.0.0'):
         definition={'protocol_version':'gymts.autobench.benchmark/1','benchmark_id':dataset_id,'revision':None,
             'resolver_ref':RESOLVER_REF,'datasets':[{'dataset_id':dataset_id,'config':'default',
                 'revision':manifest['revision'],'split':'test'}],
-            'params':{'scope':'full','metrics':['accuracy','format_valid'],'parser_ref':PARSER_REF,
+            'params':{'scope':'full','metrics':['task_score' if dataset_id=='local/dataset-a-rlvr' else 'accuracy','format_valid'],'parser_ref':PARSER_REF,
                 'coverage_policy':'all_source_rows_eligible','question_policy':'complete-original-lossless-projection/1'},
             'card_ref':assets['card']}
         definition=gym.autobench.register_benchmark(definition,aliases=(alias,))

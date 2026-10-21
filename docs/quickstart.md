@@ -1,7 +1,8 @@
 # 五分钟开始
 
-先运行核心自带的小型实验，再根据需要安装项目适配包。这个流程不需要 GPU、外部数据、
-模型服务或 API key；Python 要求为 3.9+，本地存储后端面向 Linux / macOS。
+GymTS 的主线是**存储数据、接入数据、组织实验、记录实验**。先运行核心自带的小型实验，
+再根据需要安装适配包。这个流程不需要 GPU、外部数据、模型服务或 API key；Python 要求
+为 3.9+，本地存储后端面向 Linux / macOS。
 
 ## 1. 安装源码
 
@@ -13,7 +14,9 @@ source .venv/bin/activate
 python -m pip install .
 ```
 
-当前实现版本是 0.5.0，公共合同是 1.2.0。这些命令安装仓库源码，不假定此版本已发布到 PyPI。
+当前实现版本是 **0.6.0**，公共合同是 **1.4.0**。这些命令安装仓库源码，不假定此版本已发布到 PyPI。
+
+当前 F2.1 已完成技术验收。固定数据引用、多阶段执行、失败续接和数据回库见[实验组织指南](experiment-organization.md)；已验证范围与限制见[当前验收报告](reports/experiment-organization-2026-10-21.json)。
 
 ## 2. 完成第一次实验与重评
 
@@ -68,10 +71,11 @@ with GymTS("/tmp/gymts-adapter-demo") as gym:
 
 ## 5. 下一步
 
-- [使用手册](user-guide.md)：规划、执行、晚到标签、资源目录与训练接口。
+- [使用手册](user-guide.md)：存储与接入数据、规划、执行、晚到标签和记录。
+- [实验组织](experiment-organization.md)：阶段依赖、尝试记录、查询与数据回库。
 - [API 与 CLI](reference.md)：方法签名、退出码与协议字段。
 - [环境接入](environment-adapters.md)：合成、静态、仿真与 live 来源。
-- [独立适配包](../adapters/README.md)：11 个适配包的安装和验收矩阵。
+- [独立适配包](../adapters/README.md)：适配包的安装和验收矩阵。
 - [最小教学适配包](../examples/adapters/minimal_demo/README.md)：独立安装、运行、卸载与重评。
 
 活动 SQLite / CAS 必须使用本机 POSIX 文件系统，避免直接放在 S3FS 等对象存储挂载上。

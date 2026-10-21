@@ -212,6 +212,30 @@ class DatasetResourceTests(unittest.TestCase):
             with self.assertRaises(GymTSError):
                 self.catalog.load_dataset(identity, revision="1.0.0")
 
+    def test_v2_snapshot_remains_a_native_benchmark_resource(self):
+        source = self.catalog.register_source({"protocol_version": "gymts.data-source/1",
+            "source_id": "test/static", "config": "default", "revision": None, "kind": "static",
+            "provider_ref": RESOLVER, "configuration": {"fixture": "ramp"}, "recipe": None,
+            "reproducibility": {"mode": "snapshot", "seed": None},
+            "usage_policy": self.manifest["usage_policy"], "parent_datasets": [], "card_ref": None})
+        fixed = self.catalog.register_snapshot(self.public, dataset_id="test/ramp-v2",
+            source_ref={key: source[key] for key in ("source_id", "config", "revision")},
+            schema_ref=ROW_SCHEMA, targets=self.targets, aliases=("v2",))
+        self.gym.registries.benchmarks.register(RESOLVER, ForecastResolver())
+        definition = {"protocol_version": BENCHMARK, "benchmark_id": "test/forecast-v2", "revision": None,
+            "resolver_ref": RESOLVER, "datasets": [{"dataset_id": fixed["dataset_id"], "config": "default",
+                "revision": "v2", "split": "test"}], "params": {}, "card_ref": None}
+        published = self.gym.autobench.register_benchmark(definition)
+        candidates = json.loads((BASE / "examples/forecast_evaluation.json").read_text())["candidates"]
+        spec = self.gym.autobench.resolve_benchmark(published["benchmark_id"],
+            revision=published["revision"], candidates=candidates)
+        recorded = self.gym.artifacts.read_json(spec["provenance"]["source_refs"][0])
+        self.assertEqual("gymts.source-dataset/2", recorded["protocol_version"])
+        self.assertEqual(fixed["origin"], recorded["origin"])
+        report = self.gym.autobench.evaluate(spec)
+        self.assertEqual("pass", report["verdict"])
+        self.assertNotIn("PRIVATE_REFERENCE", json.dumps(spec["cases"]))
+
     def test_benchmark_resolves_existing_protocol_and_evaluation_preserves_provenance(self):
         fixed = self.publish()
         self.gym.registries.benchmarks.register(RESOLVER, ForecastResolver())

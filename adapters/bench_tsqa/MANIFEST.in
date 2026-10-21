@@ -1,5 +1,8 @@
 include LICENSE
+include LICENSE-ChatTS
 include README.md
+include UPSTREAM.md
 recursive-include src/gymts_bench_tsqa/cards *.md
 recursive-include tests *.py *.json
 recursive-include examples *.py *.json
+recursive-include scripts *.py

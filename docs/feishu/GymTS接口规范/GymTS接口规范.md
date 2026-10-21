@@ -2,11 +2,13 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 规范版本 | 1.2.0 |
-| 更新日期 | 2026-10-20 |
-| 状态 | GymTS 0.5.0 现行合同；本地实现范围已验收 |
+| 规范版本 | 1.4.0 |
+| 更新日期 | 2026-10-21 |
+| 状态 | GymTS 0.6.0 工作树：F2.1 组织技术验收通过；尚未发行 |
 | 核心模块 | EnvironmentTS、AutoBenchTS |
 | 适用对象 | 框架开发者、环境与任务接入者、算法与 Agent 适配者、评价与训练集成开发者 |
+
+本轮 **1.4.0 组织增补合同**见第 21 节，对应 GymTS 0.6.0 工作树，尚未发行。第 1—19 节保留 0.5.0 / 1.2.0 基线语义；第 20 节保留 0.5.1 / 1.3.0 的 F1 数据层合同与历史验收范围。F1 已冻结并通过原四类外部技术验收，不回写其证据或用其身份代替本轮验证。既有 23 个核心 schema 保持原身份，本轮新增四个组织 schema。变更理由分别见 [ADR 0001](../../adr/0001-core-data-source-catalog.md) 与 [ADR 0002](../../adr/0002-experiment-organization.md)。
 
 GymTS 接收有明确边界的时序实验计划，由 EnvironmentTS 组织环境交互、任务执行与证据记录，交付 RunResult；AutoBenchTS 根据固定评价计划、原始运行结果和独立结果依据生成 EvaluationReport。算法、模型、流水线和 Agent 通过同一 Candidate 契约接入。
 
@@ -1150,3 +1152,231 @@ ExperimentSpec/EvaluationSpec 可选 provenance 使用 `gymts.resource-provenanc
 `registry.register(manifest,factory,describe=...,compatibility=...)` 可登记纯 `describe(spec)` 与 `compatibility(context)`；也可使用 factory.describe_spec 与 factory.check_compatibility_spec。Environment/Task 参与离线规划必须提供纯描述，不以构造实例作为回退。候选协议/schema之外的已知组合限制由纯 hook 声明，context 只包含已解析配置、三角色 manifest 与 Environment/Task 描述，不含 services 或数据。无来源事实时不得猜测值或形状；运行打开后重新校验实际声明与资源。
 
 运行应先建立 Run 并保存配置，再创建/打开插件和验证实际资源；打开失败保留阶段、错误和部分证据，并尽力清理封存。上述 Python provider 扩展不改变既有 Environment/Task/Candidate 的 `/1` 方法消息。缺少纯描述的旧插件需迁移方可 plan/validate，不能偷偷执行构造器来维持校验通过。
+
+## 20 四类核心数据组织增补（1.3.0）
+
+本节将静态、合成、仿真和外部 live 数据的组织、目录与存储纳入 EnvironmentTS 核心职责；项目的文件格式、模型调用、生成函数、原生后端和 codec 仍由独立适配器提供。AutoBenchTS 继续管理 benchmark 与独立评价。本节为 additive 增补，不回写旧资源、Run 或报告；实施与 F1 验证状态见 ADR，不以合同文本代替运行证据。
+
+### 20.1 DataSourceDefinition
+
+协议为 `gymts.data-source/1`，字段如下：
+
+| 字段 | 含义 |
+| --- | --- |
+| `protocol_version` | 固定为 `gymts.data-source/1` |
+| `source_id`、`config`、`revision` | 来源名、配置名、内容修订；登记时计算规范化内容摘要，标签解析后固定 |
+| `kind` | `static`、`synthetic`、`simulation`、`live_testbed` |
+| `provider_ref` | 既有 Environment provider 的固定 ComponentRef；不新增项目专用 SourceProvider registry |
+| `configuration` | 与该 provider 对应的环境配置对象，具体内容由适配器解释 |
+| `recipe` | 固定来源/生成/采集配方对象，或 `null` |
+| `reproducibility` | `{mode: snapshot | seeded | recorded, seed: 非负整数 | null}` |
+| `usage_policy` | 沿用 `gymts.source-usage-policy/1` |
+| `parent_datasets` | 固定 DatasetRef 数组；每项为 `{dataset_id,config,revision,split}` |
+| `card_ref` | DatasetAssetRef 或 `null` |
+
+来源定义固定“如何取得数据”，实际数据修订固定“本次得到了什么”。seeded 声明不替代实际生成值；live 来源的配置版本不承诺未来采集值不变。来源登记、别名、用途和内容摘要复用既有资源机制。
+
+合成来源需要固定 recipe，但可以声明 `seeded`（须有 seed）或 `recorded`（例如不能设 seed 的 LLM 生成）。不要求所有生成器都确定性或支持 seed。声明 seed 与实际 SessionInfo 中的 seed 分别记录；clock、episode 和采集窗口来自真实后端机制与证据，其领域解释仍由适配器负责。
+
+### 20.2 SourceDatasetRevision v2
+
+`gymts.source-dataset/2` 保留 §19.1 的全部 v1 字段，并补充：
+
+| 字段 | 内容 |
+| --- | --- |
+| `kind` | 四类来源之一，与本次绑定的来源一致 |
+| `origin` | `{source_ref,source_definition}`；source_ref 为固定 `{source_id,config,revision}`，source_definition 为完整来源定义的 DatasetAssetRef |
+| `lineage` | `{parents,parent_manifests,capture}`；parents 为固定 DatasetRef，parent_manifests 为对应完整清单的 DatasetAssetRef 数组，capture 为采集元数据 DatasetAssetRef 或 `null` |
+| `attachments` | 随数据发布的公开附件 DatasetAssetRef 数组 |
+
+来源或父数据使用发布标签登记时，须在本修订中解析成固定内容 revision。来源、父清单和实际采集说明随数据存入 `data_home`；读取该数据不依赖原 Run CAS 的在线存在。数据快照不替换原 Run/RecordSnapshot，也不同于训练导出的 `gymts.dataset/1`。
+
+动态来源的采集数据使用 `gymts.data-capture-row/1`：`{event_id,seq,kind,source_event_time,links,value}`。source_event_time 为字符串、数值或 `null`，value/links 为对象。实际 episode、时钟、seed、来源所有权、窗口、状态和部分结果由封存执行证据固定，不能用登记时的新壁钟补造采集时间。
+
+采集元数据使用 `gymts.data-capture/1`，固定字段为 `{protocol_version,run_id,source_ref,source_trace_identity,through_seq,event_kinds,status,completion,started_at,ended_at,requested_scope,session,actual_scope,seed_used,ownership,initial_clock,last_observation_clock,observation_count,environment_end,environment_cleanup,evidence_status}`。该对象不复制完整 trace；source_trace_identity 保留原封存执行快照的摘要身份，实际数据附件另外可移植保存。
+
+### 20.3 公共数据服务
+
+以下为 0.5.1 / 1.3.0 已实现服务的入口摘要；变量由调用方提供。外部 F1 验收状态与可运行流程见[使用指南](../../user-guide.md)。
+
+```python
+catalog = gym.environment_ts.datasets
+catalog.register_source(definition, aliases=())
+catalog.load_source(source_id, revision=revision, config="default")
+catalog.list_sources()
+catalog.load_manifest(dataset_id, revision=revision, config="default")
+catalog.register_snapshot(
+    rows, dataset_id=dataset_id, source_ref=source_ref,
+    split="test", config="default", schema_ref="gymts.json/1",
+    targets=None, parents=(), usage_policy=None, features=None,
+    split_origin="explicit", attachments=(), capture=None, aliases=(), kind=None,
+)
+catalog.bind_source(spec, source_id, revision=revision, config="default")
+catalog.capture_run(
+    run_id, source_id=source_id, revision=revision, dataset_id=dataset_id,
+    config="default", source_config="default", split="recorded",
+    event_kinds=None, usage_policy=None, aliases=(),
+)
+```
+
+`bind_source` 接收完整 ExperimentSpec，返回副本，将来源定义、父数据与共同用途接入本次 provenance，不修改原 spec。`register_snapshot` 可直接登记已取得的静态或合成行与独立 targets，无需 Run。`load_manifest` 读取 `/1` 或 `/2` 完整资源清单；原公开 `load_dataset` 继续返回 DatasetHandle。
+
+`capture_run` 从已封存 Run 固定数据与采集元数据，包含失败或部分执行的真实状态。默认处理环境数据事件，不采集模型对话、Outcome 或私有评价依据。事件内的公开二进制/JSON 制品转换为数据资产与 attachments，保留原制品身份作为血缘；同一封存证据重复采集不引入新的 `now`，相同参数应产生相同数据内容身份。
+
+DatasetHandle 增加受当前公开附件范围约束的 `read_asset`、`resolve_payload`，以读取采集行引用的实际数据；`read_capture()` 返回采集元数据，targets 仍通过独立评价服务提供。不通过目录便利 API改变领域答案或自动授权训练。
+
+### 20.4 运行、CLI 与评价复用
+
+```python
+gym.run_data(
+    spec, source_id=source_id, revision=revision, dataset_id=dataset_id,
+    source_config="default", config="default", split="recorded",
+)
+# Returns {"run": RunResult, "dataset": SourceDatasetRevisionV2}
+```
+
+`run_data` 组合 `bind_source → run → capture_run`。spec 是完整 ExperimentSpec，保留原 Task/Candidate，执行真实实验；不是另一个无 Candidate 的数据采集引擎。原 `run`、`evaluate`、`score` 路径继续有效。
+
+CLI 增加 `sources list/register/info`、`run-data SPEC --source ID --source-revision REV --dataset-id ID`，以及 `datasets capture RUN_ID --source ID --source-revision REV --dataset-id ID`。数据资产、来源定义与数据清单放 `data_home`，读取缓存放 `cache_home`，Run/报告仍位于本机 POSIX store。
+
+BenchmarkDefinition `/1` 保持原协议，可固定 `/1` 或 `/2` 数据集；AutoBenchTS 继续解析为原生 EvaluationSpec，固定候选、重复与评分，重评仍只读原输出。新数据来源、采集或生成成功不表示 benchmark 或模型质量通过。
+
+### 20.5 兼容与冻结验证
+
+0.5.0 的 `/1` 数据、benchmark、原 ExperimentSpec 和历史 Run 保持可读与原有行为；新来源/采集使用新增协议，不修改旧内容 revision。F1 验证应固定 0.5.1 wheel 与实际文件身份，再由独立外部包接入真实静态、合成、仿真与 live 来源，验证目录、实际快照、运行、血缘回流、独立评价和原结果重评。F0 五项目及 AReaL pending 证据保持原基线，不重标为 F1 成果。
+
+
+## 21 实验组织、数据回库与关联查询增补（1.4.0）
+
+本节对应 0.6.0 工作树，F2.1 已冻结并通过组织层技术验收，尚未发行；范围与证据见[本轮报告](../../reports/experiment-organization-2026-10-21.json)。GymTS 的组织层负责存储数据、接入数据、组织实验、记录实验；不内化项目格式、训练算法或 Agent 决策。EnvironmentTS 保持数据、执行与证据职责，AutoBenchTS 保持评价职责。新增服务复用既有执行与记录，不另建领域 Runtime。完整调用见[实验组织指南](../../experiment-organization.md)。
+
+### 21.1 ExperimentGroup
+
+协议 `gymts.experiment-group/1` 的规范化字段均必需：
+
+| 字段 | 类型与语义 |
+| --- | --- |
+| `protocol_version` | 固定为 `gymts.experiment-group/1` |
+| `group_id` | 字符串，调用方指定的实验集合身份 |
+| `revision` | 字符串，补齐默认值并固定资源后，除 revision 外的规范化定义内容摘要 |
+| `name` | 字符串，显示名称 |
+| `stages` | 非空 Stage 数组，stage_id 唯一，依赖无环 |
+
+登记输入可省略 `protocol_version`、`revision`；revision 为 `null` 时由服务计算。显式给出内容 revision 时必须与定义一致。修改定义产生新 revision，同一 group 可保留多份固定修订。
+
+Stage 的规范化字段如下：
+
+| 字段 | 类型与语义 |
+| --- | --- |
+| `stage_id` | 字符串，在本定义内唯一 |
+| `executor_ref` | 固定 ComponentRef；不得使用 latest/main/master |
+| `spec` | 对象，沿用原执行服务配置；具体领域字段由适配器解释 |
+| `depends_on` | 不重复的 stage_id 数组，登记缺省为空；stage_output 输入自动补入依赖 |
+| `purpose` | runtime / evaluation / training / prepare / dataset_build；evaluate/score 默认 evaluation，publish-build 默认 dataset_build，其余默认 runtime |
+| `inputs` | input_name → InputRef 对象，缺省为空 |
+| `bindings` | input_name → JSON Pointer，缺省为空；键必须是已声明输入 |
+| `outputs` | output_name → JSON Pointer，缺省为空 |
+
+InputRef 恰为以下四种之一：
+
+```text
+{kind: "dataset", ref: {dataset_id, config, revision, split}}
+{kind: "source", ref: {source_id, config, revision}}
+{kind: "artifact", ref: ArtifactRef}
+{kind: "stage_output", stage_id: string, output: string}
+```
+
+登记将 dataset/source 发布标签解析为固定内容修订，并核对数据用途与上游具名输出。输出引用只能使用已声明的 output 名称。数据格式、模型制品与领域转换不由 JSON Pointer 推断。
+
+bindings 以 `spec` 对象自身为根，例如 `/candidate/artifact`；父容器必须已存在，不允许空指针替换完整 spec。outputs 以返回对象为根，例如 `/run_id`；空指针 `""` 选择整个返回值。按标准使用 `~0` 表示 `~`、`~1` 表示 `/`。无法寻址时本次 attempt 失败并保留请求与错误。
+
+### 21.2 StageRequest
+
+协议为 `gymts.stage-request/1`，固定一次实际调用所需的组织事实：
+
+| 字段 | 类型与语义 |
+| --- | --- |
+| `protocol_version` | 固定为 `gymts.stage-request/1` |
+| `executor_ref` | 本阶段固定 ComponentRef |
+| `purpose` | 与本阶段一致的用途枚举 |
+| `binding_status` | resolved / failed |
+| `inputs` | 对象；resolved 时为解析后的具名输入，failed 时保留原输入声明 |
+| `spec` | 对象；resolved 时为应用绑定后的配置，failed 时保留原配置 |
+| `datasets` | `{dataset_id,config,revision}` 数组，固定本次已解析数据身份 |
+| `provenance` | 沿用 `gymts.resource-provenance/1` |
+
+声明的数据与来源必须允许本阶段 purpose。来源清单和共同用途通过 attempt 上下文继承到嵌套 Run 与评价计划，包括外部 executor 对原有服务的调用；已有用途只可收窄。此类 provenance 不等于向 Candidate 授予私有数据。未成功打开组件的绑定失败也建立 attempt 和 failed 请求，不能只留下终端日志。
+
+### 21.3 StageAttempt 与 ExperimentEvent
+
+协议 `gymts.stage-attempt/1` 字段：
+
+```text
+protocol_version, attempt_id, group_id, revision, stage_id, ordinal,
+status, started_at, ended_at, definition_ref, request_ref, dependencies,
+result_ref, outputs, error
+```
+
+`ordinal` 从 1 开始，在 group/revision/stage 内递增。status 为 running / succeeded / failed / cancelled / interrupted。started_at 为字符串，ended_at 在运行中为 null；definition_ref 固定完整定义，request_ref 固定 StageRequest，dependencies 为 stage_id → 本次所用上游 attempt_id。result_ref 为返回对象 ArtifactRef 或 null，outputs 为具名值对象，error 为对象或 null。
+
+一次实际调用新增一个 attempt；已结束 attempt 不得再次结束或覆盖。开始与结束版本均以不可变 CAS 保存，索引指向当前版本。Run 建立时在同一记录事务关联当前 attempt；不能靠执行结束后的项目日志重建归属。
+
+协议 `gymts.experiment-event/1` 字段为：
+
+```text
+protocol_version, group_id, revision, seq, event_id, recorded_at,
+kind, attempt_id, record_ref
+```
+
+seq 在 group/revision 内从 1 单调递增；attempt_id 可为 null。kind 包括 registered、attempt_started、run_linked、run_referenced、attempt_finished。record_ref 固定对应事实。组织事件不替代 Run 内部的原始执行事件。
+
+### 21.4 执行与恢复规则
+
+`execute` 按依赖次序串行选择就绪阶段。默认运行 pending 或 stale 阶段，沿用成功结果；失败阶段阻塞其依赖者，其他就绪分支可继续。inspect 中 pending/blocked/stale 为派生阶段状态，不是新的 attempt 终态。
+
+- `retry_failed=True` 显式重试 failed/cancelled；每次实际重试产生新 attempt。
+- `rerun=(stage_id, ...)` 显式重跑所选阶段。上游 attempt 改变后，依赖其旧 attempt 的成功阶段变 stale，并在依赖成功后重新执行。
+- interrupted 不默认重发，须显式 rerun。仍有 running attempt 时拒绝启动同一 group revision 的新执行。
+- `recover(attempt_id, reason=...)` 仅用于开放 attempt；调用方先确认旧工作已停止，服务记录原因并标记 interrupted。
+- `adopt_run=True` 仅允许 gymts.run attempt 采纳其唯一已封存 Run，并按原 outputs 固定返回值；不重复执行。其他执行器不支持该采纳路径。
+
+恢复只在阶段边界组织新的尝试，不恢复 Python 对象、评价矩阵内部单元或未知副作用的设备操作。组织层成功不覆盖 AutoBenchTS 的 coverage、missing、invalid、指标或 Gate verdict。
+
+### 21.5 执行器与公开入口
+
+Executor 是受信任的 `executor(spec, gym) -> dict`。返回值必须为可保存 JSON 对象；status 可省略，给出时须为 succeeded/completed/failed/cancelled，其中 completed 映射为 attempt succeeded。实际领域操作与输入输出转换仍由 executor/适配器负责。
+
+内置 ComponentRef 为 gymts.run、gymts.evaluate、gymts.score、gymts.capture、gymts.publish-build，version 均为 1.0.0，origin_ref 为 null。前三者委托原 Run、EvaluationSpec、ScoreSpec 路径；capture 的 spec 包含 source_ref、run_id、dataset_id 与采集参数；publish-build 的 spec 包含 manifest、reader_ref 与发布参数。
+
+```python
+org = gym.experiments
+fixed = org.register(definition)
+org.get(group_id, revision=revision)
+org.execute(group_id, revision=revision, retry_failed=False, rerun=())
+org.inspect(group_id, revision=revision)
+org.query(group_id=None, dataset_id=None, dataset_revision=None, status=None)
+org.recover(attempt_id, reason=reason, adopt_run=False)
+org.register_executor(component_ref, executor)
+gym.records.list_runs(group_id=None, revision=None, attempt_id=None,
+    status=None, dataset_id=None, dataset_revision=None)
+gym.experiments.events(group_id, revision=revision, after_seq=0)
+```
+
+自定义执行器须在每个调用进程显式注册。使用所给 gym 的原服务建立 Run，才能自动关联当前 attempt。inspect 返回固定定义引用、派生 stages、完整 attempts 与 Run 摘要。query 返回匹配 group 修订。按数据查询包含显式输入/已解析数据身份、关联 Run 记录的数据、阶段输出数据，以及标准 source-dataset/2 lineage.parents 或带 dataset_build 标记的官方 source-dataset/1 构建输出 features.parent_datasets 中列出的父 DatasetRef。查询使用这些明确清单关系，不递归探查任意领域 payload，也不从文件名推断父关系。父关系匹配适用于组织 query；list_runs 保持按实际 Run 数据匹配并返回摘要，不展开全部原始事件。
+
+Run 摘要区分 `organization` 和 `associations`：前者保留建立时的原始归属，后者列出各阶段对该 Run 的关联。ScoreSpec 使用历史 Run 时新增 run_referenced 关系，不改变该 Run 的 metadata、封存结果或事件。一个 Run 可被多个评分阶段引用。
+
+CLI 增加 experiments register/run/info/list/events/recover、runs 与 datasets publish-build，参数索引见[公开参考](../../reference.md)。CLI 只使用进程内已注册 executor；适配器特有 callable 须由相应应用入口先注册。
+
+### 21.6 数据构建结果回库与兼容
+
+```python
+catalog.publish_build(build, reader_ref=reader_ref, dataset_id=None,
+    config="default", usage_policy=None, parents=(), aliases=())
+```
+
+build 可为原 gymts.dataset/1 Manifest、带 manifest_ref 的返回对象，或该 Manifest 的 ArtifactRef。服务核对 BuildSpec、输入快照、父数据用途和输出身份；复制原 shard 字节到 data_home，reader_ref 与原 output_schema_ref 继续解释这些字节。source_files 保存私有构建证据及原制品到长期资产的索引，不作为公开 inputs。
+
+本入口登记 source-dataset/1，不为构建结果虚构 source。用途从训练构建及真实父证据收紧，不自动授予 runtime/evaluation。已有真实来源的采集仍使用第 20 节的 source-dataset/2 路径。两种资源与 gymts.dataset/1 构建协议继续分别保留。
+
+新增组织表与 CAS 制品不改写历史事件或数据修订。原 run、run_data、evaluate、score、DatasetBuilder 和目录入口继续独立可用。旧 23 个核心 schema 的规范化摘要必须保持，新增仅上述四个组织 schema。F0/F1 身份与历史验收原样保留；0.6.0 本轮的新冻结与兼容验证须另记证据，不能由合同文本推定已通过。

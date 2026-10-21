@@ -1,7 +1,9 @@
-"""Independent exact-reference scoring, with unknown truth kept in the denominator."""
+"""Independent choice/structured scoring, with unresolved inputs in the denominator."""
+import json
 from gymts.contracts import canonical_json
 from gymts.plugin_support import fail, unpack
-from .parsing import PARSER_REF
+from .parsing import SUPPORTED_PARSER_REFS
+from .structured import evaluate_structured
 
 
 def _records(value):
@@ -22,7 +24,7 @@ class TSQAReferenceScorer:
         if (alignment['matching']!='exact' or alignment['keys']!=['dataset_revision','sample_id']
                 or alignment['duplicate_policy']!='error'):
             fail('unsupported_capability','TSQA requires exact unique dataset_revision/sample_id alignment')
-        if any(metric not in ('accuracy','format_valid') for metric in scoring['metrics']):
+        if any(metric not in ('accuracy','task_score','format_valid') for metric in scoring['metrics']):
             fail('unsupported_capability','Unsupported TSQA metric')
 
     def score(self,results,outcomes,context):
@@ -47,28 +49,37 @@ class TSQAReferenceScorer:
         outcome=matched.get(key(row)) if row else None
         answer=unpack(row['payload'],services) if row else None
         gold=unpack(outcome['payload'],services) if outcome else None
-        if answer and answer['parser_ref']!=PARSER_REF:
+        if answer and answer['parser_ref'] not in SUPPORTED_PARSER_REFS:
             fail('schema_mismatch','Unsupported TSQA response parser revision')
         metrics,diagnostics={},[]
         for metric in scoring['metrics']:
             counts={'eligible':1,'scored':0,'missing':0,'invalid':0,'excluded':0}
-            value=reason=None
+            value=reason=details=None
             # Unknown reference takes priority, including when an answer is invalid.
             # No reference is repaired or silently removed from planned coverage.
             if row is None:
                 counts['missing']=1; reason='missing_result'
-            elif metric=='accuracy' and (gold is None or gold['reference_status']!='known'):
+            elif metric!='format_valid' and (gold is None or gold['reference_status']!='known'):
                 counts['missing']=1; reason='missing_reference' if gold is None else gold['reason'] or 'unknown_reference'
+            elif metric!='format_valid' and gold.get('input_issue'):
+                counts['missing']=1; reason=gold['input_issue']
             elif metric=='format_valid':
                 counts['scored']=1; value=float(row['status']=='valid' and answer['parsed'] is not None)
             elif row['status']!='valid' or answer['parsed'] is None:
                 counts['invalid']=1; reason=answer['reason'] or 'invalid_result'
             else:
-                counts['scored']=1; value=float(answer['parsed']['answer']==gold['reference_answer'])
+                if metric=='task_score' and gold['reference_kind']=='structured':
+                    value, details=evaluate_structured(answer['parsed']['answer'],json.loads(gold['reference_answer']))
+                elif metric=='accuracy' and gold['reference_kind']!='structured':
+                    value=float(answer['parsed']['answer']==gold['reference_answer'])
+                else:
+                    fail('unsupported_capability','Metric does not match the reference task kind')
+                counts['scored']=1
             metrics[metric]={'value':value,'status':'ready' if value is not None else 'insufficient_evidence',
                 'counts':counts,'reason':reason}
             diagnostics.append({'metric_id':metric,'result_id':row['result_id'] if row else None,
                 'outcome_id':outcome['outcome_id'] if outcome else None,
-                'outcome_revision':outcome['revision'] if outcome else None,'value':value,'reason':reason})
+                'outcome_revision':outcome['revision'] if outcome else None,'value':value,'reason':reason,
+                'task_details':details})
         return {'metrics':metrics,'item_scores_ref':services.save_json({'records':diagnostics},'gymts.json/1'),
             'diagnostics_ref':None}

@@ -1,0 +1,2 @@
+# Keep the pinned upstream reward snapshot byte-for-byte, including its whitespace.
+adapters/bench_tsqa/src/gymts_bench_tsqa/chatts_rlvr_rules.py -whitespace

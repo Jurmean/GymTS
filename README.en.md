@@ -2,21 +2,24 @@
 
 [中文文档](https://gymts-docs.zrr9392.chatgpt.site/zh/) · [English docs](https://gymts-docs.zrr9392.chatgpt.site/en/)
 
-**A framework for time-series experiments, environment execution, and independent evaluation.**
+**A framework for time-series data storage, unified interfaces, and experiment management.**
 
-[中文](README.md) · English · [User guide (Chinese)](docs/user-guide.md) · [API / CLI](docs/reference.md)
+[中文](README.md) · English · [User guide (Chinese)](docs/user-guide.md) · [Experiment organization](docs/experiment-organization.md) · [API / CLI](docs/reference.md)
 
-GymTS connects the data an experiment saw, the method it ran, the operations it performed, and the
-references used to evaluate it. Replace sources, tasks, models, algorithms, or Agents through
-independent adapters. Preserve execution evidence and rescore the same outputs when labels or
-scoring rules change.
+GymTS manages the sources, storage, versions, and lineage of static, synthetic, simulation, and live-testbed
+data through consistent data-access and experiment interfaces. Replace sources, tasks, models, algorithms,
+or Agents through independent adapters, run experiments, and preserve actual execution evidence.
+AutoBenchTS then evaluates or rescores the same outputs against independent references. The deliverable
+is the extensible framework; integrated projects ship as independent adapter packages.
 
-The current implementation is **0.5.0**, using public contract **1.2.0**. The core requires
+The current implementation is **0.6.0**, using public contract **1.4.0**. The core requires
 **Python 3.9+**, has no mandatory third-party runtime dependencies for JSON workflows, and uses a
 local storage backend supported on Linux/macOS. Individual adapters have additional requirements.
 The commands below install from a source checkout containing this version; no PyPI release is assumed.
 
 ## Quick start
+
+The four main responsibilities are **storing data, connecting data, organizing experiments, and recording experiments**. The [experiment organization guide](docs/experiment-organization.md) documents fixed inputs, stage dependencies, append-only attempts, recovery, independent evaluation, and explicit publication back to the data catalog.
 
 ```bash
 git clone https://github.com/Jurmean/GymTS.git
@@ -47,18 +50,19 @@ and is not a backup; use durable local storage and a closed-store backup for lon
 
 ## Architecture and boundaries
 
-- **EnvironmentTS** owns experiment execution, source lifecycle, access boundaries, and evidence.
+- **EnvironmentTS** owns four-kind data organization, source catalogs, snapshots, lineage, experiment execution, access boundaries, and evidence.
 - **AutoBenchTS** owns fixed evaluation plans, independent scoring, comparisons, gates, and rescoring.
 - **Independent adapters** implement source formats, native environment APIs, task semantics, model
   calls, codecs, and domain scoring. Shared domain contracts are also optional external packages.
 
 A Candidate can be an algorithm, a pipeline, a model, or an Agent. An Agent chooses tools through its
 SDK and adapters. Additional experiment data access and environment operations must pass through
-Task/Runner authorization. Existing fixed-method and tool-wrapper checks do not establish a general
-autonomous Agent tool-selection loop.
+Task/Runner authorization. External TimeCopilot has completed a native Agent loop with six model
+requests and four native tools; see the [five-project acceptance](docs/five-project-integration-acceptance-2026-10-21.md).
+This does not establish a general Agent Runtime across projects.
 
 GymTS currently provides a synchronous local SDK and CLI. A multi-tenant service, remote workers,
-process isolation, recovery, and a general Agent tool loop require separate implementation and
+process isolation, automatic recovery of arbitrary backend process state, and a general Agent Runtime require separate implementation and
 acceptance. See the [project overview](docs/overview.md), [project status](docs/project-status.md), and [roadmap](docs/roadmap.md).
 
 ## CLI and Python
@@ -96,11 +100,19 @@ Optional source-install extras: `python -m pip install '.[yaml]'` for YAML confi
 
 ## Datasets, benchmarks, and evidence
 
-EnvironmentTS manages versioned dataset resources. AutoBenchTS registers and resolves reusable
-BenchmarkDefinitions into native evaluation specifications. Public dataset handles support indexing,
+The EnvironmentTS **core** manages `static`, `synthetic`, `simulation` and `live_testbed` source
+definitions, actual dataset revisions, storage and source→dataset→Run→feedback lineage. Project
+formats, generators, simulator/service APIs and codecs remain in independent adapters. AutoBenchTS
+registers and resolves reusable BenchmarkDefinitions into native evaluation specifications. Public dataset handles support indexing,
 selection, filtering, and batches; evaluation references remain separate from Candidate inputs.
 `data_home` stores durable resources, `cache_home` holds rebuildable cache entries, and the Run root
 contains SQLite records and immutable content-addressed artifacts.
+
+`register_source` registers a reusable source; `register_snapshot` registers obtained data. `run_data`
+preserves the real Task/Candidate and combines source binding, the original experiment and capture
+afterward. `gymts.source-dataset/2` adds source, parent manifests, capture metadata and attachments;
+existing `/1` datasets, benchmarks and Runs remain unchanged. See [ADR 0001](docs/adr/0001-core-data-source-catalog.md)
+for the core-change rationale and historical F1 criteria. Frozen-F1 real four-source execution, portable reads and model-free rescoring passed technical acceptance. Existing sixteen-package compatibility discovered 407 tests: 346 executed passes and 61 optional-dependency skips, including that round's AReaL V13 CPU draft without changing its held-out status. See the [report](docs/reports/core-data-organization-2026-10-21.json).
 
 A Run retains resolved configuration, observations, inputs, outputs, operations, receipts, errors,
 and cleanup evidence. ModelCall/ToolCall details require explicit adapter instrumentation and the
@@ -138,17 +150,33 @@ with GymTS("/tmp/gymts-optional", integrations=("chatts",)) as gym:
 | `gymts-gymnasium` / `gymnasium` | Native Gymnasium simulator lifecycle |
 | `gymts-openenv` / `openenv` | Official OpenEnv SDK over persistent WebSocket sessions |
 | `gymts-prometheus` / `prometheus` | Read-only live numeric telemetry and immutable delivered history |
+| `gymts-timecopilot` / `timecopilot` | Native Agent tool selection, continuation from tool returns, budgets, and independent evaluation |
+| `gymts-itformer` / `itformer` | Official EngineMT-QA derived views, strict native inference, and private-reference scoring |
+| `gymts-chronos` / `chronos` | Chronos-2 multivariate/calendar covariates, quantiles, native fit, and checkpoint reload |
+| `gymts-datajuicer` / `datajuicer` | Native filtering/deduplication/QA, lineage, quality evaluation, and derived-data registration |
+| `gymts-areal` / `areal` | External multi-turn TIR rollouts, PPOTrainer/GRPO, and checkpoint interfaces; training/publication verified; held-out evaluation/rescoring pending |
 
 See [adapter documentation](adapters/README.md) for exact installation/runtime requirements.
 Gymnasium/OpenEnv examples also enable `interaction`. HF currently supports materialized numeric
 forecasting views. Live acceptance uses real localhost services, not an unverified production testbed.
 Existing synthetic sources and the external ChatTS integration remain available.
 
+The earlier five-project round preserves all 39 F0 core files. TimeCopilot, ITFormer, Chronos-2, and Data-Juicer
+have completed their stated native engineering workflows; AReaL training/publication are verified, with held-out evaluation/rescoring pending.
+See [five-project integration and acceptance](docs/five-project-integration-acceptance-2026-10-21.md).
+
+Training backends remain external. `gymts-rl` reuses TRL; `gymts-areal` connects native AReaL multi-turn
+TIR / PPOTrainer, with a real parameter update and checkpoint publication verified; held-out evaluation/rescoring remain pending. Chronos-2 has separately completed
+60 native fit steps, checkpoint reload, and held-out evaluation. The [RL guide](docs/rl-integration.md)
+and package READMEs define accepted profiles and limitations.
+
 ## Development and documentation
+
+Current **F2.1 / 0.6.0 / contract 1.4.0** technical acceptance has passed: all 196 core tests passed; sixteen-package compatibility records 356 passes and 61 optional-dependency skips. An independent 32-row ETTh1 view completed persistent data storage, execution, independent evaluation and model-free rescoring after adapter removal. See the [current machine-readable acceptance report](docs/reports/experiment-organization-2026-10-21.json) for fixed identities, scope and limits.
 
 ```bash
 python -m pip install -e .
-python -m pip install 'setuptools>=58' wheel
+python -m pip install 'setuptools>=58' wheel packaging
 python -B -m unittest discover -s tests -v
 python -B scripts/check_release.py --output /tmp/gymts-core-check.json
 python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
@@ -156,10 +184,13 @@ python -B scripts/check_adapters.py --output /tmp/gymts-adapter-check.json
 
 After build dependencies are prepared, distribution checks run offline. Minimal environments may
 skip tests requiring scientific runtimes; those skips are separate from actual native acceptance.
-[Recorded environment acceptance](docs/reports/environment-acceptance-2026-10-19.json) distinguishes
-package checks, native calls, preserved failures, and same-Run rescoring from model-quality claims.
+The earlier [environment acceptance](docs/reports/environment-acceptance-2026-10-19.json) covers eleven
+packages. [Five-project acceptance](docs/five-project-integration-acceptance-2026-10-21.md) adds the
+sixteen-package V2 + V11 offline-check combination (404 discovered tests, 343 executed passes, 61 conditional skips), six cross-project
+CPU Runs, three fresh rescoring checks, and rejection of two incompatible combinations. These frozen
+environment results distinguish engineering evidence from model-quality or production-scale claims.
 
-- [Documentation index](docs/README.md), [user guide](docs/user-guide.md), [API/CLI reference](docs/reference.md).
+- [Documentation index](docs/README.md), [user guide](docs/user-guide.md), [experiment organization](docs/experiment-organization.md), [API/CLI reference](docs/reference.md), [contract 1.4.0](docs/feishu/GymTS接口规范/GymTS接口规范.md).
 - [Adapter development](docs/adapter-development.md), [environment adapters](docs/environment-adapters.md).
 - [Contributing](CONTRIBUTING.md), [maintainer guide](docs/maintainer-guide.md), [support](SUPPORT.md).
 - [Security](SECURITY.md), [code of conduct](CODE_OF_CONDUCT.md), [changelog](CHANGELOG.md).

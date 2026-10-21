@@ -11,7 +11,7 @@ from gymts.contracts import canonical_json, digest, inline
 from gymts_bench_tsqa.benchmark import first_choice_candidate
 from gymts_bench_tsqa.contracts import OUTCOME, PUBLIC, RESULT
 from gymts_bench_tsqa.importer import POLICY, _parquet, audit_rows
-from gymts_bench_tsqa.parsing import decode_public, decode_target, parse_response
+from gymts_bench_tsqa.parsing import PARSER_REF, decode_public, decode_target, parse_response
 from gymts_bench_tsqa.registration import IMPORTER_REF, RESOLVER_REF
 from gymts_bench_tsqa.scoring import TSQAReferenceScorer
 
@@ -22,22 +22,22 @@ def raw_row(answer='B'):
         'ability_types':['PRIVATE-ANNOTATION']}
 
 
-def register_fixture(gym,rows):
-    public,targets,quality=audit_rows('fixture/tsqa',b'\n'.join(canonical_json(row) for row in rows))
+def register_fixture(gym,rows,dataset_id='fixture/tsqa'):
+    public,targets,quality=audit_rows(dataset_id,b'\n'.join(canonical_json(row) for row in rows))
     datasets=gym.environment_ts.datasets
     publish=lambda body:datasets.publish_asset(body,media_type='application/x-ndjson')
     inputs=publish(b'\n'.join(canonical_json(row) for row in public))
     target=publish(b'\n'.join(canonical_json(row) for row in targets))
-    manifest=datasets.register_dataset({'protocol_version':'gymts.source-dataset/1','dataset_id':'fixture/tsqa',
+    manifest=datasets.register_dataset({'protocol_version':'gymts.source-dataset/1','dataset_id':dataset_id,
         'config':'default','revision':None,'schema_ref':PUBLIC,
         'reader_ref':{'name':'gymts.jsonl-reader','version':'1.0.0','origin_ref':None},'features':{},
         'splits':{'test':{'row_count':len(rows),'split_origin':'user_declared_evaluation','input_indices':[0],'target_indices':[0]}},
         'usage_policy':POLICY,'source_files':[],'importer_ref':IMPORTER_REF,'inputs':[inputs],'series':[],
         'targets':[target],'quality_report_ref':None,'card_ref':None},aliases=('1.0.0',))
-    definition=gym.autobench.register_benchmark({'protocol_version':'gymts.autobench.benchmark/1','benchmark_id':'fixture/tsqa',
-        'revision':None,'resolver_ref':RESOLVER_REF,'datasets':[{'dataset_id':'fixture/tsqa','config':'default',
+    definition=gym.autobench.register_benchmark({'protocol_version':'gymts.autobench.benchmark/1','benchmark_id':dataset_id,
+        'revision':None,'resolver_ref':RESOLVER_REF,'datasets':[{'dataset_id':dataset_id,'config':'default',
             'revision':manifest['revision'],'split':'test'}],
-        'params':{'scope':'full','metrics':['accuracy','format_valid'],'parser_ref':'tsqa.single-answer/1',
+        'params':{'scope':'full','metrics':['task_score' if dataset_id=='local/dataset-a-rlvr' else 'accuracy','format_valid'],'parser_ref':PARSER_REF,
             'coverage_policy':'all_source_rows_eligible','question_policy':'complete-original-lossless-projection/1'},'card_ref':None},aliases=('1.0.0',))
     return public,targets,manifest,definition
 
@@ -140,7 +140,7 @@ class TSQATests(unittest.TestCase):
 
     def test_definition_rejects_unsupported_policies_before_reading_resources(self):
         from gymts_bench_tsqa.benchmark import TSQABenchmarkResolver
-        params={'scope':'full','metrics':['accuracy','format_valid'],'parser_ref':'tsqa.single-answer/1',
+        params={'scope':'full','metrics':['accuracy','format_valid'],'parser_ref':PARSER_REF,
             'coverage_policy':'all_source_rows_eligible','question_policy':'complete-original-lossless-projection/1'}
         variations=[{'coverage_policy':'exclude_unknown_reference'},
             {'question_policy':'rewrite_canonical_question'}, {'selection':{'indices':[0]}},
